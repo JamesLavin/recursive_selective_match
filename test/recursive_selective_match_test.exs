@@ -1,6 +1,42 @@
 defmodule RecursiveSelectiveMatchTest do
   use ExUnit.Case
   doctest RecursiveSelectiveMatch
+  Code.require_file("test/person.ex")
+  Code.require_file("test/test_struct.ex")
+  Code.require_file("test/another_test_struct.ex")
+
+  defp celtics_actual() do
+    %{
+      players: [
+        %Person{id: 1187, fname: "Robert", lname: "Parrish", position: :center, jersey_num: "00"},
+        %Person{id: 979, fname: "Kevin", lname: "McHale", position: :forward, jersey_num: "32"},
+        %Person{id: 1033, fname: "Larry", lname: "Bird", position: :forward, jersey_num: "33"},
+      ],
+      team: %{name: "Celtics",
+              nba_id: 13,
+              greatest_player: %Person{id: 4, fname: "Bill", lname: "Russell", position: :center, jersey_num: "6"},
+              plays_at: %{arena: %{name: "Boston Garden",
+                                   location: %{"city" => "Boston", "state" => "MA"}}}},
+      data_fetched_at: "2018-04-17 11:14:53"
+    }
+  end
+
+  defp celtics_expected() do
+    %{
+      players: :any_list,
+      team: %{name: :any_binary,
+              nba_id: :any_integer,
+              greatest_player: :any_struct,
+              plays_at: %{arena: %{name: :any_binary,
+                                   location: %{"city" => :any_binary,
+                                               "state" => :any_binary}}}},
+      data_fetched_at: :any_binary
+    }
+  end
+
+  test "Celtics test" do
+    assert RecursiveSelectiveMatch.matches?(celtics_expected(), celtics_actual())
+  end
 
   test "single-level, key-valued maps" do
     expected = %{best_beatle: %{fname: "John", lname: "Lennon"}}

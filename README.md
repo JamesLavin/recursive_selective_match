@@ -48,9 +48,11 @@ like this:
               greatest_player: :any_struct,
               plays_at: %{arena: %{name: :any_binary,
                                    location: %{"city" => :any_binary,
-                                               "state" -> :any_binary}}}},
+                                               "state" => :any_binary}}}},
       data_fetched_at: :any_binary
     }
+
+This successfully matches (you can see the test in test/recursive_selective_match_test.exs).
 
 RecursiveSelectiveMatch currently works (at least sort of) with Elixir maps, lists,
 tuples, and structs (which it begins comparing based on struct type and then treats as maps).
