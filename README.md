@@ -16,6 +16,42 @@ datatypes using any of the following:
 * :any_boolean
 * :any_struct
 
+For example, imagine you have a function that returns a nested data structure like this:
+
+    %{
+      players: [
+        %Person{id: 1187, fname: "Robert", lname: "Parrish", position: :center, jersey_num: "00"},
+        %Person{id: 979, fname: "Kevin", lname: "McHale", position: :forward, jersey_num: "32"},
+        %Person{id: 1033, fname: "Larry", lname: "Bird", position: :forward, jersey_num: "33"},
+      ],
+      team: %{name: "Celtics",
+              nba_id: 13,
+              greatest_player: %Person{id: 4, fname: "Bill", lname: "Russell", position: :center, jersey_num: "6"},
+              plays_at: %{arena: %{name: "Boston Garden",
+                                   location: %{"city" => "Boston", "state" => "MA"}}}},
+      data_fetched_at: "2018-04-17 11:14:53"
+    }
+
+Imagine further that each time you call this function, some details may vary. Maybe each time you
+call the function, you get a random team, not always the NBA's greatest team of all time (only
+team with 17 championships... #boston_strong!) and you don't care about specific ids or the data_fetched_at
+time stamp or maybe even details about the players or team. But you want to test that the structure
+of the data is correct and possibly confirm some of the values.
+
+With RecursiveSelectiveMatch, you can create a generic test by specifying an expected data structure
+like this:
+
+    %{
+      players: :any_list,
+      team: %{name: :any_binary,
+              nba_id: :any_integer,
+              greatest_player: :any_struct,
+              plays_at: %{arena: %{name: :any_binary,
+                                   location: %{"city" => :any_binary,
+                                               "state" -> :any_binary}}}},
+      data_fetched_at: :any_binary
+    }
+
 RecursiveSelectiveMatch currently works (at least sort of) with Elixir maps, lists,
 tuples, and structs (which it begins comparing based on struct type and then treats as maps).
 
