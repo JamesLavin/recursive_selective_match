@@ -62,6 +62,18 @@ defmodule RecursiveSelectiveMatchTest do
     refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
   end
 
+  test "map with an expected value of :any_atom and an actual value of an atom" do
+    expected = %{team: "Red Sox", current_standing: :any_atom}
+    actual = %{team: "Red Sox", current_standing: :first}
+    assert RecursiveSelectiveMatch.matches?(expected, actual)
+  end
+
+  test "map with an expected value of :any_atom and an actual value of a non-atom" do
+    expected = %{team: "Red Sox", current_standing: :any_atom}
+    actual = %{team: "Red Sox", current_standing: 1}
+    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+  end
+
   test "map with an expected value of :any_tuple and an actual value of a list" do
     expected = %{team: "Red Sox", players: :any_tuple}
     actual = %{team: "Red Sox", players: ["Mookie Betts","Xander Bogaerts", "Hanley Ramirez","Jackie Bradley Jr","Chris Sale","Rick Porcello","David Price"]}

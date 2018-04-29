@@ -69,6 +69,10 @@ defmodule RecursiveSelectiveMatch do
     true
   end
 
+  def matches?(:any_atom, actual, opts) when is_atom(actual) do
+    true
+  end
+
   def matches?(expected, actual, opts) do
     success = expected == actual
     print_warning(expected, actual, success, opts)
