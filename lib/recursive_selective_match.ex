@@ -22,6 +22,9 @@ defmodule RecursiveSelectiveMatch do
   def matches?(expected, actual, opts \\ %{})
 
   def matches?(expected, actual, opts) when is_map(expected) and is_map(actual) do
+    if opts[:standardize_keys] do
+      {expected, actual} = standardize_keys(expected, actual)
+    end
     success = Enum.reduce(Map.keys(expected), true, fn key, acc ->
       acc && Map.has_key?(actual, key) && matches?(Map.get(expected, key), Map.get(actual, key), opts)
     end)
@@ -67,6 +70,11 @@ defmodule RecursiveSelectiveMatch do
       IO.inspect("#{inspect actual} does not match #{inspect expected}")
     end
     success
+  end
+
+  defp standardize_keys(expected, actual) do
+    {expected |> AtomicMap.convert(%{safe: false}),
+     actual |> AtomicMap.convert(%{safe: false})}
   end
 
 end

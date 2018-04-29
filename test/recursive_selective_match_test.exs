@@ -14,6 +14,30 @@ defmodule RecursiveSelectiveMatchTest do
     assert RecursiveSelectiveMatch.matches?(expected, actual)
   end
 
+  test "single-level, key-valued maps don't ignore differences between string & atom keys" do
+    expected = %{best_beatle: %{fname: "John", lname: "Lennon"}}
+    actual = %{"best_beatle" => %{fname: "John", lname: "Lennon"}}
+    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+  end
+
+  test "multi-level, key-valued maps don't ignore differences between string & atom keys" do
+    expected = %{best_beatle: %{fname: "John", lname: "Lennon"}}
+    actual = %{best_beatle: %{"fname" => "John", "mname" => "Winston", "lname" => "Lennon", "born" => 1940}}
+    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+  end
+
+  test "single-level, key-valued maps ignore differences between string & atom keys when standardize_keys: true" do
+    expected = %{best_beatle: %{fname: "John", lname: "Lennon"}}
+    actual = %{"best_beatle" => %{fname: "John", lname: "Lennon"}}
+    assert RecursiveSelectiveMatch.matches?(expected, actual, %{standardize_keys: true})
+  end
+
+  test "multi-level, key-valued maps ignore differences between string & atom keys when standardize_keys: true" do
+    expected = %{best_beatle: %{"fname" => "John", "lname" => "Lennon"}}
+    actual = %{"best_beatle" => %{fname: "John", mname: "Winston", lname: "Lennon", born: 1940}}
+    assert RecursiveSelectiveMatch.matches?(expected, actual, %{standardize_keys: true})
+  end
+
   test "single-level list when identical" do
     expected = ["apple", "banana", "cherry"]
     actual = ["apple", "banana", "cherry"]
@@ -71,7 +95,7 @@ defmodule RecursiveSelectiveMatchTest do
   test "expected values of :anything must exist in actual" do
     expected = %{best_beatle: %{fname: "John", mname: :anything, lname: "Lennon"}}
     actual = %{best_beatle: %{fname: "John", lname: "Lennon", born: 1940}}
-    refute RecursiveSelectiveMatch.matches?(expected, actual)
+    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
   end
 
   test "single-level tuple" do
@@ -83,7 +107,7 @@ defmodule RecursiveSelectiveMatchTest do
   test "single-level tuple when not matching" do
     expected = {1, "banana"}
     actual = {2, "banana"}
-    refute RecursiveSelectiveMatch.matches?(expected, actual)
+    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
   end
 
   test "multi-level tuple" do
@@ -95,7 +119,7 @@ defmodule RecursiveSelectiveMatchTest do
   test "multi-level tuple when not matching" do
     expected = {1, {"banana", "yellow"}}
     actual = {1, {"banana", "green"}}
-    refute RecursiveSelectiveMatch.matches?(expected, actual)
+    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
   end
 
   test "single-level tuple with :anything" do

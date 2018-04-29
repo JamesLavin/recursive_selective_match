@@ -26,6 +26,7 @@ defmodule RecursiveSelectiveMatch.MixProject do
   defp deps do
     [
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
+      {:atomic_map, "~> 0.8"},
     ]
   end
 end
