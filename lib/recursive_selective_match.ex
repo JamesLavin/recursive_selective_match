@@ -25,6 +25,12 @@ defmodule RecursiveSelectiveMatch do
     end)
   end
 
+  def matches?(expected, actual) when is_list(expected) and is_list(actual) do
+    Enum.all?(expected, fn exp_key ->
+      Enum.any?(actual, fn(act_key) -> act_key == exp_key end)
+    end)
+  end
+
   def matches?(expected, actual) do
     expected == actual
   end
