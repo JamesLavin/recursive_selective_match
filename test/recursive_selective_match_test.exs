@@ -38,6 +38,30 @@ defmodule RecursiveSelectiveMatchTest do
     assert RecursiveSelectiveMatch.matches?(expected, actual)
   end
 
+  test "map with an expected value of :any_integer and an actual value of an integer" do
+    expected = %{team: "Red Sox", current_standing: :any_integer}
+    actual = %{team: "Red Sox", current_standing: 1}
+    assert RecursiveSelectiveMatch.matches?(expected, actual)
+  end
+
+  test "map with an expected value of :any_integer and an actual value of a non-integer" do
+    expected = %{team: "Red Sox", current_standing: :any_integer}
+    actual = %{team: "Red Sox", current_standing: "1"}
+    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+  end
+
+  test "map with an expected value of :any_binary and an actual value of a binary" do
+    expected = %{team: "Red Sox", current_standing: :any_binary}
+    actual = %{team: "Red Sox", current_standing: "1"}
+    assert RecursiveSelectiveMatch.matches?(expected, actual)
+  end
+
+  test "map with an expected value of :any_binary and an actual value of a non-binary" do
+    expected = %{team: "Red Sox", current_standing: :any_binary}
+    actual = %{team: "Red Sox", current_standing: 1}
+    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+  end
+
   test "map with an expected value of :any_tuple and an actual value of a list" do
     expected = %{team: "Red Sox", players: :any_tuple}
     actual = %{team: "Red Sox", players: ["Mookie Betts","Xander Bogaerts", "Hanley Ramirez","Jackie Bradley Jr","Chris Sale","Rick Porcello","David Price"]}

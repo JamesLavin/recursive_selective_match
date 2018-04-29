@@ -61,6 +61,14 @@ defmodule RecursiveSelectiveMatch do
     true
   end
 
+  def matches?(:any_integer, actual, opts) when is_integer(actual) do
+    true
+  end
+
+  def matches?(:any_binary, actual, opts) when is_binary(actual) do
+    true
+  end
+
   def matches?(expected, actual, opts) do
     success = expected == actual
     print_warning(expected, actual, success, opts)
