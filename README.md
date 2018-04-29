@@ -5,6 +5,19 @@ deeply nested Elixir data structures while selectively ignoring irrelevant data
 elements and data structure subtrees you wish to exclude from your matching (like
 primary & foreign key IDs, timestamps, and 3rd-party IDs).
 
+After adding RecursiveSelectiveMatch to your project as a dependency, you can pass
+an expected and an actual data structure to `RecursiveSelectiveMatch.match?()` as follows.
+If every element in `expected` also exists in `actual`, `match?()` should return `true`.
+If any element of `expected` is not in `actual`, `match?()` should return `false`.
+
+By default, when `match?()` returns `false`, it should also display a message indicating
+what data structure or element failed to match. It will not display all missing data
+structures or elements but only the first it finds.
+
+`RecursiveSelectiveMatch.match?()` take an optional third argument, which is a map of
+options. You can disable the default behavior of displaying the reason for the match
+failure by passing an options map (as a third argument) containing `%{suppress_warnings: true}`.
+
 This library is a clean reimplementation of SelectiveRecursiveMatch, a library I
 wrote at Teladoc to solve the same problem. I am reimplementing it because I can
 write cleaner code the second time through. (As Fred Brooks wrote, "plan to
