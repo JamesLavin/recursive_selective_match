@@ -74,6 +74,30 @@ defmodule RecursiveSelectiveMatchTest do
     refute RecursiveSelectiveMatch.matches?(expected, actual)
   end
 
+  test "single-level tuple" do
+    expected = {1, "banana"}
+    actual = {1, "banana"}
+    assert RecursiveSelectiveMatch.matches?(expected, actual)
+  end
+
+  test "single-level tuple when not matching" do
+    expected = {1, "banana"}
+    actual = {2, "banana"}
+    refute RecursiveSelectiveMatch.matches?(expected, actual)
+  end
+
+  test "multi-level tuple" do
+    expected = {1, {"banana", "bananas"}}
+    actual = {1, {"banana", "bananas"}}
+    assert RecursiveSelectiveMatch.matches?(expected, actual)
+  end
+
+  test "multi-level tuple when not matching" do
+    expected = {1, {"banana", "yellow"}}
+    actual = {1, {"banana", "green"}}
+    refute RecursiveSelectiveMatch.matches?(expected, actual)
+  end
+
   # test "multi-level, key-valued maps" do
   #   expected = %{best_beatle: %{fname: "John", lname: "Lennon"}}
   #   actual = %{best_beatle: %{fname: "John", mname: "Winston", lname: "Lennon", born: 1940}}
