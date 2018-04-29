@@ -53,6 +53,14 @@ defmodule RecursiveSelectiveMatch do
     true
   end
 
+  def matches?(:any_list, actual, opts) when is_list(actual) do
+    true
+  end
+
+  def matches?(:any_map, actual, opts) when is_map(actual) do
+    true
+  end
+
   def matches?(expected, actual, opts) do
     success = expected == actual
     print_warning(expected, actual, success, opts)

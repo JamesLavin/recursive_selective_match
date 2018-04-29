@@ -14,6 +14,24 @@ defmodule RecursiveSelectiveMatchTest do
     assert RecursiveSelectiveMatch.matches?(expected, actual)
   end
 
+  test "map with an expected value of :anything and an actual value of a list" do
+    expected = %{team: "Red Sox", players: :anything}
+    actual = %{team: "Red Sox", players: ["Mookie Betts","Xander Bogaerts", "Hanley Ramirez","Jackie Bradley Jr","Chris Sale","Rick Porcello","David Price"]}
+    assert RecursiveSelectiveMatch.matches?(expected, actual)
+  end
+
+  test "map with an expected value of :any_list and an actual value of a list" do
+    expected = %{team: "Red Sox", players: :any_list}
+    actual = %{team: "Red Sox", players: ["Mookie Betts","Xander Bogaerts", "Hanley Ramirez","Jackie Bradley Jr","Chris Sale","Rick Porcello","David Price"]}
+    assert RecursiveSelectiveMatch.matches?(expected, actual)
+  end
+
+  test "map with an expected value of :any_map and an actual value of a list" do
+    expected = %{team: "Red Sox", players: :any_map}
+    actual = %{team: "Red Sox", players: ["Mookie Betts","Xander Bogaerts", "Hanley Ramirez","Jackie Bradley Jr","Chris Sale","Rick Porcello","David Price"]}
+    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+  end
+
   test "single-level, key-valued maps don't ignore differences between string & atom keys" do
     expected = %{best_beatle: %{fname: "John", lname: "Lennon"}}
     actual = %{"best_beatle" => %{fname: "John", lname: "Lennon"}}
@@ -127,11 +145,5 @@ defmodule RecursiveSelectiveMatchTest do
     actual = {1, "banana"}
     assert RecursiveSelectiveMatch.matches?(expected, actual)
   end
-
-  # test "multi-level, key-valued maps" do
-  #   expected = %{best_beatle: %{fname: "John", lname: "Lennon"}}
-  #   actual = %{best_beatle: %{fname: "John", mname: "Winston", lname: "Lennon", born: 1940}}
-  #   assert RecursiveSelectiveMatch.matches?(expected, actual)
-  # end
 
 end
