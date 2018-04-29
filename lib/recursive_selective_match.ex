@@ -21,6 +21,11 @@ defmodule RecursiveSelectiveMatch do
   """
   def matches?(expected, actual, opts \\ %{})
 
+  def matches?(%{__struct__: exp_struct} = expected, %{__struct__: act_struct} = actual, opts) do
+    matches?(exp_struct, act_struct) &&
+      matches?(expected |> Map.from_struct(), actual |> Map.from_struct(), opts)
+  end
+
   def matches?(expected, actual, opts) when is_map(expected) and is_map(actual) do
     if opts[:standardize_keys] do
       {expected, actual} = standardize_keys(expected, actual)
@@ -70,6 +75,14 @@ defmodule RecursiveSelectiveMatch do
   end
 
   def matches?(:any_atom, actual, opts) when is_atom(actual) do
+    true
+  end
+
+  def matches?(:any_boolean, actual, opts) when is_boolean(actual) do
+    true
+  end
+
+  def matches?(:any_struct, %{__struct__: _}, opts) do
     true
   end
 

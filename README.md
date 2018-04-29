@@ -3,10 +3,21 @@
 RecursiveSelectiveMatch is an Elixir library application enabling testing of
 deeply nested Elixir data structures while selectively ignoring irrelevant data
 elements and data structure subtrees you wish to exclude from your matching (like
-primary & foreign key IDs, timestamps, and 3rd-party IDs).
+primary & foreign key IDs, timestamps, and 3rd-party IDs) or testing just values'
+datatypes using any of the following:
+
+* :anything
+* :any_list
+* :any_map
+* :any_tuple
+* :any_integer
+* :any_binary
+* :any_atom
+* :any_boolean
+* :any_struct
 
 RecursiveSelectiveMatch currently works (at least sort of) with Elixir maps, lists,
-and tuples.
+tuples, and structs (which it begins comparing based on struct type and then treats as maps).
 
 After adding RecursiveSelectiveMatch to your project as a dependency, you can pass
 an expected and an actual data structure to `RecursiveSelectiveMatch.matches?()` as follows.
@@ -24,12 +35,12 @@ options:
 
 * You can override the default behavior of requiring that map keys be the same type and instead ignore differences between string and atom keys in maps by passing an options map (as a third argument) containing `%{standardize_keys: true}`.
 
-This library is a clean reimplementation of SelectiveRecursiveMatch, a library I
-wrote at Teladoc to solve the same problem. I am reimplementing it because I can
-write cleaner code the second time through. (As Fred Brooks wrote, "plan to
-throw one away; you will, anyhow"). While I wrote this library on my own time,
-my inspiration to create it and the time to build my initial implementation
-both came from Teladoc, so thank you, Teladoc.
+This library is a clean reimplementation and extension of SelectiveRecursiveMatch, a
+library I wrote at Teladoc to solve the same problem. I have reimplemented it to
+write cleaner code on my second attempt. (As Fred Brooks wrote, "plan to throw
+one away; you will, anyhow.") While I wrote this library on my own time and have added
+features not present in the original, my inspiration to create this and the time spent
+building my initial implementation both came from Teladoc, so thank you, Teladoc!
 
 ## Installation
 

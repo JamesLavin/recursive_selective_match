@@ -62,6 +62,18 @@ defmodule RecursiveSelectiveMatchTest do
     refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
   end
 
+  test "struct with an expected value of :any_binary and an actual value of a binary treated like an equivalent map" do
+    expected = %TestStruct{fname: "Larry", lname: :any_binary, hof: :any_boolean}
+    actual = %TestStruct{fname: "Larry", lname: "Bird", hof: true}
+    assert RecursiveSelectiveMatch.matches?(expected, actual)
+  end
+
+  test "structs of different types don't match" do
+    expected = %TestStruct{fname: "Larry", lname: "Bird", hof: true}
+    actual = %AnotherTestStruct{fname: "Larry", lname: "Bird", hof: true}
+    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+  end
+
   test "map with an expected value of :any_atom and an actual value of an atom" do
     expected = %{team: "Red Sox", current_standing: :any_atom}
     actual = %{team: "Red Sox", current_standing: :first}
