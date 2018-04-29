@@ -28,6 +28,17 @@ defmodule RecursiveSelectiveMatch do
     print_warning(expected, actual, success, opts)
   end
 
+  def matches?(expected, actual, opts) when is_tuple(expected) and is_tuple(actual) do
+    if tuple_size(expected) >= 1 do
+      exp = elem(expected, 0)
+      act = elem(actual, 0)
+      matches?(exp, act, opts) &&
+        matches?(Tuple.delete_at(expected, 0), Tuple.delete_at(actual, 0), opts)
+    else
+      true
+    end
+  end
+
   def matches?(expected, actual, opts) when is_list(expected) and is_list(actual) do
     success = Enum.all?(expected, fn exp_key ->
       Enum.any?(actual, fn(act_key) -> act_key == exp_key end)
