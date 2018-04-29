@@ -15,23 +15,33 @@ defmodule RecursiveSelectiveMatch do
       iex> RecursiveSelectiveMatch.matches?(%{what: :ever}, %{what: :ever, not: :checked})
       true
 
-      iex> RecursiveSelectiveMatch.matches?(%{what: :ever, is: :checked}, %{what: :ever})
+      iex> RecursiveSelectiveMatch.matches?(%{what: :ever, is: :checked}, %{what: :ever}, %{suppress_warnings: true})
       false
 
   """
-  def matches?(expected, actual) when is_map(expected) and is_map(actual) do
-    Enum.reduce(Map.keys(expected), true, fn key, acc ->
-      acc && Map.has_key?(actual, key) && matches?(Map.get(expected, key), Map.get(actual, key))
+  def matches?(expected, actual, opts \\ %{})
+
+  def matches?(expected, actual, opts) when is_map(expected) and is_map(actual) do
+    success = Enum.reduce(Map.keys(expected), true, fn key, acc ->
+      acc && Map.has_key?(actual, key) && matches?(Map.get(expected, key), Map.get(actual, key), opts)
     end)
+    unless success || opts[:suppress_warnings] do
+      IO.inspect("#{inspect actual} does not match #{inspect expected}")
+    end
+    success
   end
 
-  def matches?(expected, actual) when is_list(expected) and is_list(actual) do
-    Enum.all?(expected, fn exp_key ->
+  def matches?(expected, actual, opts) when is_list(expected) and is_list(actual) do
+    success = Enum.all?(expected, fn exp_key ->
       Enum.any?(actual, fn(act_key) -> act_key == exp_key end)
     end)
+    unless success || opts[:suppress_warnings] do
+      IO.inspect("#{IO.inspect actual} does not match #{IO.inspect expected}")
+    end
+    success
   end
 
-  def matches?(expected, actual) do
+  def matches?(expected, actual, opts) do
     expected == actual
   end
 end
