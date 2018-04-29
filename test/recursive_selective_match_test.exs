@@ -32,6 +32,24 @@ defmodule RecursiveSelectiveMatchTest do
     refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
   end
 
+  test "map with an expected value of :any_map and an actual value of a map" do
+    expected = %{team: "Red Sox", players: :any_map}
+    actual = %{team: "Red Sox", players: %{right_field: "Mookie Betts", third_base: "Xander Bogaerts", dh: "Hanley Ramirez", center_field: "Jackie Bradley Jr", p1: "Chris Sale", p3: "Rick Porcello", p2: "David Price"}}
+    assert RecursiveSelectiveMatch.matches?(expected, actual)
+  end
+
+  test "map with an expected value of :any_tuple and an actual value of a list" do
+    expected = %{team: "Red Sox", players: :any_tuple}
+    actual = %{team: "Red Sox", players: ["Mookie Betts","Xander Bogaerts", "Hanley Ramirez","Jackie Bradley Jr","Chris Sale","Rick Porcello","David Price"]}
+    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+  end
+
+  test "map with an expected value of :any_tuple and an actual value of a tuple" do
+    expected = %{team: "Red Sox", players: :any_tuple}
+    actual = %{team: "Red Sox", players: {"Mookie Betts","Xander Bogaerts", "Hanley Ramirez","Jackie Bradley Jr","Chris Sale","Rick Porcello","David Price"}}
+    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+  end
+
   test "single-level, key-valued maps don't ignore differences between string & atom keys" do
     expected = %{best_beatle: %{fname: "John", lname: "Lennon"}}
     actual = %{"best_beatle" => %{fname: "John", lname: "Lennon"}}
