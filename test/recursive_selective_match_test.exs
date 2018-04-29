@@ -62,6 +62,18 @@ defmodule RecursiveSelectiveMatchTest do
     assert RecursiveSelectiveMatch.matches?(expected, actual)
   end
 
+  test "expected values of :anything are ignored" do
+    expected = %{best_beatle: %{fname: "John", mname: :anything, lname: "Lennon"}}
+    actual = %{best_beatle: %{fname: "John", mname: "Winston", lname: "Lennon", born: 1940}}
+    assert RecursiveSelectiveMatch.matches?(expected, actual)
+  end
+
+  test "expected values of :anything must exist in actual" do
+    expected = %{best_beatle: %{fname: "John", mname: :anything, lname: "Lennon"}}
+    actual = %{best_beatle: %{fname: "John", lname: "Lennon", born: 1940}}
+    refute RecursiveSelectiveMatch.matches?(expected, actual)
+  end
+
   # test "multi-level, key-valued maps" do
   #   expected = %{best_beatle: %{fname: "John", lname: "Lennon"}}
   #   actual = %{best_beatle: %{fname: "John", mname: "Winston", lname: "Lennon", born: 1940}}
