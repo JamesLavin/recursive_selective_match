@@ -1,18 +1,31 @@
 defmodule RecursiveSelectiveMatch do
   @moduledoc """
-  Documentation for RecursiveSelectiveMatch.
+  RecursiveSelectiveMatch lets you specify a deeply nested test data structure and check
+  whether another actual data structure contains all keys and values specified in the
+  test data strucure. The actual data structure can include extra keys not mentioned in
+  the tes data structure. And actual data structure values will be ignored whenever the
+  corresponding test data structure value is :anything.
   """
 
   @doc """
-  Hello world.
+  matches?()
 
   ## Examples
 
-      iex> RecursiveSelectiveMatch.hello
-      :world
+      iex> RecursiveSelectiveMatch.matches?(%{what: :ever}, %{what: :ever, not: :checked})
+      true
+
+      iex> RecursiveSelectiveMatch.matches?(%{what: :ever, is: :checked}, %{what: :ever})
+      false
 
   """
-  def hello do
-    :world
+  def matches?(expected, actual) when is_map(expected) and is_map(actual) do
+    Enum.reduce(Map.keys(expected), true, fn key, acc ->
+      acc && Map.has_key?(actual, key) && matches?(Map.get(expected, key), Map.get(actual, key))
+    end)
+  end
+
+  def matches?(expected, actual) do
+    expected == actual
   end
 end
