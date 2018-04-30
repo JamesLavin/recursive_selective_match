@@ -4,6 +4,11 @@ defmodule RecursiveSelectiveMatch.MixProject do
   def project do
     [
       name: "RecursiveSelectiveMatch",
+      description: "Library enabling testing of deeply nested data structures while
+      selectively ignoring irrelevant data elements and data structure subtrees
+      or testing just values' datatypes using :anything, :any_list, :any_map, :any_tuple,
+      :any_integer, :any_binary, :any_atom, :any_boolean, :any_struct, etc.",
+      package: package(),
       source_url: "https://github.com/JamesLavin/recursive_selective_match",
       app: :recursive_selective_match,
       docs: [main: "RecursiveSelectiveMatch",
@@ -15,18 +20,24 @@ defmodule RecursiveSelectiveMatch.MixProject do
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
     [
       extra_applications: [:logger]
     ]
   end
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
       {:atomic_map, "~> 0.8"},
+    ]
+  end
+
+  defp package() do
+    [
+      maintainers: ["James Lavin"],
+      licenses: ["Apache 2.0"],
+      links: %{"Github" => "https://github.com/JamesLavin/recursive_selective_match"}
     ]
   end
 end
