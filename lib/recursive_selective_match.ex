@@ -160,8 +160,11 @@ actual value in for testing. The following expectation will also pass with the e
   end
 
   def matches?(expected, actual, opts) when is_list(expected) and is_list(actual) do
-    success = Enum.all?(expected, fn exp_key ->
-      Enum.any?(actual, fn(act_key) -> act_key == exp_key end)
+    success = Enum.all?(expected, fn expected_element ->
+      Enum.any?(actual,
+                fn(actual_element) ->
+                  matches?(expected_element, actual_element, Map.merge(opts, %{suppress_warnings: true}))
+                end)
     end)
     print_warning(expected, actual, success, opts)
   end
