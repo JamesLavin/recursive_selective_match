@@ -55,6 +55,27 @@ defmodule RecursiveSelectiveMatchTest do
     assert RecursiveSelectiveMatch.matches?(celtics_expectation_functions(), celtics_actual())
   end
 
+  defp celtics_expectation_functions_w_regex() do
+    %{
+      players: &(length(&1) == 3),
+      team: %{name: &(&1 in ["Bucks","Celtics", "76ers", "Lakers", "Rockets", "Warriors"]),
+              nba_id: &(&1 >= 1 && &1 <= 30),
+              greatest_player: %Person{id: &(&1 >= 0 && &1 <= 99),
+                                       fname: &(Regex.match?(~r/[A-Z][a-z]{2,}/,&1)),
+                                       lname: &(Regex.match?(~r/[A-Z][a-z]{2,}/,&1)),
+                                       position: &(&1 in [:center, :guard, :forward]),
+                                       jersey_num: &(Regex.match?(~r/\d{1,2}/,&1))},
+              plays_at: %{arena: %{name: &(String.length(&1) > 3),
+                                   location: %{"city" => &is_binary/1,
+                                               "state" => &(Regex.match?(~r/[A-Z]{2}/, &1))}}}},
+      data_fetched_at: &(Regex.match?(~r/2018-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/, &1))
+    }
+  end
+
+  test "Celtics test with expectation functions with regexes" do
+    assert RecursiveSelectiveMatch.matches?(celtics_expectation_functions_w_regex(), celtics_actual())
+  end
+
   test "single-level, key-valued maps" do
     expected = %{best_beatle: %{fname: "John", lname: "Lennon"}}
     actual = %{best_beatle: %{fname: "John", lname: "Lennon"}}
