@@ -76,6 +76,43 @@ defmodule RecursiveSelectiveMatchTest do
     assert RecursiveSelectiveMatch.matches?(celtics_expectation_functions_w_regex(), celtics_actual())
   end
 
+  test "matches a single element of a list" do
+    expected = %{ players: [
+                    %Person{id: 1187, fname: "Robert", lname: "Parrish", position: :center, jersey_num: "00"}
+                  ]
+                }
+    assert RecursiveSelectiveMatch.matches?(expected, celtics_actual())
+  end
+
+  test "matches two out of order elements within a list" do
+    expected = %{ players: [
+                  %Person{id: 1033, fname: "Larry", lname: "Bird", position: :forward, jersey_num: "33"},
+                  %Person{id: 1187, fname: "Robert", lname: "Parrish", position: :center, jersey_num: "00"}
+                ]
+               }
+    assert RecursiveSelectiveMatch.matches?(expected, celtics_actual())
+  end
+
+  test "matches the full set of list elements when out of order & some matchers are functions" do
+    expected = %{ players: [
+                  %Person{id: &is_integer/1, fname: "Larry", lname: "Bird", position: :forward, jersey_num: "33"},
+                  %Person{id: 979, fname: &is_binary/1, lname: "McHale", position: :forward, jersey_num: "32"},
+                  %Person{id: 1187, fname: "Robert", lname: &(String.length(&1) > 4), position: :center, jersey_num: "00"}
+                ]
+               }
+    assert RecursiveSelectiveMatch.matches?(expected, celtics_actual())
+  end
+
+  test "doesn't match if Parrish's jersey number expectation is wrong ('0' instead of '00')" do
+    expected = %{ players: [
+                  %Person{id: &is_integer/1, fname: "Larry", lname: "Bird", position: :forward, jersey_num: "33"},
+                  %Person{id: 979, fname: &is_binary/1, lname: "McHale", position: :forward, jersey_num: "32"},
+                  %Person{id: 1187, fname: "Robert", lname: &(String.length(&1) > 4), position: :center, jersey_num: "0"}
+                ]
+               }
+    refute RecursiveSelectiveMatch.matches?(expected, celtics_actual(), %{suppress_warnings: true})
+  end
+
   test "single-level, key-valued maps" do
     expected = %{best_beatle: %{fname: "John", lname: "Lennon"}}
     actual = %{best_beatle: %{fname: "John", lname: "Lennon"}}
