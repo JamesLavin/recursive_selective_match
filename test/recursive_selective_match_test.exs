@@ -38,6 +38,23 @@ defmodule RecursiveSelectiveMatchTest do
     assert RecursiveSelectiveMatch.matches?(celtics_expected(), celtics_actual())
   end
 
+  defp celtics_expectation_functions() do
+    %{
+      players: &is_list/1,
+      team: %{name: &is_binary/1,
+              nba_id: &is_integer/1,
+              greatest_player: :any_struct,
+              plays_at: %{arena: %{name: &is_binary/1,
+                                   location: %{"city" => &is_binary/1,
+                                               "state" => &is_binary/1}}}},
+      data_fetched_at: &is_binary/1
+    }
+  end
+
+  test "Celtics test with expectation functions" do
+    assert RecursiveSelectiveMatch.matches?(celtics_expectation_functions(), celtics_actual())
+  end
+
   test "single-level, key-valued maps" do
     expected = %{best_beatle: %{fname: "John", lname: "Lennon"}}
     actual = %{best_beatle: %{fname: "John", lname: "Lennon"}}

@@ -60,6 +60,20 @@ defmodule RecursiveSelectiveMatch do
 
   This successfully matches (you can see the test in test/recursive_selective_match_test.exs).
 
+Alternatively, you can pass in any function as a matcher. The above can be rewritten as the
+following (notice that both approaches can be used interchangeably):
+
+    %{
+      players: &is_list/1,
+      team: %{name: &is_binary/1,
+              nba_id: &is_integer/1,
+              greatest_player: :any_struct,
+              plays_at: %{arena: %{name: &is_binary/1,
+                                   location: %{"city" => &is_binary/1,
+                                               "state" => &is_binary/1}}}},
+      data_fetched_at: &is_binary/1
+    }
+
   RecursiveSelectiveMatch currently works (at least sort of) with Elixir maps, lists,
   tuples, and structs (which it begins comparing based on struct type and then treats as maps).
 
@@ -102,7 +116,7 @@ defmodule RecursiveSelectiveMatch do
   def matches?(expected, actual, opts \\ %{})
 
   def matches?(%{__struct__: exp_struct} = expected, %{__struct__: act_struct} = actual, opts) do
-    matches?(exp_struct, act_struct) &&
+    matches?(exp_struct, act_struct, opts) &&
       matches?(expected |> Map.from_struct(), actual |> Map.from_struct(), opts)
   end
 
@@ -160,6 +174,11 @@ defmodule RecursiveSelectiveMatch do
 
   def matches?(:any_boolean, actual, opts) when is_boolean(actual) do
     true
+  end
+
+  def matches?(expected, actual, opts) when is_function(expected) do
+    success = expected.(actual)
+    print_warning(expected, actual, success, opts)
   end
 
   def matches?(:any_struct, %{__struct__: _}, opts) do
