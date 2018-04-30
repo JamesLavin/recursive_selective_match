@@ -5,8 +5,8 @@ defmodule RecursiveSelectiveMatch.MixProject do
     [
       name: "RecursiveSelectiveMatch",
       description: "Library enabling testing of deeply nested data structures while
-      selectively ignoring irrelevant data elements and data structure subtrees
-      or testing just values' datatypes using :anything, :any_list, :any_map, :any_tuple,
+      selectively ignoring irrelevant data elements / subtrees or testing just
+      values' datatypes using :anything, :any_list, :any_map, :any_tuple,
       :any_integer, :any_binary, :any_atom, :any_boolean, :any_struct, etc.",
       package: package(),
       source_url: "https://github.com/JamesLavin/recursive_selective_match",
