@@ -72,13 +72,83 @@
 <p>RecursiveSelectiveMatch is an Elixir library application enabling testing of
 deeply nested Elixir data structures while selectively ignoring irrelevant data
 elements and data structure subtrees you wish to exclude from your matching (like
-primary &amp; foreign key IDs, timestamps, and 3rd-party IDs).</p>
-<p>This library is a clean reimplementation of SelectiveRecursiveMatch, a library I
-wrote at Teladoc to solve the same problem. I am reimplementing it because I can
-write cleaner code the second time through. (As Fred Brooks wrote, “plan to
-throw one away; you will, anyhow”). While I wrote this library on my own time,
-my inspiration to create it and the time to build my initial implementation
-both came from Teladoc, so thank you, Teladoc.</p>
+primary &amp; foreign key IDs, timestamps, and 3rd-party IDs) or testing just values’
+datatypes using any of the following:</p>
+<ul>
+<li>:anything
+</li>
+<li>:any_list
+</li>
+<li>:any_map
+</li>
+<li>:any_tuple
+</li>
+<li>:any_integer
+</li>
+<li>:any_binary
+</li>
+<li>:any_atom
+</li>
+<li>:any_boolean
+</li>
+<li>:any_struct
+</li>
+</ul>
+<p>For example, imagine you have a function that returns a nested data structure like this:</p>
+<pre><code class="elixir">%{
+  players: [
+    %Person{id: 1187, fname: &quot;Robert&quot;, lname: &quot;Parrish&quot;, position: :center, jersey_num: &quot;00&quot;},
+    %Person{id: 979, fname: &quot;Kevin&quot;, lname: &quot;McHale&quot;, position: :forward, jersey_num: &quot;32&quot;},
+    %Person{id: 1033, fname: &quot;Larry&quot;, lname: &quot;Bird&quot;, position: :forward, jersey_num: &quot;33&quot;},
+  ],
+  team: %{name: &quot;Celtics&quot;,
+          nba_id: 13,
+          greatest_player: %Person{id: 4, fname: &quot;Bill&quot;, lname: &quot;Russell&quot;, position: :center, jersey_num: &quot;6&quot;},
+          plays_at: %{arena: %{name: &quot;Boston Garden&quot;,
+                               location: %{&quot;city&quot; =&gt; &quot;Boston&quot;, &quot;state&quot; =&gt; &quot;MA&quot;}}}},
+  data_fetched_at: &quot;2018-04-17 11:14:53&quot;
+}</code></pre>
+<p>Imagine further that each time you call this function, some details may vary. Maybe each time you
+call the function, you get a random team, not always the NBA’s greatest team of all time (only
+team with 17 championships… #boston_strong!) and you don’t care about specific ids or the data_fetched_at
+time stamp or maybe even details about the players or team. But you want to test that the structure
+of the data is correct and possibly confirm some of the values.</p>
+<p>With RecursiveSelectiveMatch, you can create a generic test by specifying an expected data structure
+like this:</p>
+<pre><code class="elixir">%{
+  players: :any_list,
+  team: %{name: :any_binary,
+          nba_id: :any_integer,
+          greatest_player: :any_struct,
+          plays_at: %{arena: %{name: :any_binary,
+                               location: %{&quot;city&quot; =&gt; :any_binary,
+                                           &quot;state&quot; =&gt; :any_binary}}}},
+  data_fetched_at: :any_binary
+}</code></pre>
+<p>This successfully matches (you can see the test in test/recursive_selective_match_test.exs).</p>
+<p>RecursiveSelectiveMatch currently works (at least sort of) with Elixir maps, lists,
+tuples, and structs (which it begins comparing based on struct type and then treats as maps).</p>
+<p>After adding RecursiveSelectiveMatch to your project as a dependency, you can pass
+an expected and an actual data structure to <code class="inline">RecursiveSelectiveMatch.matches?()</code> as follows.
+If every element in <code class="inline">expected</code> also exists in <code class="inline">actual</code>, <code class="inline">matches?()</code> should return <code class="inline">true</code>.
+If any element of <code class="inline">expected</code> is not in <code class="inline">actual</code>, <code class="inline">matches?()</code> should return <code class="inline">false</code>.</p>
+<p>By default, when <code class="inline">matches?()</code> returns <code class="inline">false</code>, it should also display a message indicating
+what data structure or element failed to match. It will not display all missing data
+structures or elements but only the first it finds.</p>
+<p><code class="inline">RecursiveSelectiveMatch.matches?()</code> take an optional third argument, which is a map of
+options:</p>
+<ul>
+<li><p>You can disable the default behavior of displaying the reason for the match failure by passing an options map (as a third argument) containing <code class="inline">%{suppress_warnings: true}</code>.</p>
+</li>
+<li><p>You can override the default behavior of requiring that map keys be the same type and instead ignore differences between string and atom keys in maps by passing an options map (as a third argument) containing <code class="inline">%{standardize_keys: true}</code>.</p>
+</li>
+</ul>
+<p>This library is a clean reimplementation and extension of SelectiveRecursiveMatch, a
+library I wrote at Teladoc to solve the same problem. I have reimplemented it to
+write cleaner code on my second attempt. (As Fred Brooks wrote, “plan to throw
+one away; you will, anyhow.”) While I wrote this library on my own time and have added
+features not present in the original, my inspiration to create this and the time spent
+building my initial implementation both came from Teladoc, so thank you, Teladoc!</p>
 <h2 id="installation" class="section-heading">
   <a href="#installation" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
   Installation
