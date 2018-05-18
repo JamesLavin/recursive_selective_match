@@ -4,6 +4,7 @@ defmodule RecursiveSelectiveMatchTest do
   Code.require_file("test/person.ex")
   Code.require_file("test/test_struct.ex")
   Code.require_file("test/another_test_struct.ex")
+  alias RecursiveSelectiveMatch, as: RSM
 
   defp celtics_actual() do
     %{
@@ -34,9 +35,34 @@ defmodule RecursiveSelectiveMatchTest do
     }
   end
 
-  test "Celtics test" do
-    assert RecursiveSelectiveMatch.matches?(celtics_expected(), celtics_actual())
+  test "Celtics matches? test" do
+    assert RSM.matches?(celtics_expected(), celtics_actual())
   end
+
+  test "by default, structs don't match maps" do
+    parrish = %Person{id: 1187, fname: "Robert", lname: "Parrish", position: :center, jersey_num: "00"}
+    refute RSM.includes?(parrish, parrish |> RSM.convert_struct_to_map() )
+  end
+
+  test "Celtics includes? finds a particular struct when present" do
+    assert RSM.includes?(celtics_actual()[:players] |> Enum.at(1),
+                                             celtics_actual()[:players])
+  end
+
+  test "Celtics includes? finds map with keys when present" do
+    assert RSM.includes?(%{fname: "Larry", lname: "Bird"},
+                                             celtics_actual()[:players])
+  end
+
+  test "Celtics includes? doesn't find map with keys when not present" do
+    refute RSM.includes?(%{fname: "Magic", lname: "Johnson"},
+                                             celtics_actual()[:players])
+  end
+
+ test "Celtics includes? finds :any_struct when struct is present" do
+   assert RSM.includes?(:any_struct,
+                                            celtics_actual()[:players])
+ end
 
   defp celtics_expectation_functions() do
     %{
@@ -52,7 +78,7 @@ defmodule RecursiveSelectiveMatchTest do
   end
 
   test "Celtics test with expectation functions" do
-    assert RecursiveSelectiveMatch.matches?(celtics_expectation_functions(), celtics_actual())
+    assert RSM.matches?(celtics_expectation_functions(), celtics_actual())
   end
 
   defp celtics_expectation_functions_w_regex() do
@@ -73,7 +99,18 @@ defmodule RecursiveSelectiveMatchTest do
   end
 
   test "Celtics test with expectation functions with regexes" do
-    assert RecursiveSelectiveMatch.matches?(celtics_expectation_functions_w_regex(), celtics_actual())
+    assert RSM.matches?(celtics_expectation_functions_w_regex(), celtics_actual())
+  end
+
+  @tag :skip
+  test ":multi allows multiple test criteria" do
+    expected = %{
+      players: {:multi, [&(length(&1) == 3),
+                         &(Enum.all?(fn(&1) -> &1.lname |> is_binary() end))
+                        ]
+               }
+    }
+    assert RSM.matches?(expected, celtics_actual())
   end
 
   test "matches a single element of a list" do
@@ -81,7 +118,7 @@ defmodule RecursiveSelectiveMatchTest do
                     %Person{id: 1187, fname: "Robert", lname: "Parrish", position: :center, jersey_num: "00"}
                   ]
                 }
-    assert RecursiveSelectiveMatch.matches?(expected, celtics_actual())
+    assert RSM.matches?(expected, celtics_actual())
   end
 
   test "matches two out of order elements within a list" do
@@ -90,7 +127,7 @@ defmodule RecursiveSelectiveMatchTest do
                   %Person{id: 1187, fname: "Robert", lname: "Parrish", position: :center, jersey_num: "00"}
                 ]
                }
-    assert RecursiveSelectiveMatch.matches?(expected, celtics_actual())
+    assert RSM.matches?(expected, celtics_actual())
   end
 
   test "matches the full set of list elements when out of order & some matchers are functions" do
@@ -100,7 +137,7 @@ defmodule RecursiveSelectiveMatchTest do
                   %Person{id: 1187, fname: "Robert", lname: &(String.length(&1) > 4), position: :center, jersey_num: "00"}
                 ]
                }
-    assert RecursiveSelectiveMatch.matches?(expected, celtics_actual())
+    assert RSM.matches?(expected, celtics_actual())
   end
 
   test "doesn't match if Parrish's jersey number expectation is wrong ('0' instead of '00')" do
@@ -110,217 +147,217 @@ defmodule RecursiveSelectiveMatchTest do
                   %Person{id: 1187, fname: "Robert", lname: &(String.length(&1) > 4), position: :center, jersey_num: "0"}
                 ]
                }
-    refute RecursiveSelectiveMatch.matches?(expected, celtics_actual(), %{suppress_warnings: true})
+    refute RSM.matches?(expected, celtics_actual(), %{suppress_warnings: true})
   end
 
   test "single-level, key-valued maps" do
     expected = %{best_beatle: %{fname: "John", lname: "Lennon"}}
     actual = %{best_beatle: %{fname: "John", lname: "Lennon"}}
-    assert RecursiveSelectiveMatch.matches?(expected, actual)
+    assert RSM.matches?(expected, actual)
   end
 
   test "multi-level, key-valued maps" do
     expected = %{best_beatle: %{fname: "John", lname: "Lennon"}}
     actual = %{best_beatle: %{fname: "John", mname: "Winston", lname: "Lennon", born: 1940}}
-    assert RecursiveSelectiveMatch.matches?(expected, actual)
+    assert RSM.matches?(expected, actual)
   end
 
   test "map with an expected value of :anything and an actual value of a list" do
     expected = %{team: "Red Sox", players: :anything}
     actual = %{team: "Red Sox", players: ["Mookie Betts","Xander Bogaerts", "Hanley Ramirez","Jackie Bradley Jr","Chris Sale","Rick Porcello","David Price"]}
-    assert RecursiveSelectiveMatch.matches?(expected, actual)
+    assert RSM.matches?(expected, actual)
   end
 
   test "map with an expected value of :any_list and an actual value of a list" do
     expected = %{team: "Red Sox", players: :any_list}
     actual = %{team: "Red Sox", players: ["Mookie Betts","Xander Bogaerts", "Hanley Ramirez","Jackie Bradley Jr","Chris Sale","Rick Porcello","David Price"]}
-    assert RecursiveSelectiveMatch.matches?(expected, actual)
+    assert RSM.matches?(expected, actual)
   end
 
   test "map with an expected value of :any_map and an actual value of a list" do
     expected = %{team: "Red Sox", players: :any_map}
     actual = %{team: "Red Sox", players: ["Mookie Betts","Xander Bogaerts", "Hanley Ramirez","Jackie Bradley Jr","Chris Sale","Rick Porcello","David Price"]}
-    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
   end
 
   test "map with an expected value of :any_map and an actual value of a map" do
     expected = %{team: "Red Sox", players: :any_map}
     actual = %{team: "Red Sox", players: %{right_field: "Mookie Betts", third_base: "Xander Bogaerts", dh: "Hanley Ramirez", center_field: "Jackie Bradley Jr", p1: "Chris Sale", p3: "Rick Porcello", p2: "David Price"}}
-    assert RecursiveSelectiveMatch.matches?(expected, actual)
+    assert RSM.matches?(expected, actual)
   end
 
   test "map with an expected value of :any_integer and an actual value of an integer" do
     expected = %{team: "Red Sox", current_standing: :any_integer}
     actual = %{team: "Red Sox", current_standing: 1}
-    assert RecursiveSelectiveMatch.matches?(expected, actual)
+    assert RSM.matches?(expected, actual)
   end
 
   test "map with an expected value of :any_integer and an actual value of a non-integer" do
     expected = %{team: "Red Sox", current_standing: :any_integer}
     actual = %{team: "Red Sox", current_standing: "1"}
-    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
   end
 
   test "map with an expected value of :any_binary and an actual value of a binary" do
     expected = %{team: "Red Sox", current_standing: :any_binary}
     actual = %{team: "Red Sox", current_standing: "1"}
-    assert RecursiveSelectiveMatch.matches?(expected, actual)
+    assert RSM.matches?(expected, actual)
   end
 
   test "map with an expected value of :any_binary and an actual value of a non-binary" do
     expected = %{team: "Red Sox", current_standing: :any_binary}
     actual = %{team: "Red Sox", current_standing: 1}
-    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
   end
 
   test "struct with an expected value of :any_binary and an actual value of a binary treated like an equivalent map" do
     expected = %TestStruct{fname: "Larry", lname: :any_binary, hof: :any_boolean}
     actual = %TestStruct{fname: "Larry", lname: "Bird", hof: true}
-    assert RecursiveSelectiveMatch.matches?(expected, actual)
+    assert RSM.matches?(expected, actual)
   end
 
   test "structs of different types don't match" do
     expected = %TestStruct{fname: "Larry", lname: "Bird", hof: true}
     actual = %AnotherTestStruct{fname: "Larry", lname: "Bird", hof: true}
-    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
   end
 
   test "map with an expected value of :any_atom and an actual value of an atom" do
     expected = %{team: "Red Sox", current_standing: :any_atom}
     actual = %{team: "Red Sox", current_standing: :first}
-    assert RecursiveSelectiveMatch.matches?(expected, actual)
+    assert RSM.matches?(expected, actual)
   end
 
   test "map with an expected value of :any_atom and an actual value of a non-atom" do
     expected = %{team: "Red Sox", current_standing: :any_atom}
     actual = %{team: "Red Sox", current_standing: 1}
-    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
   end
 
   test "map with an expected value of :any_tuple and an actual value of a list" do
     expected = %{team: "Red Sox", players: :any_tuple}
     actual = %{team: "Red Sox", players: ["Mookie Betts","Xander Bogaerts", "Hanley Ramirez","Jackie Bradley Jr","Chris Sale","Rick Porcello","David Price"]}
-    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
   end
 
   test "map with an expected value of :any_tuple and an actual value of a tuple" do
     expected = %{team: "Red Sox", players: :any_tuple}
     actual = %{team: "Red Sox", players: {"Mookie Betts","Xander Bogaerts", "Hanley Ramirez","Jackie Bradley Jr","Chris Sale","Rick Porcello","David Price"}}
-    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
   end
 
   test "single-level, key-valued maps don't ignore differences between string & atom keys" do
     expected = %{best_beatle: %{fname: "John", lname: "Lennon"}}
     actual = %{"best_beatle" => %{fname: "John", lname: "Lennon"}}
-    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
   end
 
   test "multi-level, key-valued maps don't ignore differences between string & atom keys" do
     expected = %{best_beatle: %{fname: "John", lname: "Lennon"}}
     actual = %{best_beatle: %{"fname" => "John", "mname" => "Winston", "lname" => "Lennon", "born" => 1940}}
-    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
   end
 
   test "single-level, key-valued maps ignore differences between string & atom keys when standardize_keys: true" do
     expected = %{best_beatle: %{fname: "John", lname: "Lennon"}}
     actual = %{"best_beatle" => %{fname: "John", lname: "Lennon"}}
-    assert RecursiveSelectiveMatch.matches?(expected, actual, %{standardize_keys: true})
+    assert RSM.matches?(expected, actual, %{standardize_keys: true})
   end
 
   test "multi-level, key-valued maps ignore differences between string & atom keys when standardize_keys: true" do
     expected = %{best_beatle: %{"fname" => "John", "lname" => "Lennon"}}
     actual = %{"best_beatle" => %{fname: "John", mname: "Winston", lname: "Lennon", born: 1940}}
-    assert RecursiveSelectiveMatch.matches?(expected, actual, %{standardize_keys: true})
+    assert RSM.matches?(expected, actual, %{standardize_keys: true})
   end
 
   test "single-level list when identical" do
     expected = ["apple", "banana", "cherry"]
     actual = ["apple", "banana", "cherry"]
-    assert RecursiveSelectiveMatch.matches?(expected, actual)
+    assert RSM.matches?(expected, actual)
   end
 
   test "single-level list when actual has extra values" do
     expected = ["apple", "banana", "cherry"]
     actual = ["apple", "banana", "cherry", "strawberry"]
-    assert RecursiveSelectiveMatch.matches?(expected, actual)
+    assert RSM.matches?(expected, actual)
   end
 
   test "single-level list when expected has extra values" do
     expected = ["apple", "banana", "cherry", "strawberry"]
     actual = ["apple", "banana", "cherry"]
-    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
   end
 
   test "multi-level lists when expected has extra string value" do
     expected = ["apple", "banana", ["cherry", "grape"], "strawberry"]
     actual = ["apple", "banana", ["cherry", "grape"]]
-    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
   end
 
   test "multi-level lists when expected has extra string and list values" do
     expected = ["apple", "banana", ["cherry", "grape"], "strawberry", ["peach", "apricot"]]
     actual = ["apple", "banana", ["cherry", "grape"]]
-    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
   end
 
   test "multi-level lists when actual has extra string value" do
     expected = ["apple", "banana", ["cherry", "grape"]]
     actual = ["apple", "banana", ["cherry", "grape"], "strawberry"]
-    assert RecursiveSelectiveMatch.matches?(expected, actual)
+    assert RSM.matches?(expected, actual)
   end
 
   test "multi-level lists when actual has extra string and list values" do
     expected = ["apple", "banana", ["cherry", "grape"]]
     actual = ["apple", "banana", ["cherry", "grape"], "strawberry", ["peach", "apricot"]]
-    assert RecursiveSelectiveMatch.matches?(expected, actual)
+    assert RSM.matches?(expected, actual)
   end
 
   test "multi-level, mixed map & list data structures" do
     expected = %{best_beatle: %{fname: "John", lname: "Lennon", cities: ["Liverpool", "New York"]}}
     actual = %{best_beatle: %{fname: "John", mname: "Winston", lname: "Lennon", born: 1940, cities: ["Liverpool", "New York"]}}
-    assert RecursiveSelectiveMatch.matches?(expected, actual)
+    assert RSM.matches?(expected, actual)
   end
 
   test "expected values of :anything are ignored" do
     expected = %{best_beatle: %{fname: "John", mname: :anything, lname: "Lennon"}}
     actual = %{best_beatle: %{fname: "John", mname: "Winston", lname: "Lennon", born: 1940}}
-    assert RecursiveSelectiveMatch.matches?(expected, actual)
+    assert RSM.matches?(expected, actual)
   end
 
   test "expected values of :anything must exist in actual" do
     expected = %{best_beatle: %{fname: "John", mname: :anything, lname: "Lennon"}}
     actual = %{best_beatle: %{fname: "John", lname: "Lennon", born: 1940}}
-    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
   end
 
   test "single-level tuple" do
     expected = {1, "banana"}
     actual = {1, "banana"}
-    assert RecursiveSelectiveMatch.matches?(expected, actual)
+    assert RSM.matches?(expected, actual)
   end
 
   test "single-level tuple when not matching" do
     expected = {1, "banana"}
     actual = {2, "banana"}
-    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
   end
 
   test "multi-level tuple" do
     expected = {1, {"banana", "bananas"}}
     actual = {1, {"banana", "bananas"}}
-    assert RecursiveSelectiveMatch.matches?(expected, actual)
+    assert RSM.matches?(expected, actual)
   end
 
   test "multi-level tuple when not matching" do
     expected = {1, {"banana", "yellow"}}
     actual = {1, {"banana", "green"}}
-    refute RecursiveSelectiveMatch.matches?(expected, actual, %{suppress_warnings: true})
+    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
   end
 
   test "single-level tuple with :anything" do
     expected = {1, :anything}
     actual = {1, "banana"}
-    assert RecursiveSelectiveMatch.matches?(expected, actual)
+    assert RSM.matches?(expected, actual)
   end
 
 end

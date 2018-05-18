@@ -105,6 +105,8 @@ options:
 
 * You can override the default behavior of requiring that map keys be the same type and instead ignore differences between string and atom keys in maps by passing an options map (as a third argument) containing `%{standardize_keys: true}`.
 
+* You can override the default behavior of allowing expected maps to match actual structs by passing an options map (as a third argument) containing `%{strict_struct_matching: true}`, which will prevent ordinary maps from matching structs
+
 This library is a clean reimplementation and extension of SelectiveRecursiveMatch, a
 library I wrote at Teladoc to solve the same problem. I have reimplemented it to
 write cleaner code on my second attempt. (As Fred Brooks wrote, "plan to throw
@@ -129,3 +131,10 @@ Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_do
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/recursive_selective_match](https://hexdocs.pm/recursive_selective_match).
 
+## TODO
+
+I have not yet reimplemented several features of my original `SelectiveRecursiveMatch` but plan to do so:
+
+* `:debug_mode` - Option to display every step in the RecursiveSelectiveMatch process
+
+I also hope to allow you to use your expected data structures as a template for generating concrete data structures for testing purposes.

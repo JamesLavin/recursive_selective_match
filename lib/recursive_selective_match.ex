@@ -111,6 +111,8 @@ actual value in for testing. The following expectation will also pass with the e
 
   * You can override the default behavior of requiring that map keys be the same type and instead ignore differences between string and atom keys in maps by passing an options map (as a third argument) containing `%{standardize_keys: true}`.
 
+  * You can override the default behavior of allowing maps to match structs, and instead prevent maps from matching structs by passing an options map (as a third argument) containing `%{strict_struct_matching: true}`.
+
   This library is a clean reimplementation and extension of SelectiveRecursiveMatch, a
   library I wrote at Teladoc to solve the same problem. I have reimplemented it to
   write cleaner code on my second attempt. (As Fred Brooks wrote, "plan to throw
@@ -118,6 +120,17 @@ actual value in for testing. The following expectation will also pass with the e
   features not present in the original, my inspiration to create this and the time spent
   building my initial implementation both came from Teladoc, so thank you, Teladoc!
   """
+
+  @doc """
+  `RecursiveSelectiveMatch.includes?(expected, actual)` tests whether `expected` exists as a member of `actual`,
+  where inclusion is tested using RecursiveSelectiveMatch.matches?()
+
+  """
+  def includes?(expected, actual_list, opts \\ %{}) when is_list(actual_list) do
+    Enum.any?(actual_list, fn(actual_val) -> matches?(expected, actual_val, %{suppress_warnings: true}) end)
+  end
+
+  def includes?(_expected, _actual, _opts), do: false
 
   @doc """
   matches?()
@@ -133,9 +146,26 @@ actual value in for testing. The following expectation will also pass with the e
   """
   def matches?(expected, actual, opts \\ %{})
 
+  # def matches?({:multi, list}, actual, opts) when is_list(list) do
+  #   Enum.all?(list, &matches?(&1, actual, opts))
+  # end
+
   def matches?(%{__struct__: exp_struct} = expected, %{__struct__: act_struct} = actual, opts) do
     matches?(exp_struct, act_struct, opts) &&
       matches?(expected |> Map.from_struct(), actual |> Map.from_struct(), opts)
+  end
+
+  # Default behavior allows maps to match structs
+  # To prevent maps from matching structs, include `stict_struct_matching: true` in your opts map
+  def matches?(%{} = expected, %{__struct__: _act_struct} = actual, opts) do
+    case opts[:strict_struct_matching] do
+      true ->
+        false
+      false ->
+        matches?(expected, actual |> convert_struct_to_map(), opts)
+      nil ->
+        matches?(expected, actual |> convert_struct_to_map(), opts)
+    end
   end
 
   def matches?(expected, actual, opts) when is_map(expected) and is_map(actual) do
@@ -228,6 +258,15 @@ actual value in for testing. The following expectation will also pass with the e
   defp standardize_keys(expected, actual) do
     {expected |> AtomicMap.convert(%{safe: false}),
      actual |> AtomicMap.convert(%{safe: false})}
+  end
+
+  def convert_struct_to_map(%_{} = struct) do
+    keys_to_strip = [:__meta__, :__field__, :__queryable__, :__owner__, :__cardinality__]
+    map = struct
+          |> Map.from_struct()
+    Enum.reduce(keys_to_strip,
+                map,
+                fn(key_to_strip, acc) -> Map.delete(acc, key_to_strip) end)
   end
 
 end
