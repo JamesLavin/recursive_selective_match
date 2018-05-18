@@ -8,7 +8,7 @@
     <title>RecursiveSelectiveMatch – RecursiveSelectiveMatch v0.1.3</title>
     <link rel="stylesheet" href="dist/app-480ffdc169.css" />
     
-    <script src="dist/sidebar_items-ca32f449d2.js"></script>
+    <script src="dist/sidebar_items-19c7ba24ed.js"></script>
     
     
     
@@ -170,6 +170,8 @@ options:</p>
 </li>
 <li><p>You can override the default behavior of requiring that map keys be the same type and instead ignore differences between string and atom keys in maps by passing an options map (as a third argument) containing <code class="inline">%{standardize_keys: true}</code>.</p>
 </li>
+<li><p>You can override the default behavior of allowing expected maps to match actual structs by passing an options map (as a third argument) containing <code class="inline">%{strict_struct_matching: true}</code>, which will prevent ordinary maps from matching structs</p>
+</li>
 </ul>
 <p>This library is a clean reimplementation and extension of SelectiveRecursiveMatch, a
 library I wrote at Teladoc to solve the same problem. I have reimplemented it to
@@ -192,6 +194,17 @@ end</code></pre>
 <p>Documentation can be generated with <a href="https://github.com/elixir-lang/ex_doc">ExDoc</a>
 and published on <a href="https://hexdocs.pm">HexDocs</a>. Once published, the docs can
 be found at <a href="https://hexdocs.pm/recursive_selective_match">https://hexdocs.pm/recursive_selective_match</a>.</p>
+<h2 id="todo" class="section-heading">
+  <a href="#todo" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  TODO
+</h2>
+
+<p>I have not yet reimplemented several features of my original <code class="inline">SelectiveRecursiveMatch</code> but plan to do so:</p>
+<ul>
+<li><code class="inline">:debug_mode</code> - Option to display every step in the RecursiveSelectiveMatch process
+</li>
+</ul>
+<p>I also hope to allow you to use your expected data structures as a template for generating concrete data structures for testing purposes.</p>
 
       <footer class="footer">
         <p>

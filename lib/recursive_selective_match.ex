@@ -93,7 +93,21 @@ actual value in for testing. The following expectation will also pass with the e
     }
 
   RecursiveSelectiveMatch currently works (at least sort of) with Elixir maps, lists,
-  tuples, and structs (which it begins comparing based on struct type and then treats as maps).
+  tuples, and structs. (When comparing an expected struct against an actual struct, it begins
+  first compares based on struct type and then compares keys & values. When comparing an expected
+  map against an actual struct, by default, it only compares keys & values. To prevent expected
+  maps from matching actual structs, pass `strict_struct_matching: true` in your options map)
+
+  You can also pass in multiple expectations for a single value using a {:multi, ...} tuple.
+  The following will check that: 1) there are exactly three items in the `:players` list; and,
+  2) every player has an `lname` field that is a string with at least four bytes:
+
+    %{
+       players: {:multi, [&(length(&1) == 3),
+                          &(Enum.all?(&1, fn(player) -> (player.lname |> byte_size()) >= 4 end))
+                         ]
+                }
+     }
 
   After adding RecursiveSelectiveMatch to your project as a dependency, you can pass
   an expected and an actual data structure to `RecursiveSelectiveMatch.matches?()` as follows.
@@ -146,9 +160,9 @@ actual value in for testing. The following expectation will also pass with the e
   """
   def matches?(expected, actual, opts \\ %{})
 
-  # def matches?({:multi, list}, actual, opts) when is_list(list) do
-  #   Enum.all?(list, &matches?(&1, actual, opts))
-  # end
+  def matches?({:multi, list}, actual, opts) when is_list(list) do
+    Enum.all?(list, fn(expectation) -> matches?(expectation, actual, opts) end)
+  end
 
   def matches?(%{__struct__: exp_struct} = expected, %{__struct__: act_struct} = actual, opts) do
     matches?(exp_struct, act_struct, opts) &&

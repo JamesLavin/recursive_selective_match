@@ -8,7 +8,7 @@
     <title>RecursiveSelectiveMatch – RecursiveSelectiveMatch v0.1.3</title>
     <link rel="stylesheet" href="dist/app-480ffdc169.css" />
     
-    <script src="dist/sidebar_items-ca32f449d2.js"></script>
+    <script src="dist/sidebar_items-19c7ba24ed.js"></script>
     
     
     
@@ -172,7 +172,19 @@ team: %{name: &amp;(&amp;1 in [&quot;Bucks&quot;,&quot;Celtics&quot;, &quot;76er
 data_fetched_at: &amp;(Regex.match?(~r/2018-{2}-{2} {2}:{2}:{2}/, &amp;1))</code></pre>
 <p>  }</p>
 <p>RecursiveSelectiveMatch currently works (at least sort of) with Elixir maps, lists,
-tuples, and structs (which it begins comparing based on struct type and then treats as maps).</p>
+tuples, and structs. (When comparing an expected struct against an actual struct, it begins
+first compares based on struct type and then compares keys &amp; values. When comparing an expected
+map against an actual struct, by default, it only compares keys &amp; values. To prevent expected
+maps from matching actual structs, pass <code class="inline">strict_struct_matching: true</code> in your options map)</p>
+<p>You can also pass in multiple expectations for a single value using a {:multi, …} tuple.
+The following will check that: 1) there are exactly three items in the <code class="inline">:players</code> list; and,
+2) every player has an <code class="inline">lname</code> field that is a string with at least four bytes:</p>
+<p>  %{</p>
+<pre><code class="elixir"> players: {:multi, [&amp;(length(&amp;1) == 3),
+                    &amp;(Enum.all?(&amp;1, fn(player) -&gt; (player.lname |&gt; byte_size()) &gt;= 4 end))
+                   ]
+          }</code></pre>
+<p>   }</p>
 <p>After adding RecursiveSelectiveMatch to your project as a dependency, you can pass
 an expected and an actual data structure to <code class="inline">RecursiveSelectiveMatch.matches?()</code> as follows.
 If every element in <code class="inline">expected</code> also exists in <code class="inline">actual</code>, <code class="inline">matches?()</code> should return <code class="inline">true</code>.
@@ -186,6 +198,8 @@ options:</p>
 <li><p>You can disable the default behavior of displaying the reason for the match failure by passing an options map (as a third argument) containing <code class="inline">%{suppress_warnings: true}</code>.</p>
 </li>
 <li><p>You can override the default behavior of requiring that map keys be the same type and instead ignore differences between string and atom keys in maps by passing an options map (as a third argument) containing <code class="inline">%{standardize_keys: true}</code>.</p>
+</li>
+<li><p>You can override the default behavior of allowing maps to match structs, and instead prevent maps from matching structs by passing an options map (as a third argument) containing <code class="inline">%{strict_struct_matching: true}</code>.</p>
 </li>
 </ul>
 <p>This library is a clean reimplementation and extension of SelectiveRecursiveMatch, a
@@ -216,6 +230,22 @@ building my initial implementation both came from Teladoc, so thank you, Teladoc
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
+    <a href="#convert_struct_to_map/1">convert_struct_to_map(struct)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#includes?/3">includes?(expected, actual_list, opts \\ %{})</a>
+  </div>
+  
+    <div class="summary-synopsis"><p><code class="inline">RecursiveSelectiveMatch.includes?(expected, actual)</code> tests whether <code class="inline">expected</code> exists as a member of <code class="inline">actual</code>,
+where inclusion is tested using RecursiveSelectiveMatch.matches?()</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
     <a href="#matches?/3">matches?(expected, actual, opts \\ %{})</a>
   </div>
   
@@ -243,7 +273,55 @@ building my initial implementation both came from Teladoc, so thank you, Teladoc
             </a>
             Functions
           </h1>
-          <div class="detail" id="matches?/3">
+          <div class="detail" id="convert_struct_to_map/1">
+  
+  
+  <div class="detail-header">
+    <a href="#convert_struct_to_map/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">convert_struct_to_map(struct)</span>
+    
+      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L277" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="includes?/3">
+  
+  
+    <span id="includes?/2"></span>
+  
+  <div class="detail-header">
+    <a href="#includes?/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">includes?(expected, actual_list, opts \\ %{})</span>
+    
+      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L147" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p><code class="inline">RecursiveSelectiveMatch.includes?(expected, actual)</code> tests whether <code class="inline">expected</code> exists as a member of <code class="inline">actual</code>,
+where inclusion is tested using RecursiveSelectiveMatch.matches?()</p>
+
+  </section>
+</div>
+<div class="detail" id="matches?/3">
   
   
     <span id="matches?/2"></span>
@@ -255,7 +333,7 @@ building my initial implementation both came from Teladoc, so thank you, Teladoc
     </a>
     <span class="signature">matches?(expected, actual, opts \\ %{})</span>
     
-      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L209" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L253" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>

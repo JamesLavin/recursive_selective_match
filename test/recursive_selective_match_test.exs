@@ -102,11 +102,10 @@ defmodule RecursiveSelectiveMatchTest do
     assert RSM.matches?(celtics_expectation_functions_w_regex(), celtics_actual())
   end
 
-  @tag :skip
   test ":multi allows multiple test criteria" do
     expected = %{
       players: {:multi, [&(length(&1) == 3),
-                         &(Enum.all?(fn(&1) -> &1.lname |> is_binary() end))
+                         &(Enum.all?(&1, fn(player) -> (player.lname |> byte_size()) >= 4 end))
                         ]
                }
     }

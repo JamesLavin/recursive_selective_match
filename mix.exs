@@ -6,14 +6,14 @@ defmodule RecursiveSelectiveMatch.MixProject do
       name: "RecursiveSelectiveMatch",
       description: "Library enabling testing of deeply nested data structures while
       selectively ignoring irrelevant data elements / subtrees or testing just
-      values' datatypes using :anything, :any_list, :any_map, :any_tuple,
-      :any_integer, :any_binary, :any_atom, :any_boolean, :any_struct, etc.",
+      values' datatypes using :anything, :any_list, :any_map, :any_tuple, etc.
+      or arbitary anonymous functions, like regexes or even multiple criteria",
       package: package(),
       source_url: "https://github.com/JamesLavin/recursive_selective_match",
       app: :recursive_selective_match,
       docs: [main: "RecursiveSelectiveMatch",
              extras: ["README.md"]],
-      version: "0.1.3",
+      version: "0.1.4",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       deps: deps()
