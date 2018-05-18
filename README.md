@@ -18,6 +18,7 @@ primary & foreign key IDs, timestamps, and 3rd-party IDs), so you can specify wh
     * :any_boolean
     * :any_struct
 5) Rather than test only values, you can test against arbitrary anonymous functions, for example: `fname: &(Regex.match?(~r/[A-Z][a-z]{2,}/,&1))`
+6) You can test multiple criteria for a single value using a `{:multi, [...]}` tuple
 
 RecursiveSelectiveMatch currently provides two functions:
 
@@ -111,6 +112,17 @@ value in for testing. The following expectation will also pass with the example 
 
 RecursiveSelectiveMatch currently works (at least sort of) with Elixir maps, lists,
 tuples, and structs (which it begins comparing based on struct type and then treats as maps).
+
+You can also specify multiple expectations for a single value using a `{:multi, ...}` tuple.
+The following will check that: 1) there are exactly three items in the `:players` list; and,
+2) every player has an `lname` field which is a string of at least four bytes:
+
+    %{
+       players: {:multi, [&(length(&1) == 3),
+                          &(Enum.all?(&1, fn(player) -> (player.lname |> byte_size()) >= 4 end))
+                         ]
+                }
+     }
 
 After adding RecursiveSelectiveMatch to your project as a dependency, you can pass
 an expected and an actual data structure to `RecursiveSelectiveMatch.matches?()` as follows.
