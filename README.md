@@ -116,7 +116,7 @@ building my initial implementation both came from Teladoc, so thank you, Teladoc
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
+RecursiveSelectiveMatch is [available in Hex](https://hex.pm/packages/recursive_selective_match) and can be installed
 by adding `recursive_selective_match` to your list of dependencies in `mix.exs`:
 
 ```elixir
@@ -128,7 +128,7 @@ end
 ```
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
+and published on [HexDocs](https://hexdocs.pm). Docs can also
 be found at [https://hexdocs.pm/recursive_selective_match](https://hexdocs.pm/recursive_selective_match).
 
 ## TODO
