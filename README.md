@@ -72,8 +72,14 @@ expected data structure to the variable `expected`, you can test whether they ma
       use ExUnit.Case
       
       alias RecursiveSelectiveMatch, as: RSM  
-    
-      RSM.matches?(expected, actual)
+
+      test "actual matches expected" do
+        expected = %{ players: :any_list, ... }
+
+        actual = %{ ... }
+
+        assert RSM.matches?(expected, actual)
+      end
     end
 
 Please note that the order matters. The first parameter is for _expected_ and the second is for _actual_. This successfully matches (you can see the test in test/recursive_selective_match_test.exs).
