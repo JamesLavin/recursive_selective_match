@@ -263,17 +263,7 @@ actual value in for testing. The following expectation will also pass with the e
     print_warning(expected, actual, success, opts)
   end
 
-  defp print_warning(expected, actual, success, opts) when is_list(expected) and is_list(actual) do
-    do_print_warning(expected, actual, success, opts)
-  end
-
   defp print_warning(expected, actual, success, opts) do
-    expected_string = inspect(expected)
-    actual_string = inspect(actual)
-    do_print_warning(expected_string, actual_string, success, opts)
-  end
-
-  defp do_print_warning(expected, actual, success, opts) do
     expected = stringify(expected)
     actual = stringify(actual)
     error_string = "#{actual} does not match #{expected}"
@@ -291,11 +281,7 @@ actual value in for testing. The following expectation will also pass with the e
     value
   end
 
-  defp stringify(value) when is_integer(value) do
-    to_string(value)
-  end
-
-  defp stringify(value) when is_list(value) do
+  defp stringify(value) do
     inspect value
   end
 
