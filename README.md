@@ -176,7 +176,7 @@ by adding `recursive_selective_match` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:recursive_selective_match, "~> 0.1.4"}
+    {:recursive_selective_match, "~> 0.1.5"}
   ]
 end
 ```

@@ -1,5 +1,7 @@
 defmodule RecursiveSelectiveMatchTest do
   use ExUnit.Case
+  import ExUnit.CaptureLog
+  import ExUnit.CaptureIO
   doctest RecursiveSelectiveMatch
   Code.require_file("test/person.ex")
   Code.require_file("test/test_struct.ex")
@@ -33,6 +35,50 @@ defmodule RecursiveSelectiveMatchTest do
                                                "state" => :any_binary}}}},
       data_fetched_at: :any_binary
     }
+  end
+
+  defp invalid_team() do
+    %{
+      team: %{name: "Lakers"}
+    }
+  end
+
+  test "Lakers are the wrong team" do
+    refute RSM.matches?(invalid_team(), celtics_actual(), suppress_warnings: true)
+  end
+
+  test "errors are logged" do
+    assert capture_log(fn ->
+      RSM.matches?(invalid_team(), celtics_actual())
+    end) =~ " does not match "
+  end
+
+  test "tuples that match print no warning" do
+    expected = {:a, :b, :c}
+    actual = {:a, :b, :c}
+    assert capture_log(fn ->
+       RSM.matches?(expected, actual)
+    end) == ""
+  end
+
+  test "tuples that don't match print warnings by default" do
+    expected = {:a, :b, :c}
+    actual = {:a, :b, :d}
+    assert capture_log(fn -> RSM.matches?(expected, actual) end) =~ "[error] :d does not match :c"
+  end
+
+  test "tuples that don't match print warnings via IO.inspect when io_errors: true" do
+    expected = {:a, :b, :c}
+    actual = {:a, :b, :d}
+    assert capture_log(fn -> RSM.matches?(expected, actual, io_errors: true) end) == ""
+    assert capture_io(fn -> RSM.matches?(expected, actual, io_errors: true) end) =~ ":d does not match :c"
+  end
+
+  test "suppress_warnings: true disables error logging" do
+    expected = {:a, :b, :c}
+    actual = {:a, :b, :d}
+    assert capture_log(fn -> RSM.matches?(expected, actual, suppress_warnings: true) end) == ""
+    assert capture_io(fn -> RSM.matches?(expected, actual, suppress_warnings: true) end) == ""
   end
 
   test "Celtics matches? test" do

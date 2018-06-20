@@ -1,4 +1,6 @@
 defmodule RecursiveSelectiveMatch do
+  require Logger
+
   @moduledoc """
   RecursiveSelectiveMatch lets you specify a deeply nested test data structure and check
   whether another actual data structure contains all keys and values specified in the
@@ -74,7 +76,7 @@ following (notice that both approaches can be used interchangeably):
       data_fetched_at: &is_binary/1
     }
 
-Even better, you can pass in a one-argument anonymous function and it will pass thei
+Even better, you can pass in a one-argument anonymous function and it will pass the
 actual value in for testing. The following expectation will also pass with the example above:
 
     %{
@@ -126,6 +128,8 @@ actual value in for testing. The following expectation will also pass with the e
   * You can override the default behavior of requiring that map keys be the same type and instead ignore differences between string and atom keys in maps by passing an options map (as a third argument) containing `%{standardize_keys: true}`.
 
   * You can override the default behavior of allowing maps to match structs, and instead prevent maps from matching structs by passing an options map (as a third argument) containing `%{strict_struct_matching: true}`.
+
+  * You can override the default behavior of calling Logger.error() on errors to instead call IO.inspect() by passing an options map (as a third argument) containing `%{io_errors: true}`.
 
   This library is a clean reimplementation and extension of SelectiveRecursiveMatch, a
   library I wrote at Teladoc to solve the same problem. I have reimplemented it to
@@ -196,8 +200,12 @@ actual value in for testing. The following expectation will also pass with the e
     if tuple_size(expected) >= 1 do
       exp = elem(expected, 0)
       act = elem(actual, 0)
-      matches?(exp, act, opts) &&
+      if matches?(exp, act, opts) do
         matches?(Tuple.delete_at(expected, 0), Tuple.delete_at(actual, 0), opts)
+      else
+        print_warning(exp, act, false, opts)
+        false
+      end
     else
       true
     end
@@ -256,17 +264,39 @@ actual value in for testing. The following expectation will also pass with the e
   end
 
   defp print_warning(expected, actual, success, opts) when is_list(expected) and is_list(actual) do
+    do_print_warning(expected, actual, success, opts)
+  end
+
+  defp print_warning(expected, actual, success, opts) do
+    expected_string = inspect(expected)
+    actual_string = inspect(actual)
+    do_print_warning(expected_string, actual_string, success, opts)
+  end
+
+  defp do_print_warning(expected, actual, success, opts) do
+    expected = stringify(expected)
+    actual = stringify(actual)
+    error_string = "#{actual} does not match #{expected}"
     unless success || opts[:suppress_warnings] do
-      IO.inspect("#{IO.inspect actual} does not match #{IO.inspect expected}")
+      if opts[:io_errors] do
+        IO.inspect(error_string)
+      else
+        Logger.error(error_string)
+      end
     end
     success
   end
 
-  defp print_warning(expected, actual, success, opts) do
-    unless success || opts[:suppress_warnings] do
-      IO.inspect("#{inspect actual} does not match #{inspect expected}")
-    end
-    success
+  defp stringify(value) when is_binary(value) do
+    value
+  end
+
+  defp stringify(value) when is_integer(value) do
+    to_string(value)
+  end
+
+  defp stringify(value) when is_list(value) do
+    inspect value
   end
 
   defp standardize_keys(expected, actual) do
