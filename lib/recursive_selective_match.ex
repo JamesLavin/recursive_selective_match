@@ -63,7 +63,7 @@ defmodule RecursiveSelectiveMatch do
 Alternatively, you can pass in any function as a matcher. The above can be rewritten as the
 following (notice that both approaches can be used interchangeably):
 
-    %{
+     %{
       players: &is_list/1,
       team: %{name: &is_binary/1,
               nba_id: &is_integer/1,
@@ -72,12 +72,12 @@ following (notice that both approaches can be used interchangeably):
                                    location: %{"city" => &is_binary/1,
                                                "state" => &is_binary/1}}}},
       data_fetched_at: &is_binary/1
-    }
+     }
 
 Even better, you can pass in a one-argument anonymous function and it will pass thei
 actual value in for testing. The following expectation will also pass with the example above:
 
-    %{
+     %{
       players: &(length(&1) == 3),
       team: %{name: &(&1 in ["Bucks","Celtics", "76ers", "Lakers", "Rockets", "Warriors"]),
               nba_id: &(&1 >= 1 && &1 <= 30),
@@ -90,7 +90,7 @@ actual value in for testing. The following expectation will also pass with the e
                                    location: %{"city" => &is_binary/1,
                                                "state" => &(Regex.match?(~r/[A-Z]{2}/, &1))}}}},
       data_fetched_at: &(Regex.match?(~r/2018-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/, &1))
-    }
+     }
 
   RecursiveSelectiveMatch currently works (at least sort of) with Elixir maps, lists,
   tuples, and structs. (When comparing an expected struct against an actual struct, it begins
@@ -102,12 +102,12 @@ actual value in for testing. The following expectation will also pass with the e
   The following will check that: 1) there are exactly three items in the `:players` list; and,
   2) every player has an `lname` field that is a string with at least four bytes:
 
-    %{
+     %{
        players: {:multi, [&(length(&1) == 3),
                           &(Enum.all?(&1, fn(player) -> (player.lname |> byte_size()) >= 4 end))
                          ]
                 }
-     }
+      }
 
   After adding RecursiveSelectiveMatch to your project as a dependency, you can pass
   an expected and an actual data structure to `RecursiveSelectiveMatch.matches?()` as follows.
