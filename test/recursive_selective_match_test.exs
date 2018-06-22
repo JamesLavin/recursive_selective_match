@@ -254,7 +254,10 @@ defmodule RecursiveSelectiveMatchTest do
   test "map with an expected value of :any_integer and an actual value of a non-integer" do
     expected = %{team: "Red Sox", current_standing: :any_integer}
     actual = %{team: "Red Sox", current_standing: "1"}
-    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
+     "[error] 1 does not match :any_integer"
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
+     "[error] %{current_standing: \"1\", team: \"Red Sox\"} does not match %{current_standing: :any_integer, team: \"Red Sox\"}"
   end
 
   test "map with an expected value of :any_binary and an actual value of a binary" do
@@ -266,7 +269,10 @@ defmodule RecursiveSelectiveMatchTest do
   test "map with an expected value of :any_binary and an actual value of a non-binary" do
     expected = %{team: "Red Sox", current_standing: :any_binary}
     actual = %{team: "Red Sox", current_standing: 1}
-    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
+     "[error] 1 does not match :any_binary"
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
+     "[error] %{current_standing: 1, team: \"Red Sox\"} does not match %{current_standing: :any_binary, team: \"Red Sox\"}"
   end
 
   test "struct with an expected value of :any_binary and an actual value of a binary treated like an equivalent map" do
