@@ -192,3 +192,5 @@ I have not yet reimplemented several features of my original `SelectiveRecursive
 * `:debug_mode` - Option to display every step in the RecursiveSelectiveMatch process
 
 I also hope to allow you to use your expected data structures as a template for generating concrete data structures for testing purposes.
+
+Add option to require that list elements be in the order specified in the expected list. (By default, order is ignored.)
