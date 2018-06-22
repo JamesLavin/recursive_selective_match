@@ -82,7 +82,7 @@ expected data structure to the variable `expected`, you can test whether they ma
       end
     end
 
-Please note that the order matters. The first parameter is for _expected_ and the second is for _actual_. This successfully matches (you can see the test in test/recursive_selective_match_test.exs).
+Please note that the order matters. The first parameter is for _expected_ and the second is for _actual_. This successfully matches (you can see the test in [test/recursive_selective_match_test.exs](test/recursive_selective_match_test.exs)).
 
 Alternatively, you can pass in any function as a matcher. The above can be rewritten as the
 following (notice that both approaches can be used interchangeably):
@@ -142,11 +142,11 @@ structures or elements but only the first it finds.
 `RecursiveSelectiveMatch.matches?()` take an optional third argument, which is a map of
 options:
 
-* You can disable the default behavior of displaying the reason for the match failure by passing an options map (as a third argument) containing `%{suppress_warnings: true}`.
+* _To disable warnings_: You can disable the default behavior of displaying the reason for any match failure by passing an options map (as a third argument) containing `%{suppress_warnings: true}`.
 
-* You can override the default behavior of requiring that map keys be the same type and instead ignore differences between string and atom keys in maps by passing an options map (as a third argument) containing `%{standardize_keys: true}`.
+* _To treat string & atom keys as equivalent when evaluating maps_: You can override the default behavior of requiring that map keys be the same type and instead ignore differences between string and atom keys in maps by passing an options map (as a third argument) containing `%{standardize_keys: true}`.
 
-* You can override the default behavior of allowing expected maps to match actual structs by passing an options map (as a third argument) containing `%{strict_struct_matching: true}`, which will prevent ordinary maps from matching structs
+* _To prevent expected maps to match actual structs_: You can override the default behavior of allowing expected maps to match actual structs by passing an options map (as a third argument) containing `%{strict_struct_matching: true}`, which will prevent ordinary maps from matching structs
 
 If you wanted to change the earlier example by overriding all three default options, just add
 a third argument, like this:
@@ -167,6 +167,10 @@ write cleaner code on my second attempt. (As Fred Brooks wrote, "plan to throw
 one away; you will, anyhow.") While I wrote this library on my own time and have added
 features not present in the original, my inspiration to create this and the time spent
 building my initial implementation both came from Teladoc, so thank you, Teladoc!
+
+## Changelog
+
+To see how `RecursiveSelectiveMatch` has changed over time, please see the [CHANGELOG](CHANGELOG.md).
 
 ## Installation
 
