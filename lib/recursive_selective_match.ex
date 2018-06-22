@@ -205,23 +205,14 @@ actual value in for testing. The following expectation will also pass with the e
       tuple_size(expected) >= 1 ->
         is_equal = Enum.zip(expected |> Tuple.to_list(),
                             actual |> Tuple.to_list())
-                   # |> Enum.map(fn {exp, act} -> exp.(act) end)
                    |> Enum.map(fn {exp, act} -> matches?(exp, act, opts) end)
                    |> Enum.all?(fn(x) -> x == true end)
-        #exp = elem(expected, 0)
-        #act = elem(actual, 0)
         if is_equal do
           true
         else
           print_warning(expected, actual, false, opts)
           false
         end
-        # if matches?(exp, act, opts) do
-        #   matches?(Tuple.delete_at(expected, 0), Tuple.delete_at(actual, 0), opts)
-        # else
-        #   print_warning(exp, act, false, opts)
-        #   false
-        # end
       true ->
         true
     end
