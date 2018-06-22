@@ -273,6 +273,8 @@ actual value in for testing. The following expectation will also pass with the e
   defp add_non_nil(list, val) when is_nil(val), do: list
   defp add_non_nil(list, val) when is_list(list), do: [val | list]
 
+  defp print_warning(expected, actual, true, opts), do: true
+
   defp print_warning(expected, actual, success, opts) do
     expected = stringify(expected)
     actual = stringify(actual)
