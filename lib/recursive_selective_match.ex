@@ -193,15 +193,15 @@ actual value in for testing. The following expectation will also pass with the e
     success = Enum.reduce(Map.keys(expected), true, fn key, acc ->
       acc && Map.has_key?(actual, key) && matches?(Map.get(expected, key), Map.get(actual, key), opts)
     end)
-    print_warning(expected, actual, success, opts)
+    log_unequal_warning(expected, actual, success, opts)
   end
 
   def matches?(expected, actual, opts) when is_tuple(expected) and is_tuple(actual) do
     cond do
       tuple_size(expected) > tuple_size(actual) ->
-        print_warning(expected, actual, false, Map.put(opts, :warning_message, "Expected tuple is larger than actual tuple"))
+        log_unequal_warning(expected, actual, false, Map.put(opts, :warning_message, "Expected tuple is larger than actual tuple"))
       tuple_size(expected) < tuple_size(actual) ->
-        print_warning(expected, actual, false, Map.put(opts, :warning_message, "Actual tuple is larger than expected tuple"))
+        log_unequal_warning(expected, actual, false, Map.put(opts, :warning_message, "Actual tuple is larger than expected tuple"))
       tuple_size(expected) >= 1 ->
         is_equal = Enum.zip(expected |> Tuple.to_list(),
                             actual |> Tuple.to_list())
@@ -210,7 +210,7 @@ actual value in for testing. The following expectation will also pass with the e
         if is_equal do
           true
         else
-          print_warning(expected, actual, false, opts)
+          log_unequal_warning(expected, actual, false, opts)
           false
         end
       true ->
@@ -218,14 +218,18 @@ actual value in for testing. The following expectation will also pass with the e
     end
   end
 
+  # Look for each expected list element
+  # Report expected list element not in actual list
   def matches?(expected, actual, opts) when is_list(expected) and is_list(actual) do
     success = Enum.all?(expected, fn expected_element ->
       Enum.any?(actual,
                 fn(actual_element) ->
-                  matches?(expected_element, actual_element, Map.merge(opts, %{suppress_warnings: true}))
+                  matches?(expected_element,
+                           actual_element,
+                           Map.merge(opts, %{suppress_warnings: true}))
                 end)
     end)
-    print_warning(expected, actual, success, opts)
+    log_unequal_warning(expected, actual, success, opts)
   end
 
   def matches?(:anything, actual, opts) do
@@ -244,6 +248,10 @@ actual value in for testing. The following expectation will also pass with the e
     true
   end
 
+  def matches?(:any_tuple, actual, opts) when is_tuple(actual) do
+    true
+  end
+
   def matches?(:any_binary, actual, opts) when is_binary(actual) do
     true
   end
@@ -258,7 +266,7 @@ actual value in for testing. The following expectation will also pass with the e
 
   def matches?(expected, actual, opts) when is_function(expected) do
     success = expected.(actual)
-    print_warning(expected, actual, success, opts)
+    log_unequal_warning(expected, actual, success, opts)
   end
 
   def matches?(:any_struct, %{__struct__: _}, opts) do
@@ -267,15 +275,15 @@ actual value in for testing. The following expectation will also pass with the e
 
   def matches?(expected, actual, opts) do
     success = expected == actual
-    print_warning(expected, actual, success, opts)
+    log_unequal_warning(expected, actual, success, opts)
   end
 
   defp add_non_nil(list, val) when is_nil(val), do: list
   defp add_non_nil(list, val) when is_list(list), do: [val | list]
 
-  defp print_warning(expected, actual, true, opts), do: true
+  defp log_unequal_warning(expected, actual, true, opts), do: true
 
-  defp print_warning(expected, actual, success, opts) do
+  defp log_unequal_warning(expected, actual, success, opts) do
     expected = stringify(expected)
     actual = stringify(actual)
     error_string = [Map.get(opts, :warning_message, nil), "#{actual} does not match #{expected}"]
