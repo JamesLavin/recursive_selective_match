@@ -323,7 +323,7 @@ defmodule RecursiveSelectiveMatchTest do
     expected = %{best_beatle: %{fname: "John", lname: "Lennon"}}
     actual = %{"best_beatle" => %{fname: "John", lname: "Lennon"}}
     assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
-     "[error] Key :best_beatle not present in %{\"best_beatle\" => %{fname: \"John\", lname: \"Lennon\"}}\n"
+     "[error] Key :best_beatle not present in %{\"best_beatle\" => %{fname: \"John\", lname: \"Lennon\"}} but present in %{best_beatle: %{fname: \"John\", lname: \"Lennon\"}}"
     assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
      "[error] %{\"best_beatle\" => %{fname: \"John\", lname: \"Lennon\"}} does not match %{best_beatle: %{fname: \"John\", lname: \"Lennon\"}}"
   end

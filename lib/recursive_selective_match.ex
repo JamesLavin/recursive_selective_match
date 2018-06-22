@@ -194,7 +194,7 @@ actual value in for testing. The following expectation will also pass with the e
       has_key = Map.has_key?(actual, key)
       has_correct_value = matches?(Map.get(expected, key), Map.get(actual, key), Map.merge(opts, %{suppress_warnings: true}))
       if !has_key do
-        log_missing_map_key_warning(key, actual, opts)
+        log_missing_map_key_warning(key, expected, actual, opts)
       end
       if has_key && !has_correct_value do
           log_incorrect_map_value_warning(key, expected, actual, opts)
@@ -289,10 +289,11 @@ actual value in for testing. The following expectation will also pass with the e
   defp add_non_nil(list, val) when is_nil(val), do: list
   defp add_non_nil(list, val) when is_list(list), do: [val | list]
 
-  defp log_missing_map_key_warning(key, actual, opts) do
+  defp log_missing_map_key_warning(key, expected, actual, opts) do
     key = stringify(key)
+    expected = stringify(expected)
     actual = stringify(actual)
-    error_string = "Key #{key} not present in #{actual}"
+    error_string = "Key #{key} not present in #{actual} but present in #{expected}"
     log_error_string(error_string, false, opts)
     false
   end
