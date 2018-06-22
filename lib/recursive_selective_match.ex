@@ -197,17 +197,33 @@ actual value in for testing. The following expectation will also pass with the e
   end
 
   def matches?(expected, actual, opts) when is_tuple(expected) and is_tuple(actual) do
-    if tuple_size(expected) >= 1 do
-      exp = elem(expected, 0)
-      act = elem(actual, 0)
-      if matches?(exp, act, opts) do
-        matches?(Tuple.delete_at(expected, 0), Tuple.delete_at(actual, 0), opts)
-      else
-        print_warning(exp, act, false, opts)
-        false
-      end
-    else
-      true
+    cond do
+      tuple_size(expected) > tuple_size(actual) ->
+        print_warning(expected, actual, false, Map.put(opts, :warning_message, "Expected tuple is larger than actual tuple"))
+      tuple_size(expected) < tuple_size(actual) ->
+        print_warning(expected, actual, false, Map.put(opts, :warning_message, "Actual tuple is larger than expected tuple"))
+      tuple_size(expected) >= 1 ->
+        is_equal = Enum.zip(expected |> Tuple.to_list(),
+                            actual |> Tuple.to_list())
+                   # |> Enum.map(fn {exp, act} -> exp.(act) end)
+                   |> Enum.map(fn {exp, act} -> matches?(exp, act, opts) end)
+                   |> Enum.all?(fn(x) -> x == true end)
+        #exp = elem(expected, 0)
+        #act = elem(actual, 0)
+        if is_equal do
+          true
+        else
+          print_warning(expected, actual, false, opts)
+          false
+        end
+        # if matches?(exp, act, opts) do
+        #   matches?(Tuple.delete_at(expected, 0), Tuple.delete_at(actual, 0), opts)
+        # else
+        #   print_warning(exp, act, false, opts)
+        #   false
+        # end
+      true ->
+        true
     end
   end
 
@@ -263,10 +279,16 @@ actual value in for testing. The following expectation will also pass with the e
     print_warning(expected, actual, success, opts)
   end
 
+  def add_non_nil(list, val) when is_nil(val), do: list
+  def add_non_nil(list, val) when is_list(list), do: [val | list]
+
   defp print_warning(expected, actual, success, opts) do
     expected = stringify(expected)
     actual = stringify(actual)
-    error_string = "#{actual} does not match #{expected}"
+    error_string = [Map.get(opts, :warning_message, nil), "#{actual} does not match #{expected}"]
+                   |> List.foldl([], fn(val, acc) -> add_non_nil(acc, val) end)
+                   |> Enum.reverse()
+                   |> Enum.join(":\n")
     unless success || opts[:suppress_warnings] do
       if opts[:io_errors] do
         IO.inspect(error_string)

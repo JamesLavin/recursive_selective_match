@@ -44,7 +44,7 @@ defmodule RecursiveSelectiveMatchTest do
   end
 
   test "Lakers are the wrong team" do
-    refute RSM.matches?(invalid_team(), celtics_actual(), suppress_warnings: true)
+    refute RSM.matches?(invalid_team(), celtics_actual(), %{suppress_warnings: true})
   end
 
   test "errors are logged" do
@@ -61,24 +61,36 @@ defmodule RecursiveSelectiveMatchTest do
     end) == ""
   end
 
-  test "tuples that don't match print warnings by default" do
+  test "tuples with elements that don't match print warnings by default" do
     expected = {:a, :b, :c}
     actual = {:a, :b, :d}
     assert capture_log(fn -> RSM.matches?(expected, actual) end) =~ "[error] :d does not match :c"
   end
 
+  test "tuples with more actual elements than expected don't match" do
+    expected = {:a, :b, :c}
+    actual = {:a, :b, :c, :d}
+    assert capture_log(fn -> RSM.matches?(expected, actual) end) =~ "[error] Actual tuple is larger than expected tuple:\n{:a, :b, :c, :d} does not match {:a, :b, :c}"
+  end
+
+  test "tuples with fewer actual elements than expected don't match" do
+    expected = {:a, :b, :c, :f}
+    actual = {:a, :b, :c}
+    assert capture_log(fn -> RSM.matches?(expected, actual) end) =~ "[error] Expected tuple is larger than actual tuple:\n{:a, :b, :c} does not match {:a, :b, :c, :f}"
+  end
+
   test "tuples that don't match print warnings via IO.inspect when io_errors: true" do
     expected = {:a, :b, :c}
     actual = {:a, :b, :d}
-    assert capture_log(fn -> RSM.matches?(expected, actual, io_errors: true) end) == ""
-    assert capture_io(fn -> RSM.matches?(expected, actual, io_errors: true) end) =~ ":d does not match :c"
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{io_errors: true}) end) == ""
+    assert capture_io(fn -> RSM.matches?(expected, actual, %{io_errors: true}) end) =~ ":d does not match :c"
   end
 
   test "suppress_warnings: true disables error logging" do
     expected = {:a, :b, :c}
     actual = {:a, :b, :d}
-    assert capture_log(fn -> RSM.matches?(expected, actual, suppress_warnings: true) end) == ""
-    assert capture_io(fn -> RSM.matches?(expected, actual, suppress_warnings: true) end) == ""
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{suppress_warnings: true}) end) == ""
+    assert capture_io(fn -> RSM.matches?(expected, actual, %{suppress_warnings: true}) end) == ""
   end
 
   test "Celtics matches? test" do
