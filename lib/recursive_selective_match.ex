@@ -191,7 +191,15 @@ actual value in for testing. The following expectation will also pass with the e
       {expected, actual} = standardize_keys(expected, actual)
     end
     success = Enum.reduce(Map.keys(expected), true, fn key, acc ->
-      acc && Map.has_key?(actual, key) && matches?(Map.get(expected, key), Map.get(actual, key), opts)
+      has_key = Map.has_key?(actual, key)
+      has_correct_value = matches?(Map.get(expected, key), Map.get(actual, key), Map.merge(opts, %{suppress_warnings: true}))
+      if !has_key do
+        log_missing_map_key_warning(key, actual, opts)
+      end
+      if has_key && !has_correct_value do
+          log_incorrect_map_value_warning(key, expected, actual, opts)
+      end
+      acc && has_key && has_correct_value
     end)
     log_unequal_warning(expected, actual, success, opts)
   end
@@ -281,6 +289,31 @@ actual value in for testing. The following expectation will also pass with the e
   defp add_non_nil(list, val) when is_nil(val), do: list
   defp add_non_nil(list, val) when is_list(list), do: [val | list]
 
+  defp log_missing_map_key_warning(key, actual, opts) do
+    key = stringify(key)
+    actual = stringify(actual)
+    error_string = "Key #{key} not present in #{actual}"
+    log_error_string(error_string, false, opts)
+    false
+  end
+
+  defp log_incorrect_map_value_warning(key, expected_map, actual_map, opts) do
+    stringified_key = stringify(key)
+    expected_val = expected_map
+                   |> Map.get(key)
+                   |> stringify()
+    actual_val = actual_map
+                 |> Map.get(key)
+                 |> stringify()
+    string_exp_map = expected_map
+                     |> stringify()
+    string_actual_map = actual_map
+                        |> stringify()
+    error_string = "Key #{stringified_key} is expected to have a value of #{expected_val} in #{string_exp_map} but has a value of #{actual_val} in #{string_actual_map}"
+    log_error_string(error_string, false, opts)
+    false
+  end
+
   defp log_unequal_warning(expected, actual, true, opts), do: true
 
   defp log_unequal_warning(expected, actual, success, opts) do
@@ -290,6 +323,11 @@ actual value in for testing. The following expectation will also pass with the e
                    |> List.foldl([], fn(val, acc) -> add_non_nil(acc, val) end)
                    |> Enum.reverse()
                    |> Enum.join(":\n")
+    log_error_string(error_string, success, opts)
+    success
+  end
+
+  defp log_error_string(error_string, success, opts) do
     unless success || opts[:suppress_warnings] do
       if opts[:io_errors] do
         IO.inspect(error_string)
@@ -297,7 +335,6 @@ actual value in for testing. The following expectation will also pass with the e
         Logger.error(error_string)
       end
     end
-    success
   end
 
   defp stringify(value) when is_binary(value) do
