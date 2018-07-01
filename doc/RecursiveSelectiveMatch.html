@@ -5,12 +5,12 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.18.3">
-    <title>RecursiveSelectiveMatch – RecursiveSelectiveMatch v0.1.4</title>
+    <title>RecursiveSelectiveMatch – RecursiveSelectiveMatch v0.2.0</title>
     <link rel="stylesheet" href="dist/app-480ffdc169.css" />
     
       <link rel="canonical" href="https://hexdocs.pm/recursive_selective_match/RecursiveSelectiveMatch.html" />
     
-    <script src="dist/sidebar_items-19c7ba24ed.js"></script>
+    <script src="dist/sidebar_items-fe3456bd80.js"></script>
     
     
     
@@ -37,7 +37,7 @@
         RecursiveSelectiveMatch
       </h1>
       <h2 class="sidebar-projectVersion">
-        v0.1.4
+        v0.2.0
       </h2>
     </div>
     
@@ -71,7 +71,7 @@
 
 
       <h1>
-        <small class="visible-xs">RecursiveSelectiveMatch v0.1.4</small>
+        <small class="visible-xs">RecursiveSelectiveMatch v0.2.0</small>
         RecursiveSelectiveMatch
         
           <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L1" title="View Source" class="view-source" rel="help">
@@ -147,32 +147,32 @@ like this:</p>
 <p>This successfully matches (you can see the test in test/recursive_selective_match_test.exs).</p>
 <p>Alternatively, you can pass in any function as a matcher. The above can be rewritten as the
 following (notice that both approaches can be used interchangeably):</p>
-<p>  %{</p>
-<pre><code class="elixir">players: &amp;is_list/1,
-team: %{name: &amp;is_binary/1,
-        nba_id: &amp;is_integer/1,
-        greatest_player: :any_struct,
-        plays_at: %{arena: %{name: &amp;is_binary/1,
-                             location: %{&quot;city&quot; =&gt; &amp;is_binary/1,
-                                         &quot;state&quot; =&gt; &amp;is_binary/1}}}},
-data_fetched_at: &amp;is_binary/1</code></pre>
-<p>  }</p>
-<p>Even better, you can pass in a one-argument anonymous function and it will pass thei
+<pre><code class="elixir">%{
+  players: &amp;is_list/1,
+  team: %{name: &amp;is_binary/1,
+          nba_id: &amp;is_integer/1,
+          greatest_player: :any_struct,
+          plays_at: %{arena: %{name: &amp;is_binary/1,
+                               location: %{&quot;city&quot; =&gt; &amp;is_binary/1,
+                                           &quot;state&quot; =&gt; &amp;is_binary/1}}}},
+  data_fetched_at: &amp;is_binary/1
+}</code></pre>
+<p>Even better, you can pass in a one-argument anonymous function and it will pass the
 actual value in for testing. The following expectation will also pass with the example above:</p>
-<p>  %{</p>
-<pre><code class="elixir">players: &amp;(length(&amp;1) == 3),
-team: %{name: &amp;(&amp;1 in [&quot;Bucks&quot;,&quot;Celtics&quot;, &quot;76ers&quot;, &quot;Lakers&quot;, &quot;Rockets&quot;, &quot;Warriors&quot;]),
-        nba_id: &amp;(&amp;1 &gt;= 1 &amp;&amp; &amp;1 &lt;= 30),
-        greatest_player: %Person{id: &amp;(&amp;1 &gt;= 0 &amp;&amp; &amp;1 &lt;= 99),
-                                 fname: &amp;(Regex.match?(~r/[A-Z][a-z]{2,}/,&amp;1)),
-                                 lname: &amp;(Regex.match?(~r/[A-Z][a-z]{2,}/,&amp;1)),
-                                 position: &amp;(&amp;1 in [:center, :guard, :forward]),
-                                 jersey_num: &amp;(Regex.match?(~r/{1,2}/,&amp;1))},
-        plays_at: %{arena: %{name: &amp;(String.length(&amp;1) &gt; 3),
-                             location: %{&quot;city&quot; =&gt; &amp;is_binary/1,
-                                         &quot;state&quot; =&gt; &amp;(Regex.match?(~r/[A-Z]{2}/, &amp;1))}}}},
-data_fetched_at: &amp;(Regex.match?(~r/2018-{2}-{2} {2}:{2}:{2}/, &amp;1))</code></pre>
-<p>  }</p>
+<pre><code class="elixir">%{
+  players: &amp;(length(&amp;1) == 3),
+  team: %{name: &amp;(&amp;1 in [&quot;Bucks&quot;,&quot;Celtics&quot;, &quot;76ers&quot;, &quot;Lakers&quot;, &quot;Rockets&quot;, &quot;Warriors&quot;]),
+          nba_id: &amp;(&amp;1 &gt;= 1 &amp;&amp; &amp;1 &lt;= 30),
+          greatest_player: %Person{id: &amp;(&amp;1 &gt;= 0 &amp;&amp; &amp;1 &lt;= 99),
+                                   fname: &amp;(Regex.match?(~r/[A-Z][a-z]{2,}/,&amp;1)),
+                                   lname: &amp;(Regex.match?(~r/[A-Z][a-z]{2,}/,&amp;1)),
+                                   position: &amp;(&amp;1 in [:center, :guard, :forward]),
+                                   jersey_num: &amp;(Regex.match?(~r/{1,2}/,&amp;1))},
+          plays_at: %{arena: %{name: &amp;(String.length(&amp;1) &gt; 3),
+                               location: %{&quot;city&quot; =&gt; &amp;is_binary/1,
+                                           &quot;state&quot; =&gt; &amp;(Regex.match?(~r/[A-Z]{2}/, &amp;1))}}}},
+  data_fetched_at: &amp;(Regex.match?(~r/2018-{2}-{2} {2}:{2}:{2}/, &amp;1))
+}</code></pre>
 <p>RecursiveSelectiveMatch currently works (at least sort of) with Elixir maps, lists,
 tuples, and structs. (When comparing an expected struct against an actual struct, it begins
 first compares based on struct type and then compares keys &amp; values. When comparing an expected
@@ -181,12 +181,12 @@ maps from matching actual structs, pass <code class="inline">strict_struct_match
 <p>You can also pass in multiple expectations for a single value using a {:multi, …} tuple.
 The following will check that: 1) there are exactly three items in the <code class="inline">:players</code> list; and,
 2) every player has an <code class="inline">lname</code> field that is a string with at least four bytes:</p>
-<p>  %{</p>
-<pre><code class="elixir"> players: {:multi, [&amp;(length(&amp;1) == 3),
-                    &amp;(Enum.all?(&amp;1, fn(player) -&gt; (player.lname |&gt; byte_size()) &gt;= 4 end))
-                   ]
-          }</code></pre>
-<p>   }</p>
+<p>   %{</p>
+<pre><code class="elixir">  players: {:multi, [&amp;(length(&amp;1) == 3),
+                     &amp;(Enum.all?(&amp;1, fn(player) -&gt; (player.lname |&gt; byte_size()) &gt;= 4 end))
+                    ]
+           }
+}</code></pre>
 <p>After adding RecursiveSelectiveMatch to your project as a dependency, you can pass
 an expected and an actual data structure to <code class="inline">RecursiveSelectiveMatch.matches?()</code> as follows.
 If every element in <code class="inline">expected</code> also exists in <code class="inline">actual</code>, <code class="inline">matches?()</code> should return <code class="inline">true</code>.
@@ -202,6 +202,8 @@ options:</p>
 <li><p>You can override the default behavior of requiring that map keys be the same type and instead ignore differences between string and atom keys in maps by passing an options map (as a third argument) containing <code class="inline">%{standardize_keys: true}</code>.</p>
 </li>
 <li><p>You can override the default behavior of allowing maps to match structs, and instead prevent maps from matching structs by passing an options map (as a third argument) containing <code class="inline">%{strict_struct_matching: true}</code>.</p>
+</li>
+<li><p>You can override the default behavior of calling Logger.error() on errors to instead call IO.inspect() by passing an options map (as a third argument) containing <code class="inline">%{io_errors: true}</code>.</p>
 </li>
 </ul>
 <p>This library is a clean reimplementation and extension of SelectiveRecursiveMatch, a
@@ -255,6 +257,18 @@ where inclusion is tested using RecursiveSelectiveMatch.matches?()</p>
 </div>
   
 </div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#print_or_inspect/1">print_or_inspect(val)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#stringify/1">stringify(value)</a>
+  </div>
+  
+</div>
 
   </div>
 
@@ -285,7 +299,7 @@ where inclusion is tested using RecursiveSelectiveMatch.matches?()</p>
     </a>
     <span class="signature">convert_struct_to_map(struct)</span>
     
-      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L277" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L441" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -309,7 +323,7 @@ where inclusion is tested using RecursiveSelectiveMatch.matches?()</p>
     </a>
     <span class="signature">includes?(expected, actual_list, opts \\ %{})</span>
     
-      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L147" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L156" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -335,7 +349,7 @@ where inclusion is tested using RecursiveSelectiveMatch.matches?()</p>
     </a>
     <span class="signature">matches?(expected, actual, opts \\ %{})</span>
     
-      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L253" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L293" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -356,6 +370,50 @@ true
 iex&gt; RecursiveSelectiveMatch.matches?(%{what: :ever, is: :checked}, %{what: :ever}, %{suppress_warnings: true})
 false</code></pre>
 
+  </section>
+</div>
+<div class="detail" id="print_or_inspect/1">
+  
+  
+  <div class="detail-header">
+    <a href="#print_or_inspect/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">print_or_inspect(val)</span>
+    
+      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L363" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="stringify/1">
+  
+  
+  <div class="detail-header">
+    <a href="#stringify/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">stringify(value)</span>
+    
+      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L432" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
   </section>
 </div>
 

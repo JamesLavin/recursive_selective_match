@@ -1,9 +1,8 @@
 defmodule RecursiveSelectiveMatchTest do
   use ExUnit.Case
+  import ExUnit.CaptureLog
+  import ExUnit.CaptureIO
   doctest RecursiveSelectiveMatch
-  Code.require_file("test/person.ex")
-  Code.require_file("test/test_struct.ex")
-  Code.require_file("test/another_test_struct.ex")
   alias RecursiveSelectiveMatch, as: RSM
 
   defp celtics_actual() do
@@ -35,6 +34,66 @@ defmodule RecursiveSelectiveMatchTest do
     }
   end
 
+  defp invalid_team() do
+    %{
+      team: %{name: "Lakers"}
+    }
+  end
+
+  test "Lakers are the wrong team" do
+    refute RSM.matches?(invalid_team(), celtics_actual(), %{suppress_warnings: true})
+  end
+
+  test "errors are logged" do
+    assert capture_log(fn ->
+      RSM.matches?(invalid_team(), celtics_actual())
+    end) =~ " does not match "
+  end
+
+  test "tuples that match print no warning" do
+    expected = {:a, :b, :c}
+    actual = {:a, :b, :c}
+    assert capture_log(fn ->
+       RSM.matches?(expected, actual)
+    end) == ""
+  end
+
+  test "tuples with elements that don't match print warnings by default" do
+    expected = {:a, :b, :c}
+    actual = {:a, :b, :d}
+    assert capture_log(fn -> RSM.matches?(expected, actual) end) =~
+     "[error] :d does not match :c"
+    assert capture_log(fn -> RSM.matches?(expected, actual) end) =~
+     "[error] {:a, :b, :d} does not match {:a, :b, :c}"
+  end
+
+  test "tuples with more actual elements than expected don't match" do
+    expected = {:a, :b, :c}
+    actual = {:a, :b, :c, :d}
+    assert capture_log(fn -> RSM.matches?(expected, actual) end) =~ "[error] Actual tuple is larger than expected tuple:\n{:a, :b, :c, :d} does not match {:a, :b, :c}"
+  end
+
+  test "tuples with fewer actual elements than expected don't match" do
+    expected = {:a, :b, :c, :f}
+    actual = {:a, :b, :c}
+    assert capture_log(fn -> RSM.matches?(expected, actual) end) =~ "[error] Expected tuple is larger than actual tuple:\n{:a, :b, :c} does not match {:a, :b, :c, :f}"
+  end
+
+  test "tuples that don't match print warnings via IO.inspect when io_errors: true" do
+    expected = {:a, :b, :c}
+    actual = {:a, :b, :d}
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{io_errors: true}) end) == ""
+    assert capture_io(fn -> RSM.matches?(expected, actual, %{io_errors: true}) end) =~ ":d does not match :c"
+    assert capture_io(fn -> RSM.matches?(expected, actual, %{io_errors: true}) end) =~ "{:a, :b, :d} does not match {:a, :b, :c}"
+  end
+
+  test "suppress_warnings: true disables error logging" do
+    expected = {:a, :b, :c}
+    actual = {:a, :b, :d}
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{suppress_warnings: true}) end) == ""
+    assert capture_io(fn -> RSM.matches?(expected, actual, %{suppress_warnings: true}) end) == ""
+  end
+
   test "Celtics matches? test" do
     assert RSM.matches?(celtics_expected(), celtics_actual())
   end
@@ -46,12 +105,12 @@ defmodule RecursiveSelectiveMatchTest do
 
   test "Celtics includes? finds a particular struct when present" do
     assert RSM.includes?(celtics_actual()[:players] |> Enum.at(1),
-                                             celtics_actual()[:players])
+                         celtics_actual()[:players])
   end
 
   test "Celtics includes? finds map with keys when present" do
     assert RSM.includes?(%{fname: "Larry", lname: "Bird"},
-                                             celtics_actual()[:players])
+                         celtics_actual()[:players])
   end
 
   test "Celtics includes? doesn't find map with keys when not present" do
@@ -194,7 +253,10 @@ defmodule RecursiveSelectiveMatchTest do
   test "map with an expected value of :any_integer and an actual value of a non-integer" do
     expected = %{team: "Red Sox", current_standing: :any_integer}
     actual = %{team: "Red Sox", current_standing: "1"}
-    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
+     "[error] Key :current_standing is expected to have a value of :any_integer in %{current_standing: :any_integer, team: \"Red Sox\"} but has a value of \"1\" in %{current_standing: \"1\", team: \"Red Sox\"}"
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
+     "[error] %{current_standing: \"1\", team: \"Red Sox\"} does not match %{current_standing: :any_integer, team: \"Red Sox\"}"
   end
 
   test "map with an expected value of :any_binary and an actual value of a binary" do
@@ -206,7 +268,10 @@ defmodule RecursiveSelectiveMatchTest do
   test "map with an expected value of :any_binary and an actual value of a non-binary" do
     expected = %{team: "Red Sox", current_standing: :any_binary}
     actual = %{team: "Red Sox", current_standing: 1}
-    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
+     "[error] %{current_standing: 1, team: \"Red Sox\"} does not match %{current_standing: :any_binary, team: \"Red Sox\"}"
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
+     "[error] Key :current_standing is expected to have a value of :any_binary in %{current_standing: :any_binary, team: \"Red Sox\"} but has a value of 1 in %{current_standing: 1, team: \"Red Sox\"}"
   end
 
   test "struct with an expected value of :any_binary and an actual value of a binary treated like an equivalent map" do
@@ -218,7 +283,8 @@ defmodule RecursiveSelectiveMatchTest do
   test "structs of different types don't match" do
     expected = %TestStruct{fname: "Larry", lname: "Bird", hof: true}
     actual = %AnotherTestStruct{fname: "Larry", lname: "Bird", hof: true}
-    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
+     "[error] AnotherTestStruct does not match TestStruct"
   end
 
   test "map with an expected value of :any_atom and an actual value of an atom" do
@@ -230,31 +296,51 @@ defmodule RecursiveSelectiveMatchTest do
   test "map with an expected value of :any_atom and an actual value of a non-atom" do
     expected = %{team: "Red Sox", current_standing: :any_atom}
     actual = %{team: "Red Sox", current_standing: 1}
-    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
+     "[error] Key :current_standing is expected to have a value of :any_atom in %{current_standing: :any_atom, team: \"Red Sox\"} but has a value of 1 in %{current_standing: 1, team: \"Red Sox\"}"
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
+     "[error] %{current_standing: 1, team: \"Red Sox\"} does not match %{current_standing: :any_atom, team: \"Red Sox\"}"
+  end
+
+  test "basic logging" do
+    expected = %{team: "Red Sox", players: ["Mookie Betts", "Xander Bogaerts"]}
+    actual = %{team: "Red Sox", players: ["Mookie Betts"]}
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
+    "[error] Key :players is expected to have a value of [\"Mookie Betts\", \"Xander Bogaerts\"] in %{players: [\"Mookie Betts\", \"Xander Bogaerts\"], team: \"Red Sox\"} but has a value of [\"Mookie Betts\"] in %{players: [\"Mookie Betts\"], team: \"Red Sox\"}"
   end
 
   test "map with an expected value of :any_tuple and an actual value of a list" do
     expected = %{team: "Red Sox", players: :any_tuple}
     actual = %{team: "Red Sox", players: ["Mookie Betts","Xander Bogaerts", "Hanley Ramirez","Jackie Bradley Jr","Chris Sale","Rick Porcello","David Price"]}
-    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
+     ~s([error] Key :players is expected to have a value of :any_tuple in %{players: :any_tuple, team: "Red Sox"} but has a value of ["Mookie Betts", "Xander Bogaerts", "Hanley Ramirez", "Jackie Bradley Jr", "Chris Sale", "Rick Porcello", "David Price"] in %{players: ["Mookie Betts", "Xander Bogaerts", "Hanley Ramirez", "Jackie Bradley Jr", "Chris Sale", "Rick Porcello", "David Price"], team: "Red Sox"})
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
+     "[error] %{players: [\"Mookie Betts\", \"Xander Bogaerts\", \"Hanley Ramirez\", \"Jackie Bradley Jr\", \"Chris Sale\", \"Rick Porcello\", \"David Price\"], team: \"Red Sox\"} does not match %{players: :any_tuple, team: \"Red Sox\"}"
   end
 
   test "map with an expected value of :any_tuple and an actual value of a tuple" do
     expected = %{team: "Red Sox", players: :any_tuple}
     actual = %{team: "Red Sox", players: {"Mookie Betts","Xander Bogaerts", "Hanley Ramirez","Jackie Bradley Jr","Chris Sale","Rick Porcello","David Price"}}
-    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
+    assert RSM.matches?(expected, actual, %{})
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) == ""
   end
 
   test "single-level, key-valued maps don't ignore differences between string & atom keys" do
     expected = %{best_beatle: %{fname: "John", lname: "Lennon"}}
     actual = %{"best_beatle" => %{fname: "John", lname: "Lennon"}}
-    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
+     "[error] Key :best_beatle not present in %{\"best_beatle\" => %{fname: \"John\", lname: \"Lennon\"}} but present in %{best_beatle: %{fname: \"John\", lname: \"Lennon\"}}"
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
+     "[error] %{\"best_beatle\" => %{fname: \"John\", lname: \"Lennon\"}} does not match %{best_beatle: %{fname: \"John\", lname: \"Lennon\"}}"
   end
 
   test "multi-level, key-valued maps don't ignore differences between string & atom keys" do
     expected = %{best_beatle: %{fname: "John", lname: "Lennon"}}
     actual = %{best_beatle: %{"fname" => "John", "mname" => "Winston", "lname" => "Lennon", "born" => 1940}}
-    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
+     "[error] Key :best_beatle is expected to have a value of %{fname: \"John\", lname: \"Lennon\"} in %{best_beatle: %{fname: \"John\", lname: \"Lennon\"}} but has a value of %{\"born\" => 1940, \"fname\" => \"John\", \"lname\" => \"Lennon\", \"mname\" => \"Winston\"} in %{best_beatle: %{\"born\" => 1940, \"fname\" => \"John\", \"lname\" => \"Lennon\", \"mname\" => \"Winston\"}}"
+    assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
+     "[error] %{best_beatle: %{\"born\" => 1940, \"fname\" => \"John\", \"lname\" => \"Lennon\", \"mname\" => \"Winston\"}} does not match %{best_beatle: %{fname: \"John\", lname: \"Lennon\"}}"
   end
 
   test "single-level, key-valued maps ignore differences between string & atom keys when standardize_keys: true" do
