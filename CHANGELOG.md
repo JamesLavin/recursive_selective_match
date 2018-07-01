@@ -1,5 +1,11 @@
 # Changelog for RecursiveSelectiveMatch
 
+## 0.2.1
+
+### 1. Enhancements
+
+  * Improve informativeness of error message when expected map key doesn't match actual map key.
+
 ## 0.2.0
 
 ### 1. Enhancements
