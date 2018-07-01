@@ -41,7 +41,8 @@ defmodule RecursiveSelectiveMatch.MixProject do
     [
       maintainers: ["James Lavin"],
       licenses: ["Apache 2.0"],
-      links: %{"Github" => "https://github.com/JamesLavin/recursive_selective_match"}
+      links: %{"Github" => "https://github.com/JamesLavin/recursive_selective_match"},
+      source_url: "https://github.com/JamesLavin/recursive_selective_match"
     ]
   end
 end
