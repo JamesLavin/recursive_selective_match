@@ -195,6 +195,10 @@ I have not yet reimplemented several features of my original `SelectiveRecursive
 
 * `:debug_mode` - Option to display every step in the RecursiveSelectiveMatch process
 
+I want :debug_mode to intelligently display all levels of information for the first failing path it encounters but not display any information for dead-ends it encounters that are not actually failing paths. These can be different if, for example, we're searching through a list of items for one that matches, in which case we would want to ignore items that don't match until we fail to match the expected item against the very last item in the corresponding actual list.
+
 I also hope to allow you to use your expected data structures as a template for generating concrete data structures for testing purposes.
 
-Add option to require that list elements be in the order specified in the expected list. (By default, order is ignored.)
+I want to add an option to require that list elements be in the order specified in the expected list. (By default, the order of list items is ignored.)
+
+I also want to provide an option to indicate that an expected list constitutes the _full_ list to match, not just a subset of the actual list, so that if any additional list items are present in the actual list, the match would fail.

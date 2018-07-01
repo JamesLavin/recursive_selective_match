@@ -197,7 +197,7 @@ actual value in for testing. The following expectation will also pass with the e
         log_missing_map_key_warning(key, expected, actual, opts)
       end
       if has_key && !has_correct_value do
-          log_incorrect_map_value_warning(key, expected, actual, opts)
+        log_incorrect_map_value_warning(key, expected, actual, opts)
       end
       acc && has_key && has_correct_value
     end)
@@ -293,34 +293,75 @@ actual value in for testing. The following expectation will also pass with the e
     key = stringify(key)
     expected = stringify(expected)
     actual = stringify(actual)
-    error_string = "Key #{key} not present in #{actual} but present in #{expected}"
+    error_string = "Key #{key} not present in #{inspect actual} but present in #{inspect expected}"
     log_error_string(error_string, false, opts)
     false
   end
 
   defp log_incorrect_map_value_warning(key, expected_map, actual_map, opts) do
     stringified_key = stringify(key)
+    printable_key = print_or_inspect(key)
     expected_val = expected_map
                    |> Map.get(key)
-                   |> stringify()
+                   |> print_or_inspect()
     actual_val = actual_map
                  |> Map.get(key)
-                 |> stringify()
+                 |> print_or_inspect()
     string_exp_map = expected_map
-                     |> stringify()
+                     |> print_or_inspect()
     string_actual_map = actual_map
-                        |> stringify()
-    error_string = "Key #{stringified_key} is expected to have a value of #{expected_val} in #{string_exp_map} but has a value of #{actual_val} in #{string_actual_map}"
+                        |> print_or_inspect()
+    error_string = "Key #{printable_key} is expected to have a value of #{expected_val} in #{string_exp_map} but has a value of #{actual_val} in #{string_actual_map}"
     log_error_string(error_string, false, opts)
     false
   end
 
+  def print_or_inspect(%{__struct__: _} = val) do
+    inspect val
+  end
+
+  def print_or_inspect(%{} = val) do
+    inspect val
+  end
+
+  def print_or_inspect(val) when is_integer(val) do
+    val
+  end
+
+  def print_or_inspect(val) when is_function(val) do
+    inspect val
+  end
+
+  def print_or_inspect(val) when is_list(val) do
+    val
+    |> Enum.map(&print_or_inspect/1)
+    |> Enum.join(~s(, ))
+    |> (fn(val) -> ~s([#{val}]) end).()
+  end
+
+  def print_or_inspect(val) when is_tuple(val) do
+    inspect val
+  end
+
+  def print_or_inspect(val) when is_atom(val) do
+    inspect val
+  end
+
+  def print_or_inspect(val) when is_binary(val) do
+    inspect val
+  end
+
+  def print_or_inspect(val) do
+    val
+  end
+
   defp log_unequal_warning(expected, actual, true, opts), do: true
 
+  # TODO: treat maps and non-maps differently???
   defp log_unequal_warning(expected, actual, success, opts) do
-    expected = stringify(expected)
-    actual = stringify(actual)
-    error_string = [Map.get(opts, :warning_message, nil), "#{actual} does not match #{expected}"]
+    #expected = stringify(expected)
+    #actual = stringify(actual)
+    error_string = [Map.get(opts, :warning_message, nil), "#{print_or_inspect actual} does not match #{print_or_inspect expected}"]
                    |> List.foldl([], fn(val, acc) -> add_non_nil(acc, val) end)
                    |> Enum.reverse()
                    |> Enum.join(":\n")
@@ -338,11 +379,48 @@ actual value in for testing. The following expectation will also pass with the e
     end
   end
 
-  defp stringify(value) when is_binary(value) do
+  def stringify(value) when is_binary(value) do
     value
   end
 
-  defp stringify(value) do
+  def stringify(value) when is_integer(value) do
+    inspect value
+  end
+
+  def stringify(value) when is_function(value) do
+    inspect value
+  end
+
+  def stringify(value) when is_tuple(value) do
+    inspect value
+  end
+
+  def stringify(value) when is_atom(value) do
+    inspect value
+  end
+
+  def stringify(value) when is_list(value) do
+    value
+    |> Enum.map(&stringify/1)
+    |> Enum.join(~s(, ))
+    |> (fn(val) -> ~s([#{val}]) end).()
+  end
+
+  def stringify(%_struct{} = value) do
+    inspect value
+  end
+
+  def stringify(value) when is_map(value) do
+    value
+    |> Map.keys()
+    |> Enum.reduce(%{},
+                   fn(key, acc) ->
+                     Map.put(acc, key, Map.get(value, key) |> stringify())
+                   end)
+    # m |> Map.keys() |> Enum.reduce(%{}, fn(key, acc) -> Map.put(acc, key, Map.get(m, key) |> RSM.stringify()) end)
+  end
+
+  def stringify(value) do
     inspect value
   end
 
