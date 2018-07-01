@@ -320,7 +320,7 @@ defmodule RecursiveSelectiveMatch do
                      |> print_or_inspect()
     string_actual_map = actual_map
                         |> print_or_inspect()
-    error_string = "Key #{printable_key} is expected to have a value of #{expected_val} in #{string_exp_map} but has a value of #{actual_val} in #{string_actual_map}"
+    error_string = "Key #{printable_key} is expected to have a value of #{expected_val} (according to #{string_exp_map}) but has a value of #{actual_val} (in #{string_actual_map})"
     log_error_string(error_string, false, opts)
     false
   end

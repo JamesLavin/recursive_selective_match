@@ -254,7 +254,7 @@ defmodule RecursiveSelectiveMatchTest do
     expected = %{team: "Red Sox", current_standing: :any_integer}
     actual = %{team: "Red Sox", current_standing: "1"}
     assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
-     "[error] Key :current_standing is expected to have a value of :any_integer in %{current_standing: :any_integer, team: \"Red Sox\"} but has a value of \"1\" in %{current_standing: \"1\", team: \"Red Sox\"}"
+     "[error] Key :current_standing is expected to have a value of :any_integer (according to %{current_standing: :any_integer, team: \"Red Sox\"}) but has a value of \"1\" (in %{current_standing: \"1\", team: \"Red Sox\"})"
     assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
      "[error] %{current_standing: \"1\", team: \"Red Sox\"} does not match %{current_standing: :any_integer, team: \"Red Sox\"}"
   end
@@ -271,7 +271,7 @@ defmodule RecursiveSelectiveMatchTest do
     assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
      "[error] %{current_standing: 1, team: \"Red Sox\"} does not match %{current_standing: :any_binary, team: \"Red Sox\"}"
     assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
-     "[error] Key :current_standing is expected to have a value of :any_binary in %{current_standing: :any_binary, team: \"Red Sox\"} but has a value of 1 in %{current_standing: 1, team: \"Red Sox\"}"
+     "[error] Key :current_standing is expected to have a value of :any_binary (according to %{current_standing: :any_binary, team: \"Red Sox\"}) but has a value of 1 (in %{current_standing: 1, team: \"Red Sox\"})"
   end
 
   test "struct with an expected value of :any_binary and an actual value of a binary treated like an equivalent map" do
@@ -297,7 +297,7 @@ defmodule RecursiveSelectiveMatchTest do
     expected = %{team: "Red Sox", current_standing: :any_atom}
     actual = %{team: "Red Sox", current_standing: 1}
     assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
-     "[error] Key :current_standing is expected to have a value of :any_atom in %{current_standing: :any_atom, team: \"Red Sox\"} but has a value of 1 in %{current_standing: 1, team: \"Red Sox\"}"
+     "[error] Key :current_standing is expected to have a value of :any_atom (according to %{current_standing: :any_atom, team: \"Red Sox\"}) but has a value of 1 (in %{current_standing: 1, team: \"Red Sox\"})"
     assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
      "[error] %{current_standing: 1, team: \"Red Sox\"} does not match %{current_standing: :any_atom, team: \"Red Sox\"}"
   end
@@ -306,14 +306,14 @@ defmodule RecursiveSelectiveMatchTest do
     expected = %{team: "Red Sox", players: ["Mookie Betts", "Xander Bogaerts"]}
     actual = %{team: "Red Sox", players: ["Mookie Betts"]}
     assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
-    "[error] Key :players is expected to have a value of [\"Mookie Betts\", \"Xander Bogaerts\"] in %{players: [\"Mookie Betts\", \"Xander Bogaerts\"], team: \"Red Sox\"} but has a value of [\"Mookie Betts\"] in %{players: [\"Mookie Betts\"], team: \"Red Sox\"}"
+    "[error] Key :players is expected to have a value of [\"Mookie Betts\", \"Xander Bogaerts\"] (according to %{players: [\"Mookie Betts\", \"Xander Bogaerts\"], team: \"Red Sox\"}) but has a value of [\"Mookie Betts\"] (in %{players: [\"Mookie Betts\"], team: \"Red Sox\"})"
   end
 
   test "map with an expected value of :any_tuple and an actual value of a list" do
     expected = %{team: "Red Sox", players: :any_tuple}
     actual = %{team: "Red Sox", players: ["Mookie Betts","Xander Bogaerts", "Hanley Ramirez","Jackie Bradley Jr","Chris Sale","Rick Porcello","David Price"]}
     assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
-     ~s([error] Key :players is expected to have a value of :any_tuple in %{players: :any_tuple, team: "Red Sox"} but has a value of ["Mookie Betts", "Xander Bogaerts", "Hanley Ramirez", "Jackie Bradley Jr", "Chris Sale", "Rick Porcello", "David Price"] in %{players: ["Mookie Betts", "Xander Bogaerts", "Hanley Ramirez", "Jackie Bradley Jr", "Chris Sale", "Rick Porcello", "David Price"], team: "Red Sox"})
+     ~s/[error] Key :players is expected to have a value of :any_tuple (according to %{players: :any_tuple, team: "Red Sox"}) but has a value of ["Mookie Betts", "Xander Bogaerts", "Hanley Ramirez", "Jackie Bradley Jr", "Chris Sale", "Rick Porcello", "David Price"] (in %{players: ["Mookie Betts", "Xander Bogaerts", "Hanley Ramirez", "Jackie Bradley Jr", "Chris Sale", "Rick Porcello", "David Price"], team: "Red Sox"})/
     assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
      "[error] %{players: [\"Mookie Betts\", \"Xander Bogaerts\", \"Hanley Ramirez\", \"Jackie Bradley Jr\", \"Chris Sale\", \"Rick Porcello\", \"David Price\"], team: \"Red Sox\"} does not match %{players: :any_tuple, team: \"Red Sox\"}"
   end
@@ -338,7 +338,7 @@ defmodule RecursiveSelectiveMatchTest do
     expected = %{best_beatle: %{fname: "John", lname: "Lennon"}}
     actual = %{best_beatle: %{"fname" => "John", "mname" => "Winston", "lname" => "Lennon", "born" => 1940}}
     assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
-     "[error] Key :best_beatle is expected to have a value of %{fname: \"John\", lname: \"Lennon\"} in %{best_beatle: %{fname: \"John\", lname: \"Lennon\"}} but has a value of %{\"born\" => 1940, \"fname\" => \"John\", \"lname\" => \"Lennon\", \"mname\" => \"Winston\"} in %{best_beatle: %{\"born\" => 1940, \"fname\" => \"John\", \"lname\" => \"Lennon\", \"mname\" => \"Winston\"}}"
+     "[error] Key :best_beatle is expected to have a value of %{fname: \"John\", lname: \"Lennon\"} (according to %{best_beatle: %{fname: \"John\", lname: \"Lennon\"}}) but has a value of %{\"born\" => 1940, \"fname\" => \"John\", \"lname\" => \"Lennon\", \"mname\" => \"Winston\"} (in %{best_beatle: %{\"born\" => 1940, \"fname\" => \"John\", \"lname\" => \"Lennon\", \"mname\" => \"Winston\"}})"
     assert capture_log(fn -> RSM.matches?(expected, actual, %{}) end) =~
      "[error] %{best_beatle: %{\"born\" => 1940, \"fname\" => \"John\", \"lname\" => \"Lennon\", \"mname\" => \"Winston\"}} does not match %{best_beatle: %{fname: \"John\", lname: \"Lennon\"}}"
   end
