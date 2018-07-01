@@ -144,8 +144,11 @@ actual value in for testing. The following expectation will also pass with the e
   where inclusion is tested using RecursiveSelectiveMatch.matches?()
 
   """
-  def includes?(expected, actual_list, opts \\ %{}) when is_list(actual_list) do
-    Enum.any?(actual_list, fn(actual_val) -> matches?(expected, actual_val, %{suppress_warnings: true}) end)
+  def includes?(expected, actual_list, _opts \\ %{}) when is_list(actual_list) do
+    Enum.any?(actual_list,
+              fn(actual_val) ->
+                matches?(expected, actual_val, %{suppress_warnings: true})
+              end)
   end
 
   def includes?(_expected, _actual, _opts), do: false
@@ -240,35 +243,35 @@ actual value in for testing. The following expectation will also pass with the e
     log_unequal_warning(expected, actual, success, opts)
   end
 
-  def matches?(:anything, actual, opts) do
+  def matches?(:anything, _actual, _opts) do
     true
   end
 
-  def matches?(:any_list, actual, opts) when is_list(actual) do
+  def matches?(:any_list, actual, _opts) when is_list(actual) do
     true
   end
 
-  def matches?(:any_map, actual, opts) when is_map(actual) do
+  def matches?(:any_map, actual, _opts) when is_map(actual) do
     true
   end
 
-  def matches?(:any_integer, actual, opts) when is_integer(actual) do
+  def matches?(:any_integer, actual, _opts) when is_integer(actual) do
     true
   end
 
-  def matches?(:any_tuple, actual, opts) when is_tuple(actual) do
+  def matches?(:any_tuple, actual, _opts) when is_tuple(actual) do
     true
   end
 
-  def matches?(:any_binary, actual, opts) when is_binary(actual) do
+  def matches?(:any_binary, actual, _opts) when is_binary(actual) do
     true
   end
 
-  def matches?(:any_atom, actual, opts) when is_atom(actual) do
+  def matches?(:any_atom, actual, _opts) when is_atom(actual) do
     true
   end
 
-  def matches?(:any_boolean, actual, opts) when is_boolean(actual) do
+  def matches?(:any_boolean, actual, _opts) when is_boolean(actual) do
     true
   end
 
@@ -277,7 +280,7 @@ actual value in for testing. The following expectation will also pass with the e
     log_unequal_warning(expected, actual, success, opts)
   end
 
-  def matches?(:any_struct, %{__struct__: _}, opts) do
+  def matches?(:any_struct, %{__struct__: _}, _opts) do
     true
   end
 
@@ -299,8 +302,8 @@ actual value in for testing. The following expectation will also pass with the e
   end
 
   defp log_incorrect_map_value_warning(key, expected_map, actual_map, opts) do
-    stringified_key = stringify(key)
-    printable_key = print_or_inspect(key)
+    printable_key = key
+                    |> print_or_inspect()
     expected_val = expected_map
                    |> Map.get(key)
                    |> print_or_inspect()
@@ -355,7 +358,7 @@ actual value in for testing. The following expectation will also pass with the e
     val
   end
 
-  defp log_unequal_warning(expected, actual, true, opts), do: true
+  defp log_unequal_warning(_expected, _actual, true, _opts), do: true
 
   # TODO: treat maps and non-maps differently???
   defp log_unequal_warning(expected, actual, success, opts) do
