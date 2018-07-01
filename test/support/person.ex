@@ -8,7 +8,7 @@ defmodule Person do
   end
 
   defimpl Inspect do
-    def inspect(%Person{id: id, fname: fname, lname: lname, position: position, jersey_num: jersey_num}) do
+    def inspect(%Person{id: id, fname: fname, lname: lname, position: position, jersey_num: jersey_num}, _opts) do
       "%Person{id: #{id}, fname: #{fname}, lname: #{lname}, position: #{position}, jersey_num: #{jersey_num}}"
     end
   end

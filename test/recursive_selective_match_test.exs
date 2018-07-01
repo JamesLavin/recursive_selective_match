@@ -3,9 +3,6 @@ defmodule RecursiveSelectiveMatchTest do
   import ExUnit.CaptureLog
   import ExUnit.CaptureIO
   doctest RecursiveSelectiveMatch
-  Code.require_file("test/person.ex")
-  Code.require_file("test/test_struct.ex")
-  Code.require_file("test/another_test_struct.ex")
   alias RecursiveSelectiveMatch, as: RSM
 
   defp celtics_actual() do

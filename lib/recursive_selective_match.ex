@@ -62,37 +62,37 @@ defmodule RecursiveSelectiveMatch do
 
   This successfully matches (you can see the test in test/recursive_selective_match_test.exs).
 
-Alternatively, you can pass in any function as a matcher. The above can be rewritten as the
-following (notice that both approaches can be used interchangeably):
+  Alternatively, you can pass in any function as a matcher. The above can be rewritten as the
+  following (notice that both approaches can be used interchangeably):
 
-    %{
-      players: &is_list/1,
-      team: %{name: &is_binary/1,
-              nba_id: &is_integer/1,
-              greatest_player: :any_struct,
-              plays_at: %{arena: %{name: &is_binary/1,
-                                   location: %{"city" => &is_binary/1,
-                                               "state" => &is_binary/1}}}},
-      data_fetched_at: &is_binary/1
-    }
+      %{
+        players: &is_list/1,
+        team: %{name: &is_binary/1,
+                nba_id: &is_integer/1,
+                greatest_player: :any_struct,
+                plays_at: %{arena: %{name: &is_binary/1,
+                                     location: %{"city" => &is_binary/1,
+                                                 "state" => &is_binary/1}}}},
+        data_fetched_at: &is_binary/1
+      }
 
-Even better, you can pass in a one-argument anonymous function and it will pass the
-actual value in for testing. The following expectation will also pass with the example above:
+  Even better, you can pass in a one-argument anonymous function and it will pass the
+  actual value in for testing. The following expectation will also pass with the example above:
 
-    %{
-      players: &(length(&1) == 3),
-      team: %{name: &(&1 in ["Bucks","Celtics", "76ers", "Lakers", "Rockets", "Warriors"]),
-              nba_id: &(&1 >= 1 && &1 <= 30),
-              greatest_player: %Person{id: &(&1 >= 0 && &1 <= 99),
-                                       fname: &(Regex.match?(~r/[A-Z][a-z]{2,}/,&1)),
-                                       lname: &(Regex.match?(~r/[A-Z][a-z]{2,}/,&1)),
-                                       position: &(&1 in [:center, :guard, :forward]),
-                                       jersey_num: &(Regex.match?(~r/\d{1,2}/,&1))},
-              plays_at: %{arena: %{name: &(String.length(&1) > 3),
-                                   location: %{"city" => &is_binary/1,
-                                               "state" => &(Regex.match?(~r/[A-Z]{2}/, &1))}}}},
-      data_fetched_at: &(Regex.match?(~r/2018-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/, &1))
-    }
+      %{
+        players: &(length(&1) == 3),
+        team: %{name: &(&1 in ["Bucks","Celtics", "76ers", "Lakers", "Rockets", "Warriors"]),
+                nba_id: &(&1 >= 1 && &1 <= 30),
+                greatest_player: %Person{id: &(&1 >= 0 && &1 <= 99),
+                                         fname: &(Regex.match?(~r/[A-Z][a-z]{2,}/,&1)),
+                                         lname: &(Regex.match?(~r/[A-Z][a-z]{2,}/,&1)),
+                                         position: &(&1 in [:center, :guard, :forward]),
+                                         jersey_num: &(Regex.match?(~r/\d{1,2}/,&1))},
+                plays_at: %{arena: %{name: &(String.length(&1) > 3),
+                                     location: %{"city" => &is_binary/1,
+                                                 "state" => &(Regex.match?(~r/[A-Z]{2}/, &1))}}}},
+        data_fetched_at: &(Regex.match?(~r/2018-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/, &1))
+      }
 
   RecursiveSelectiveMatch currently works (at least sort of) with Elixir maps, lists,
   tuples, and structs. (When comparing an expected struct against an actual struct, it begins
@@ -104,12 +104,12 @@ actual value in for testing. The following expectation will also pass with the e
   The following will check that: 1) there are exactly three items in the `:players` list; and,
   2) every player has an `lname` field that is a string with at least four bytes:
 
-    %{
-       players: {:multi, [&(length(&1) == 3),
-                          &(Enum.all?(&1, fn(player) -> (player.lname |> byte_size()) >= 4 end))
-                         ]
-                }
-     }
+     %{
+        players: {:multi, [&(length(&1) == 3),
+                           &(Enum.all?(&1, fn(player) -> (player.lname |> byte_size()) >= 4 end))
+                          ]
+                 }
+      }
 
   After adding RecursiveSelectiveMatch to your project as a dependency, you can pass
   an expected and an actual data structure to `RecursiveSelectiveMatch.matches?()` as follows.
@@ -144,7 +144,9 @@ actual value in for testing. The following expectation will also pass with the e
   where inclusion is tested using RecursiveSelectiveMatch.matches?()
 
   """
-  def includes?(expected, actual_list, _opts \\ %{}) when is_list(actual_list) do
+  def includes?(expected, actual_list, _opts \\ %{})
+
+  def includes?(expected, actual_list, _opts) when is_list(actual_list) do
     Enum.any?(actual_list,
               fn(actual_val) ->
                 matches?(expected, actual_val, %{suppress_warnings: true})
@@ -190,9 +192,13 @@ actual value in for testing. The following expectation will also pass with the e
   end
 
   def matches?(expected, actual, opts) when is_map(expected) and is_map(actual) do
-    if opts[:standardize_keys] do
-      {expected, actual} = standardize_keys(expected, actual)
-    end
+    {expected, actual} =
+      cond do
+        opts[:standardize_keys] ->
+          standardize_keys(expected, actual)
+        true ->
+          {expected, actual}
+      end
     success = Enum.reduce(Map.keys(expected), true, fn key, acc ->
       has_key = Map.has_key?(actual, key)
       has_correct_value = matches?(Map.get(expected, key), Map.get(actual, key), Map.merge(opts, %{suppress_warnings: true}))
