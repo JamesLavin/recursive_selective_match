@@ -61,8 +61,10 @@ defmodule RecursiveSelectiveMatchTest do
   test "tuples with elements that don't match print warnings by default" do
     expected = {:a, :b, :c}
     actual = {:a, :b, :d}
-    assert capture_log(fn -> RSM.matches?(expected, actual) end) =~ "[error] :d does not match :c"
-    assert capture_log(fn -> RSM.matches?(expected, actual) end) =~ "[error] {:a, :b, :d} does not match {:a, :b, :c}"
+    assert capture_log(fn -> RSM.matches?(expected, actual) end) =~
+     "[error] :d does not match :c"
+    assert capture_log(fn -> RSM.matches?(expected, actual) end) =~
+     "[error] {:a, :b, :d} does not match {:a, :b, :c}"
   end
 
   test "tuples with more actual elements than expected don't match" do

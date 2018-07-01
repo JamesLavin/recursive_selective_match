@@ -47,9 +47,9 @@ For example, imagine you want to test a function that returns a nested data stru
 
 Imagine further that each time you call this function, some details vary. Maybe each time you
 call the function, you get a random team, not always the NBA's greatest team of all time (only
-team with 17 championships... #boston_strong!) and you don't care about specific ids or the data_fetched_at
-time stamp or maybe even details about the players or team. But you want to test that the structure
-of the data is correct and possibly confirm some of the values.
+team with 17 championships... #boston_strong!) and you don't care about specific ids or the
+data_fetched_at time stamp or maybe even details about the players or team. But you want to
+test that the structure of the data is correct and possibly confirm some of the values.
 
 With RecursiveSelectiveMatch, you can create a generic test by specifying an _expected_ data structure,
 like this:
@@ -71,7 +71,7 @@ expected data structure to the variable `expected`, you can test whether they ma
     defmodule MyTest do
       use ExUnit.Case
       
-      alias RecursiveSelectiveMatch, as: RSM  
+      alias RecursiveSelectiveMatch, as: RSM
 
       test "actual matches expected" do
         expected = %{ players: :any_list, ... }
@@ -156,9 +156,32 @@ a third argument, like this:
       
       alias RecursiveSelectiveMatch, as: RSM  
     
-      RSM.matches?(expected, actual, %{suppress_warnings: true,
-                                       standardize_keys: true,
-                                       strict_struct_matching: true})
+      assert RSM.matches?(expected,
+                          actual,
+                          %{suppress_warnings: true,
+                            standardize_keys: true,
+                            strict_struct_matching: true})
+    end
+
+This module originally printed failure messages. I've rewritten it to log error messages,
+but you can override this to keep the original behavior by passing `io_errors: true` inside
+the opts map.
+
+You can test that the correct error messages are generated (and prevent them from
+leaking through) by using ExUnit's `capture_log()`:
+
+    defmodule MyTest do
+      use ExUnit.Case
+      import ExUnit.CaptureLog
+
+      alias RecursiveSelectiveMatch, as: RSM
+
+      expected = {:a, :b, :c}
+      actual = {:a, :b, :d}
+      assert capture_log(fn -> RSM.matches?(expected, actual) end) =~
+        "[error] :d does not match :c"
+      assert capture_log(fn -> RSM.matches?(expected, actual) end) =~
+        "[error] {:a, :b, :d} does not match {:a, :b, :c}"
     end
 
 This library is a clean reimplementation and extension of SelectiveRecursiveMatch, a
