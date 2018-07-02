@@ -1,5 +1,11 @@
 # Changelog for RecursiveSelectiveMatch
 
+## 0.2.2
+
+### 1. Enhancements
+
+  * Update `recursive_selective_match.exs` moduledoc to match `README.md` (need plan for keeping these in sync)
+
 ## 0.2.1
 
 ### 1. Enhancements
