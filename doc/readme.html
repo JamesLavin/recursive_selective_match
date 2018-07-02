@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.18.3">
-    <title>RecursiveSelectiveMatch – RecursiveSelectiveMatch v0.2.0</title>
+    <title>RecursiveSelectiveMatch – RecursiveSelectiveMatch v0.2.1</title>
     <link rel="stylesheet" href="dist/app-480ffdc169.css" />
     
       <link rel="canonical" href="https://hexdocs.pm/recursive_selective_match/readme.html" />
@@ -37,7 +37,7 @@
         RecursiveSelectiveMatch
       </h1>
       <h2 class="sidebar-projectVersion">
-        v0.2.0
+        v0.2.1
       </h2>
     </div>
     
@@ -196,6 +196,10 @@ options:</p>
 </li>
 <li><p><em>To prevent expected maps from matching actual structs</em>: If you expect a map and attempt to match it against an actual struct, by default <a href="RecursiveSelectiveMatch.html"><code class="inline">RecursiveSelectiveMatch</code></a> treats the struct as a map for matching purposes. You can override this default behavior and prevent expected maps from matching actual structs by passing an options map (as a third argument) containing <code class="inline">%{strict_struct_matching: true}</code>, which will prevent ordinary maps from matching structs.</p>
 </li>
+<li><p><em>To require that lists match exactly (i.e., all expected list elements are present &amp; in the expected order)</em>: The default behavior is to consider lists to match if all expected list elements are found in the actual list. If you want to consider lists to match only if the lists are identical, you can pass an options map (as a third argument) containing <code class="inline">%{exact_lists: true}</code>. This will cause lists to match only if they match exactly.</p>
+</li>
+<li><p><em>To require that actual lists contain all expected list elements but ignore order</em>: The default behavior is to consider lists to match if all expected list elements are found in the actual list. If you want to consider lists to match only if all expected list items are present and no additional list items are present in the actual list (and you don’t care about the ordering of these elements), you can pass an options map (as a third argument) containing <code class="inline">%{full_lists: true}</code>. This will cause lists to match only if all expected list elements are present and no unexpected list elements are present.</p>
+</li>
 </ul>
 <p>If you wanted to change the earlier example by overriding all three default options, just add
 a third argument, like this:</p>
@@ -228,7 +232,17 @@ leaking through) by using ExUnit’s <code class="inline">capture_log()</code>:<
   assert capture_log(fn -&gt; RSM.matches?(expected, actual) end) =~
     &quot;[error] {:a, :b, :d} does not match {:a, :b, :c}&quot;
 end</code></pre>
-<p>This library is a clean reimplementation and extension of SelectiveRecursiveMatch, a
+<p>If you don’t care about the error messages and just want to ensure that the test fails when the actual data structure doesn’t match the expected data structure, you can instead use ExUnit’s <code class="inline">refute</code> and pass <code class="inline">%{suppress_warnings: true}</code> in the opts hash:</p>
+<pre><code class="elixir">defmodule MyTest do
+  use ExUnit.Case
+
+  alias RecursiveSelectiveMatch, as: RSM
+
+  expected = {:a, :b, :c}
+  actual = {:a, :b, :d}
+  refute RSM.matches?(expected, actual, %{suppress_warnings: true})
+end</code></pre>
+<p><a href="RecursiveSelectiveMatch.html"><code class="inline">RecursiveSelectiveMatch</code></a> is a clean reimplementation and extension of <code class="inline">SelectiveRecursiveMatch</code>, a
 library I wrote at Teladoc to solve the same problem. I have reimplemented it to
 write cleaner code on my second attempt. (As Fred Brooks wrote, “plan to throw
 one away; you will, anyhow.”) While I wrote this library on my own time and have added
@@ -249,7 +263,7 @@ building my initial implementation both came from Teladoc, so thank you, Teladoc
 by adding <code class="inline">recursive_selective_match</code> to your list of dependencies in <code class="inline">mix.exs</code>:</p>
 <pre><code class="elixir">def deps do
   [
-    {:recursive_selective_match, &quot;~&gt; 0.2.0&quot;}
+    {:recursive_selective_match, &quot;~&gt; 0.2.1&quot;}
   ]
 end</code></pre>
 <p>Documentation can be generated with <a href="https://github.com/elixir-lang/ex_doc">ExDoc</a>
@@ -268,7 +282,6 @@ be found at <a href="https://hexdocs.pm/recursive_selective_match">https://hexdo
 <p>I want :debug_mode to intelligently display all levels of information for the first failing path it encounters but not display any information for dead-ends it encounters that are not actually failing paths. These can be different if, for example, we’re searching through a list of items for one that matches, in which case we would want to ignore items that don’t match until we fail to match the expected item against the very last item in the corresponding actual list.</p>
 <p>I also hope to allow you to use your expected data structures as a template for generating concrete data structures for testing purposes.</p>
 <p>I want to add an option to require that list elements be in the order specified in the expected list. (By default, the order of list items is ignored.)</p>
-<p>I also want to provide an option to indicate that an expected list constitutes the <em>full</em> list to match, not just a subset of the actual list, so that if any additional list items are present in the actual list, the match would fail.</p>
 
       <footer class="footer">
         <p>

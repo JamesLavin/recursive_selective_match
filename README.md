@@ -1,10 +1,8 @@
 # RecursiveSelectiveMatch
 
-`RecursiveSelectiveMatch` is an Elixir library application enabling testing of
-deeply nested Elixir data structures. It includes several powerful features:
+`RecursiveSelectiveMatch` is an Elixir library application enabling testing of deeply nested Elixir data structures. It includes several powerful features:
 
-1) It selectively ignores irrelevant data elements and data structure subtrees you wish to exclude from your matching (like
-primary & foreign key IDs, timestamps, and 3rd-party IDs), so you can specify what must match and ignore everything else
+1) It selectively ignores irrelevant data elements and data structure subtrees you wish to exclude from your matching (like primary & foreign key IDs, timestamps, and 3rd-party IDs), so you can specify what must match and ignore everything else
 2) By default, it allows testing actual structs with expected maps, but you can enable :strict_struct_matching
 3) By default, it requires that keys be of the same type, but you can ignore differences between string and atom keys by enabling :standardize_keys
 4) Rather than testing only values, you can also test values' datatypes using any of the following:
@@ -70,14 +68,14 @@ expected data structure to the variable `expected`, you can test whether they ma
 
     defmodule MyTest do
       use ExUnit.Case
-      
+    
       alias RecursiveSelectiveMatch, as: RSM
-
+    
       test "actual matches expected" do
         expected = %{ players: :any_list, ... }
-
+    
         actual = %{ ... }
-
+    
         assert RSM.matches?(expected, actual)
       end
     end
@@ -157,8 +155,8 @@ a third argument, like this:
 
     defmodule MyTest do
       use ExUnit.Case
-      
-      alias RecursiveSelectiveMatch, as: RSM  
+    
+      alias RecursiveSelectiveMatch, as: RSM
     
       assert RSM.matches?(expected,
                           actual,

@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.18.3">
-    <title>RecursiveSelectiveMatch – RecursiveSelectiveMatch v0.2.0</title>
+    <title>RecursiveSelectiveMatch – RecursiveSelectiveMatch v0.2.1</title>
     <link rel="stylesheet" href="dist/app-480ffdc169.css" />
     
       <link rel="canonical" href="https://hexdocs.pm/recursive_selective_match/RecursiveSelectiveMatch.html" />
@@ -37,7 +37,7 @@
         RecursiveSelectiveMatch
       </h1>
       <h2 class="sidebar-projectVersion">
-        v0.2.0
+        v0.2.1
       </h2>
     </div>
     
@@ -71,7 +71,7 @@
 
 
       <h1>
-        <small class="visible-xs">RecursiveSelectiveMatch v0.2.0</small>
+        <small class="visible-xs">RecursiveSelectiveMatch v0.2.1</small>
         RecursiveSelectiveMatch
         
           <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L1" title="View Source" class="view-source" rel="help">
@@ -243,7 +243,7 @@ building my initial implementation both came from Teladoc, so thank you, Teladoc
     <a href="#includes?/3">includes?(expected, actual_list, opts \\ %{})</a>
   </div>
   
-    <div class="summary-synopsis"><p><code class="inline">RecursiveSelectiveMatch.includes?(expected, actual)</code> tests whether <code class="inline">expected</code> exists as a member of <code class="inline">actual</code>,
+    <div class="summary-synopsis"><p><code class="inline">RecursiveSelectiveMatch.includes?(expected, actual, opts // %{})</code> tests whether <code class="inline">expected</code> exists as a member of <code class="inline">actual</code>,
 where inclusion is tested using RecursiveSelectiveMatch.matches?()</p>
 </div>
   
@@ -299,7 +299,7 @@ where inclusion is tested using RecursiveSelectiveMatch.matches?()</p>
     </a>
     <span class="signature">convert_struct_to_map(struct)</span>
     
-      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L441" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L466" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -332,7 +332,7 @@ where inclusion is tested using RecursiveSelectiveMatch.matches?()</p>
     
   </div>
   <section class="docstring">
-    <p><code class="inline">RecursiveSelectiveMatch.includes?(expected, actual)</code> tests whether <code class="inline">expected</code> exists as a member of <code class="inline">actual</code>,
+    <p><code class="inline">RecursiveSelectiveMatch.includes?(expected, actual, opts // %{})</code> tests whether <code class="inline">expected</code> exists as a member of <code class="inline">actual</code>,
 where inclusion is tested using RecursiveSelectiveMatch.matches?()</p>
 
   </section>
@@ -349,7 +349,7 @@ where inclusion is tested using RecursiveSelectiveMatch.matches?()</p>
     </a>
     <span class="signature">matches?(expected, actual, opts \\ %{})</span>
     
-      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L293" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L307" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -382,7 +382,7 @@ false</code></pre>
     </a>
     <span class="signature">print_or_inspect(val)</span>
     
-      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L363" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L388" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -404,7 +404,7 @@ false</code></pre>
     </a>
     <span class="signature">stringify(value)</span>
     
-      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L432" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L457" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>

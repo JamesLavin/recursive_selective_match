@@ -2,29 +2,34 @@ defmodule RecursiveSelectiveMatch do
   require Logger
 
   @moduledoc """
-  RecursiveSelectiveMatch lets you specify a deeply nested test data structure and check
-  whether another actual data structure contains all keys and values specified in the
-  test data strucure. The actual data structure can include extra keys not mentioned in
-  the tes data structure. And actual data structure values will be ignored whenever the
-  corresponding test data structure value is :anything.
+  `RecursiveSelectiveMatch` is an Elixir library application enabling testing of deeply nested Elixir data structures. It includes several powerful features:
 
-  RecursiveSelectiveMatch is an Elixir library application enabling testing of
-  deeply nested Elixir data structures while selectively ignoring irrelevant data
-  elements and data structure subtrees you wish to exclude from your matching (like
-  primary & foreign key IDs, timestamps, and 3rd-party IDs) or testing just values'
-  datatypes using any of the following:
+  1) It selectively ignores irrelevant data elements and data structure subtrees you wish to exclude from your matching (like primary & foreign key IDs, timestamps, and 3rd-party IDs), so you can specify what must match and ignore everything else
+  2) By default, it allows testing actual structs with expected maps, but you can enable :strict_struct_matching
+  3) By default, it requires that keys be of the same type, but you can ignore differences between string and atom keys by enabling :standardize_keys
+  4) Rather than testing only values, you can also test values' datatypes using any of the following:
+      * :anything
+      * :any_list
+      * :any_map
+      * :any_tuple
+      * :any_integer
+      * :any_binary
+      * :any_atom
+      * :any_boolean
+      * :any_struct
+  5) Rather than test only values, you can test against arbitrary anonymous functions, for example: `fname: &(Regex.match?(~r/[A-Z][a-z]{2,}/,&1))`
+  6) You can test multiple criteria for a single value using a `{:multi, [...]}` tuple
 
-  * :anything
-  * :any_list
-  * :any_map
-  * :any_tuple
-  * :any_integer
-  * :any_binary
-  * :any_atom
-  * :any_boolean
-  * :any_struct
+  `RecursiveSelectiveMatch` currently provides two functions:
 
-  For example, imagine you have a function that returns a nested data structure like this:
+  1) `matches?(expected, actual, opts \\ %{})`
+  2) `includes?(expected, actual_list, opts \\ %{})`.
+
+  Most of this documentation covers `matches?(expected, actual, opts \\ %{})`, which is for matching entire data structures.
+
+  `includes?(expected, actual_list, opts \\ %{})` is similar but used to test whether `expected` matches _any list item_ inside the list `actual_list`.
+
+  For example, imagine you want to test a function that returns a nested data structure like this:
 
       %{
         players: [
@@ -40,13 +45,13 @@ defmodule RecursiveSelectiveMatch do
         data_fetched_at: "2018-04-17 11:14:53"
       }
 
-  Imagine further that each time you call this function, some details may vary. Maybe each time you
+  Imagine further that each time you call this function, some details vary. Maybe each time you
   call the function, you get a random team, not always the NBA's greatest team of all time (only
-  team with 17 championships... #boston_strong!) and you don't care about specific ids or the data_fetched_at
-  time stamp or maybe even details about the players or team. But you want to test that the structure
-  of the data is correct and possibly confirm some of the values.
+  team with 17 championships... #boston_strong!) and you don't care about specific ids or the
+  data_fetched_at time stamp or maybe even details about the players or team. But you want to
+  test that the structure of the data is correct and possibly confirm some of the values.
 
-  With RecursiveSelectiveMatch, you can create a generic test by specifying an expected data structure
+  With `RecursiveSelectiveMatch`, you can create a generic test by specifying an _expected_ data structure,
   like this:
 
       %{
@@ -60,7 +65,24 @@ defmodule RecursiveSelectiveMatch do
         data_fetched_at: :any_binary
       }
 
-  This successfully matches (you can see the test in test/recursive_selective_match_test.exs).
+  If you assign the actual data structure (in this case a map) to the variable `actual` and the
+  expected data structure to the variable `expected`, you can test whether they match using:
+
+      defmodule MyTest do
+        use ExUnit.Case
+
+        alias RecursiveSelectiveMatch, as: RSM
+
+        test "actual matches expected" do
+          expected = %{ players: :any_list, ... }
+
+          actual = %{ ... }
+
+          assert RSM.matches?(expected, actual)
+        end
+      end
+
+  Please note that the order matters. The first parameter is for _expected_ and the second is for _actual_. This successfully matches (you can see the test in [test/recursive_selective_match_test.exs](test/recursive_selective_match_test.exs)).
 
   Alternatively, you can pass in any function as a matcher. The above can be rewritten as the
   following (notice that both approaches can be used interchangeably):
@@ -76,8 +98,8 @@ defmodule RecursiveSelectiveMatch do
         data_fetched_at: &is_binary/1
       }
 
-  Even better, you can pass in a one-argument anonymous function and it will pass the
-  actual value in for testing. The following expectation will also pass with the example above:
+  Even better, you can pass in a one-argument anonymous function and it will pass the actual
+  value in for testing. The following expectation will also pass with the example above:
 
       %{
         players: &(length(&1) == 3),
@@ -94,24 +116,21 @@ defmodule RecursiveSelectiveMatch do
         data_fetched_at: &(Regex.match?(~r/2018-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/, &1))
       }
 
-  RecursiveSelectiveMatch currently works (at least sort of) with Elixir maps, lists,
-  tuples, and structs. (When comparing an expected struct against an actual struct, it begins
-  first compares based on struct type and then compares keys & values. When comparing an expected
-  map against an actual struct, by default, it only compares keys & values. To prevent expected
-  maps from matching actual structs, pass `strict_struct_matching: true` in your options map)
+  `RecursiveSelectiveMatch` currently works (at least sort of) with Elixir maps, lists,
+  tuples, and structs (which it begins comparing based on struct type and then treats as maps).
 
-  You can also pass in multiple expectations for a single value using a {:multi, ...} tuple.
+  You can also specify multiple expectations for a single value using a `{:multi, ...}` tuple.
   The following will check that: 1) there are exactly three items in the `:players` list; and,
-  2) every player has an `lname` field that is a string with at least four bytes:
+  2) every player has an `lname` field which is a string of at least four bytes:
 
-     %{
-        players: {:multi, [&(length(&1) == 3),
-                           &(Enum.all?(&1, fn(player) -> (player.lname |> byte_size()) >= 4 end))
-                          ]
-                 }
-      }
+      %{
+         players: {:multi, [&(length(&1) == 3),
+                            &(Enum.all?(&1, fn(player) -> (player.lname |> byte_size()) >= 4 end))
+                           ]
+                  }
+       }
 
-  After adding RecursiveSelectiveMatch to your project as a dependency, you can pass
+  After adding `RecursiveSelectiveMatch` to your project as a dependency, you can pass
   an expected and an actual data structure to `RecursiveSelectiveMatch.matches?()` as follows.
   If every element in `expected` also exists in `actual`, `matches?()` should return `true`.
   If any element of `expected` is not in `actual`, `matches?()` should return `false`.
@@ -123,15 +142,65 @@ defmodule RecursiveSelectiveMatch do
   `RecursiveSelectiveMatch.matches?()` take an optional third argument, which is a map of
   options:
 
-  * You can disable the default behavior of displaying the reason for the match failure by passing an options map (as a third argument) containing `%{suppress_warnings: true}`.
+  * _To disable warnings_: You can disable the default behavior of displaying the reason for any match failure by passing an options map (as a third argument) containing `%{suppress_warnings: true}`.
 
-  * You can override the default behavior of requiring that map keys be the same type and instead ignore differences between string and atom keys in maps by passing an options map (as a third argument) containing `%{standardize_keys: true}`.
+  * _To treat string & atom keys as equivalent when evaluating maps_: You can override the default behavior of requiring that maps' expected and actual keys be of the same type and instead ignore differences between string and atom keys in maps by passing an options map (as a third argument) containing `%{standardize_keys: true}`.
 
-  * You can override the default behavior of allowing maps to match structs, and instead prevent maps from matching structs by passing an options map (as a third argument) containing `%{strict_struct_matching: true}`.
+  * _To prevent expected maps from matching actual structs_: If you expect a map and attempt to match it against an actual struct, by default `RecursiveSelectiveMatch` treats the struct as a map for matching purposes. You can override this default behavior and prevent expected maps from matching actual structs by passing an options map (as a third argument) containing `%{strict_struct_matching: true}`, which will prevent ordinary maps from matching structs.
 
-  * You can override the default behavior of calling Logger.error() on errors to instead call IO.inspect() by passing an options map (as a third argument) containing `%{io_errors: true}`.
+  * _To require that lists match exactly (i.e., all expected list elements are present & in the expected order)_: The default behavior is to consider lists to match if all expected list elements are found in the actual list. If you want to consider lists to match only if the lists are identical, you can pass an options map (as a third argument) containing `%{exact_lists: true}`. This will cause lists to match only if they match exactly.
 
-  This library is a clean reimplementation and extension of SelectiveRecursiveMatch, a
+  * _To require that actual lists contain all expected list elements but ignore order_: The default behavior is to consider lists to match if all expected list elements are found in the actual list. If you want to consider lists to match only if all expected list items are present and no additional list items are present in the actual list (and you don't care about the ordering of these elements), you can pass an options map (as a third argument) containing `%{full_lists: true}`. This will cause lists to match only if all expected list elements are present and no unexpected list elements are present.
+
+  If you wanted to change the earlier example by overriding all three default options, just add
+  a third argument, like this:
+
+      defmodule MyTest do
+        use ExUnit.Case
+
+        alias RecursiveSelectiveMatch, as: RSM
+
+        assert RSM.matches?(expected,
+                            actual,
+                            %{suppress_warnings: true,
+                              standardize_keys: true,
+                              strict_struct_matching: true})
+      end
+
+  `RecursiveSelectiveMatch` module originally printed failure messages. I've rewritten it to log error messages,
+  but you can override this to keep the original behavior by passing `io_errors: true` inside
+  the opts map.
+
+  You can test that the correct error messages are generated (and prevent those error messages from
+  leaking through) by using ExUnit's `capture_log()`:
+
+      defmodule MyTest do
+        use ExUnit.Case
+        import ExUnit.CaptureLog
+
+        alias RecursiveSelectiveMatch, as: RSM
+
+        expected = {:a, :b, :c}
+        actual = {:a, :b, :d}
+        assert capture_log(fn -> RSM.matches?(expected, actual) end) =~
+          "[error] :d does not match :c"
+        assert capture_log(fn -> RSM.matches?(expected, actual) end) =~
+          "[error] {:a, :b, :d} does not match {:a, :b, :c}"
+      end
+
+  If you don't care about the error messages and just want to ensure that the test fails when the actual data structure doesn't match the expected data structure, you can instead use ExUnit's `refute` and pass `%{suppress_warnings: true}` in the opts hash:
+
+      defmodule MyTest do
+        use ExUnit.Case
+
+        alias RecursiveSelectiveMatch, as: RSM
+
+        expected = {:a, :b, :c}
+        actual = {:a, :b, :d}
+        refute RSM.matches?(expected, actual, %{suppress_warnings: true})
+      end
+
+  `RecursiveSelectiveMatch` is a clean reimplementation and extension of `SelectiveRecursiveMatch`, a
   library I wrote at Teladoc to solve the same problem. I have reimplemented it to
   write cleaner code on my second attempt. (As Fred Brooks wrote, "plan to throw
   one away; you will, anyhow.") While I wrote this library on my own time and have added
