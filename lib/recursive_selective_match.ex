@@ -140,7 +140,7 @@ defmodule RecursiveSelectiveMatch do
   """
 
   @doc """
-  `RecursiveSelectiveMatch.includes?(expected, actual)` tests whether `expected` exists as a member of `actual`,
+  `RecursiveSelectiveMatch.includes?(expected, actual, opts // %{})` tests whether `expected` exists as a member of `actual`,
   where inclusion is tested using RecursiveSelectiveMatch.matches?()
 
   """
@@ -237,15 +237,29 @@ defmodule RecursiveSelectiveMatch do
 
   # Look for each expected list element
   # Report expected list element not in actual list
+  # By default, ignore order of elements within list
+  # If %{exact_lists: true}, match only if the actual list exactly equals the expected list
+  # If %{full_lists: true}, match only if the actual list contains only elements in the expected list
+  # If %{ordered_lists: true}, match only if elements are in order
+  def matches?(expected, actual, %{exact_lists: true} = opts) when is_list(expected) and is_list(actual) do
+    success = length(expected) == length(actual) &&
+              Enum.zip(expected, actual)
+              |> Enum.all?(fn {exp, act} -> matches?(exp, act) end)
+    log_unequal_warning(expected, actual, success, opts)
+  end
+
+  def matches?(expected, actual, %{full_lists: true} = opts) when is_list(expected) and is_list(actual) do
+    success = length(expected) == length(actual) &&
+              all_expected_list_elements_in_actual(expected, actual, opts)
+    log_unequal_warning(expected, actual, success, opts)
+  end
+
+  # TODO: Make this work
+  # def matches?(expected, actual, %{ordered_lists: true} = opts) when is_list(expected) and is_list(actual) do
+  # end
+
   def matches?(expected, actual, opts) when is_list(expected) and is_list(actual) do
-    success = Enum.all?(expected, fn expected_element ->
-      Enum.any?(actual,
-                fn(actual_element) ->
-                  matches?(expected_element,
-                           actual_element,
-                           Map.merge(opts, %{suppress_warnings: true}))
-                end)
-    end)
+    success = all_expected_list_elements_in_actual(expected, actual, opts)
     log_unequal_warning(expected, actual, success, opts)
   end
 
@@ -295,6 +309,17 @@ defmodule RecursiveSelectiveMatch do
     log_unequal_warning(expected, actual, success, opts)
   end
 
+  defp all_expected_list_elements_in_actual(expected, actual, opts) do
+    Enum.all?(expected, fn expected_element ->
+      Enum.any?(actual,
+                fn(actual_element) ->
+                  matches?(expected_element,
+                           actual_element,
+                           Map.merge(opts, %{suppress_warnings: true}))
+                end)
+    end)
+  end
+
   defp add_non_nil(list, val) when is_nil(val), do: list
   defp add_non_nil(list, val) when is_list(list), do: [val | list]
 
@@ -320,7 +345,7 @@ defmodule RecursiveSelectiveMatch do
                      |> print_or_inspect()
     string_actual_map = actual_map
                         |> print_or_inspect()
-    error_string = "Key #{printable_key} is expected to have a value of #{expected_val} in #{string_exp_map} but has a value of #{actual_val} in #{string_actual_map}"
+    error_string = "Key #{printable_key} is expected to have a value of #{expected_val} (according to #{string_exp_map}) but has a value of #{actual_val} (in #{string_actual_map})"
     log_error_string(error_string, false, opts)
     false
   end
