@@ -148,6 +148,10 @@ options:
 
 * _To prevent expected maps from matching actual structs_: If you expect a map and attempt to match it against an actual struct, by default `RecursiveSelectiveMatch` treats the struct as a map for matching purposes. You can override this default behavior and prevent expected maps from matching actual structs by passing an options map (as a third argument) containing `%{strict_struct_matching: true}`, which will prevent ordinary maps from matching structs.
 
+* _To require that lists match exactly (i.e., all expected list elements are present & in the expected order)_: The default behavior is to consider lists to match if all expected list elements are found in the actual list. If you want to consider lists to match only if the lists are identical, you can pass an options map (as a third argument) containing `%{exact_lists: true}`. This will cause lists to match only if they match exactly.
+
+* _To require that actual lists contain all expected list elements but ignore order_: The default behavior is to consider lists to match if all expected list elements are found in the actual list. If you want to consider lists to match only if all expected list items are present and no additional list items are present in the actual list (and you don't care about the ordering of these elements), you can pass an options map (as a third argument) containing `%{full_lists: true}`. This will cause lists to match only if all expected list elements are present and no unexpected list elements are present.
+
 If you wanted to change the earlier example by overriding all three default options, just add
 a third argument, like this:
 
@@ -184,7 +188,19 @@ leaking through) by using ExUnit's `capture_log()`:
         "[error] {:a, :b, :d} does not match {:a, :b, :c}"
     end
 
-This library is a clean reimplementation and extension of SelectiveRecursiveMatch, a
+If you don't care about the error messages and just want to ensure that the test fails when the actual data structure doesn't match the expected data structure, you can instead use ExUnit's `refute` and pass `%{suppress_warnings: true}` in the opts hash:
+
+    defmodule MyTest do
+      use ExUnit.Case
+
+      alias RecursiveSelectiveMatch, as: RSM
+
+      expected = {:a, :b, :c}
+      actual = {:a, :b, :d}
+      refute RSM.matches?(expected, actual, %{suppress_warnings: true})
+    end
+
+`RecursiveSelectiveMatch` is a clean reimplementation and extension of `SelectiveRecursiveMatch`, a
 library I wrote at Teladoc to solve the same problem. I have reimplemented it to
 write cleaner code on my second attempt. (As Fred Brooks wrote, "plan to throw
 one away; you will, anyhow.") While I wrote this library on my own time and have added

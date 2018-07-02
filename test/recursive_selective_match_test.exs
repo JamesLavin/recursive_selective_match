@@ -82,9 +82,61 @@ defmodule RecursiveSelectiveMatchTest do
   test "tuples that don't match print warnings via IO.inspect when io_errors: true" do
     expected = {:a, :b, :c}
     actual = {:a, :b, :d}
+    # TODO: The next line produces IO output I'd like to suppress without voiding the test
     assert capture_log(fn -> RSM.matches?(expected, actual, %{io_errors: true}) end) == ""
     assert capture_io(fn -> RSM.matches?(expected, actual, %{io_errors: true}) end) =~ ":d does not match :c"
     assert capture_io(fn -> RSM.matches?(expected, actual, %{io_errors: true}) end) =~ "{:a, :b, :d} does not match {:a, :b, :c}"
+  end
+
+  defp efgh_list() do
+    [["e","f"],["g","h"]]
+  end
+
+  test "even with %{full_lists: true}, exact matches of lists of lists match" do
+    assert RSM.matches?([ ["e", "f"], ["g", "h"] ], efgh_list(), %{full_lists: true})
+  end
+
+  test "by default, unexpected actual list elements are ignored" do
+    assert RSM.matches?([ ["e", "f"] ], efgh_list())
+  end
+
+  # TODO: Make this work
+  @tag :skip
+  test "regexs can be used to match list elements" do
+    assert RSM.matches?([ [~r/e/, ~r/f/] ], efgh_list())
+  end
+
+  test "when %{full_lists: true}, unexpected actual list elements cause match failure" do
+    assert capture_log(fn ->
+      RSM.matches?([ ["e", "f"] ], efgh_list(), %{full_lists: true})
+    end) =~ "[error] [[\"e\", \"f\"], [\"g\", \"h\"]] does not match [[\"e\", \"f\"]]"
+  end
+
+  test "when %{full_lists: true}, order of list elements is ignored" do
+    assert RSM.matches?([ ["g", "h"], ["e", "f"] ], efgh_list(), %{full_lists: true})
+  end
+
+  test "exactly matching lists match when %{exact_lists: true}" do
+    assert RSM.matches?([ ["e", "f"], ["g", "h"] ], efgh_list(), %{exact_lists: true})
+  end
+
+  test "presence of unexpected list items causes match failure if %{exact_lists: true}" do
+    assert capture_log(fn ->
+      RSM.matches?([ ["e", "f"] ], efgh_list(), %{exact_lists: true})
+    end) =~
+    "[error] [[\"e\", \"f\"], [\"g\", \"h\"]] does not match [[\"e\", \"f\"]]"
+  end
+
+  test "order of list items matters when %{exact_lists: true}" do
+    assert capture_log(fn ->
+      RSM.matches?([ ["g", "h"], ["e", "f"] ], efgh_list(), %{exact_lists: true})
+    end) =~ "[error] [[\"e\", \"f\"], [\"g\", \"h\"]] does not match [[\"g\", \"h\"], [\"e\", \"f\"]]"
+  end
+
+  # TODO: Make this work
+  @tag :skip
+  test "order matters when matching list elements if %{ordered_lists: true}" do
+    refute RSM.matches?([ ["f", "e"] ], efgh_list(), %{ordered_lists: true})
   end
 
   test "suppress_warnings: true disables error logging" do
