@@ -5,6 +5,9 @@
 ### 1. Enhancements
 
   * Improve informativeness of error message when expected map key doesn't match actual map key.
+  * Add %{full_lists: true} option that ensures actual lists contain no additional list elements not listed in the expected list (by default, lists match if an actual list contains all elements in the expected list, even if additional elements are present)
+  * Add %{exact_lists: true} option that ensures every actual list completely matches its expected list. All list elements in actual must be in expected and must be in the same order, and all list elements in expected must be in actual.
+  * Improve documentation with example showing `refute RSM.matches?(expected, actual, %{suppress_warnings: true})`
 
 ## 0.2.0
 

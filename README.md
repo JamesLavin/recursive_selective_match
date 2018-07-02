@@ -219,7 +219,7 @@ by adding `recursive_selective_match` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:recursive_selective_match, "~> 0.2.0"}
+    {:recursive_selective_match, "~> 0.2.1"}
   ]
 end
 ```
@@ -239,5 +239,3 @@ I want :debug_mode to intelligently display all levels of information for the fi
 I also hope to allow you to use your expected data structures as a template for generating concrete data structures for testing purposes.
 
 I want to add an option to require that list elements be in the order specified in the expected list. (By default, the order of list items is ignored.)
-
-I also want to provide an option to indicate that an expected list constitutes the _full_ list to match, not just a subset of the actual list, so that if any additional list items are present in the actual list, the match would fail.
