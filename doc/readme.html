@@ -5,10 +5,8 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.18.3">
-    <title>RecursiveSelectiveMatch – RecursiveSelectiveMatch v0.2.1</title>
+    <title>RecursiveSelectiveMatch – RecursiveSelectiveMatch v0.2.2</title>
     <link rel="stylesheet" href="dist/app-480ffdc169.css" />
-    
-      <link rel="canonical" href="https://hexdocs.pm/recursive_selective_match/readme.html" />
     
     <script src="dist/sidebar_items-fe3456bd80.js"></script>
     
@@ -37,7 +35,7 @@
         RecursiveSelectiveMatch
       </h1>
       <h2 class="sidebar-projectVersion">
-        v0.2.1
+        v0.2.2
       </h2>
     </div>
     
@@ -71,10 +69,8 @@
 
 
 <h1>RecursiveSelectiveMatch</h1>
-<p><a href="RecursiveSelectiveMatch.html"><code class="inline">RecursiveSelectiveMatch</code></a> is an Elixir library application enabling testing of
-deeply nested Elixir data structures. It includes several powerful features:</p>
-<p>1) It selectively ignores irrelevant data elements and data structure subtrees you wish to exclude from your matching (like
-primary &amp; foreign key IDs, timestamps, and 3rd-party IDs), so you can specify what must match and ignore everything else
+<p><a href="RecursiveSelectiveMatch.html"><code class="inline">RecursiveSelectiveMatch</code></a> is an Elixir library application enabling testing of deeply nested Elixir data structures. It includes several powerful features:</p>
+<p>1) It selectively ignores irrelevant data elements and data structure subtrees you wish to exclude from your matching (like primary &amp; foreign key IDs, timestamps, and 3rd-party IDs), so you can specify what must match and ignore everything else
 2) By default, it allows testing actual structs with expected maps, but you can enable :strict_struct_matching
 3) By default, it requires that keys be of the same type, but you can ignore differences between string and atom keys by enabling :standardize_keys
 4) Rather than testing only values, you can also test values’ datatypes using any of the following:</p>
@@ -206,7 +202,7 @@ a third argument, like this:</p>
 <pre><code class="elixir">defmodule MyTest do
   use ExUnit.Case
 
-  alias RecursiveSelectiveMatch, as: RSM  
+  alias RecursiveSelectiveMatch, as: RSM
 
   assert RSM.matches?(expected,
                       actual,
@@ -263,7 +259,7 @@ building my initial implementation both came from Teladoc, so thank you, Teladoc
 by adding <code class="inline">recursive_selective_match</code> to your list of dependencies in <code class="inline">mix.exs</code>:</p>
 <pre><code class="elixir">def deps do
   [
-    {:recursive_selective_match, &quot;~&gt; 0.2.1&quot;}
+    {:recursive_selective_match, &quot;~&gt; 0.2.2&quot;}
   ]
 end</code></pre>
 <p>Documentation can be generated with <a href="https://github.com/elixir-lang/ex_doc">ExDoc</a>
