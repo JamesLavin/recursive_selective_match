@@ -364,6 +364,10 @@ defmodule RecursiveSelectiveMatch do
     true
   end
 
+  def matches?(:any_date, actual, _opts) do
+    is_date(actual) 
+  end
+
   def matches?(expected, actual, opts) when is_function(expected) do
     success = expected.(actual)
     log_unequal_warning(expected, actual, success, opts)
@@ -539,6 +543,16 @@ defmodule RecursiveSelectiveMatch do
     Enum.reduce(keys_to_strip,
                 map,
                 fn(key_to_strip, acc) -> Map.delete(acc, key_to_strip) end)
+  end
+
+
+  defp is_date(val) do
+    with %Date{calendar: c, day: d, month: m, year: y} <- val do
+      true
+    else
+      _ ->
+        false
+    end
   end
 
 end

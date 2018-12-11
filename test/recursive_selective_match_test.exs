@@ -14,7 +14,7 @@ defmodule RecursiveSelectiveMatchTest do
       ],
       team: %{name: "Celtics",
               nba_id: 13,
-              greatest_player: %Person{id: 4, fname: "Bill", lname: "Russell", position: :center, jersey_num: "6"},
+              greatest_player: %Person{id: 4, fname: "Bill", lname: "Russell", position: :center, jersey_num: "6", born: ~D[1934-02-12]},
               plays_at: %{arena: %{name: "Boston Garden",
                                    location: %{"city" => "Boston", "state" => "MA"}}}},
       data_fetched_at: "2018-04-17 11:14:53"
@@ -201,7 +201,8 @@ defmodule RecursiveSelectiveMatchTest do
                                        fname: &(Regex.match?(~r/[A-Z][a-z]{2,}/,&1)),
                                        lname: &(Regex.match?(~r/[A-Z][a-z]{2,}/,&1)),
                                        position: &(&1 in [:center, :guard, :forward]),
-                                       jersey_num: &(Regex.match?(~r/\d{1,2}/,&1))},
+                                       jersey_num: &(Regex.match?(~r/\d{1,2}/,&1)),
+                                       born: :any_date},
               plays_at: %{arena: %{name: &(String.length(&1) > 3),
                                    location: %{"city" => &is_binary/1,
                                                "state" => &(Regex.match?(~r/[A-Z]{2}/, &1))}}}},
