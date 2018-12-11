@@ -498,4 +498,16 @@ defmodule RecursiveSelectiveMatchTest do
     assert RSM.matches?(expected, actual)
   end
 
+  test ":any_time matches Time values" do
+    expected = :any_time
+    actual = ~T[11:13:12.032]
+    assert RSM.matches?(expected, actual)
+  end
+
+  test ":any_time doesn't match Date values" do
+    expected = :any_time
+    actual = ~D[2018-11-09]
+    refute RSM.matches?(expected, actual)
+  end
+
 end

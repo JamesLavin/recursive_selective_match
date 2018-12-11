@@ -9,6 +9,8 @@ defmodule RecursiveSelectiveMatch do
   3) By default, it requires that keys be of the same type, but you can ignore differences between string and atom keys by enabling :standardize_keys
   4) Rather than testing only values, you can also test values' datatypes using any of the following:
       * :anything
+      * :any_date
+      * :any_time
       * :any_list
       * :any_map
       * :any_tuple
@@ -368,6 +370,10 @@ defmodule RecursiveSelectiveMatch do
     is_date(actual) 
   end
 
+  def matches?(:any_time, actual, _opts) do
+    is_time(actual) 
+  end
+
   def matches?(expected, actual, opts) when is_function(expected) do
     success = expected.(actual)
     log_unequal_warning(expected, actual, success, opts)
@@ -547,7 +553,16 @@ defmodule RecursiveSelectiveMatch do
 
 
   defp is_date(val) do
-    with %Date{calendar: c, day: d, month: m, year: y} <- val do
+    with %Date{calendar: _c, day: _d, month: _m, year: _y} <- val do
+      true
+    else
+      _ ->
+        false
+    end
+  end
+
+  defp is_time(val) do
+    with %Time{calendar: _c, hour: _h, minute: _m, second: _s, microsecond: _ms} <- val do
       true
     else
       _ ->

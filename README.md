@@ -7,6 +7,8 @@
 3) By default, it requires that keys be of the same type, but you can ignore differences between string and atom keys by enabling :standardize_keys
 4) Rather than testing only values, you can also test values' datatypes using any of the following:
     * :anything
+    * :any_date
+    * :any_time
     * :any_list
     * :any_map
     * :any_tuple
