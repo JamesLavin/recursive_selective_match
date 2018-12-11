@@ -207,12 +207,12 @@ defmodule RecursiveSelectiveMatch do
       end
 
   `RecursiveSelectiveMatch` is a clean reimplementation and extension of `SelectiveRecursiveMatch`, a
-  library I wrote at Teladoc to solve the same problem. I reimplemented it to
+  library I wrote at [Teladoc](https://www.teladoc.com/) to solve the same problem. I reimplemented it to
   write cleaner code on my second attempt. (As Fred Brooks wrote, "plan to throw
   one away; you will, anyhow.") While I created this library on my own time and have added
   features not present in the original, my inspiration to create this and the time spent
   building my initial implementation both came from Teladoc, so thank you, Teladoc! Thanks also
-  to CareDox where I work now and have begun extending this library.
+  to [CareDox](https://caredox.com/) where I work now and have begun extending this library.
   """
 
   @doc """

@@ -204,11 +204,12 @@ If you don't care about the error messages and just want to ensure that the test
     end
 
 `RecursiveSelectiveMatch` is a clean reimplementation and extension of `SelectiveRecursiveMatch`, a
-library I wrote at Teladoc to solve the same problem. I have reimplemented it to
+library I wrote at [Teladoc](https://www.teladoc.com/) to solve the same problem. I have reimplemented it to
 write cleaner code on my second attempt. (As Fred Brooks wrote, "plan to throw
 one away; you will, anyhow.") While I wrote this library on my own time and have added
 features not present in the original, my inspiration to create this and the time spent
-building my initial implementation both came from Teladoc, so thank you, Teladoc!
+building my initial implementation both came from Teladoc, so thank you, Teladoc! Thanks
+also to [CareDox](https://caredox.com/), where I work now and have begun extending this library.
 
 ## Changelog
 
