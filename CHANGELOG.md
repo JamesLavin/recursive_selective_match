@@ -1,5 +1,13 @@
 # Changelog for RecursiveSelectiveMatch
 
+## 0.2.3
+
+### 1. Enhancements
+
+  * Add :any_date
+  * Add :any_time
+  * Add :any_naive_datetime
+
 ## 0.2.2
 
 ### 1. Enhancements

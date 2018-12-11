@@ -13,7 +13,7 @@ defmodule RecursiveSelectiveMatch.MixProject do
       app: :recursive_selective_match,
       docs: [main: "RecursiveSelectiveMatch",
              extras: ["README.md"]],
-      version: "0.2.2",
+      version: "0.2.3",
       elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env),
       start_permanent: Mix.env() == :prod,
@@ -29,7 +29,7 @@ defmodule RecursiveSelectiveMatch.MixProject do
 
   defp deps do
     [
-      {:ex_doc, "~> 0.16", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.19", only: :dev, runtime: false},
       {:atomic_map, "~> 0.8"},
     ]
   end
