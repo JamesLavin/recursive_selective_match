@@ -17,6 +17,7 @@ defmodule RecursiveSelectiveMatchTest do
               greatest_player: %Person{id: 4, fname: "Bill", lname: "Russell", position: :center, jersey_num: "6", born: ~D[1934-02-12]},
               plays_at: %{arena: %{name: "Boston Garden",
                                    location: %{"city" => "Boston", "state" => "MA"}}}},
+      formatted_data_fetched_at: ~N[2018-04-17 11:14:53],
       data_fetched_at: "2018-04-17 11:14:53"
     }
   end
@@ -30,6 +31,7 @@ defmodule RecursiveSelectiveMatchTest do
               plays_at: %{arena: %{name: :any_binary,
                                    location: %{"city" => :any_binary,
                                                "state" => :any_binary}}}},
+      formatted_data_fetched_at: :any_naive_datetime,
       data_fetched_at: :any_binary
     }
   end

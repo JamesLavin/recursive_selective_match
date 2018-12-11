@@ -9,6 +9,7 @@
     * :anything
     * :any_date
     * :any_time
+    * :any_naive_datetime
     * :any_list
     * :any_map
     * :any_tuple
@@ -39,9 +40,10 @@ For example, imagine you want to test a function that returns a nested data stru
       ],
       team: %{name: "Celtics",
               nba_id: 13,
-              greatest_player: %Person{id: 4, fname: "Bill", lname: "Russell", position: :center, jersey_num: "6"},
+              greatest_player: %Person{id: 4, fname: "Bill", lname: "Russell", position: :center, jersey_num: "6", born: ~D[1934-02-12]},
               plays_at: %{arena: %{name: "Boston Garden",
                                    location: %{"city" => "Boston", "state" => "MA"}}}},
+      formatted_data_fetched_at: ~N[2018-04-17 11:14:53],
       data_fetched_at: "2018-04-17 11:14:53"
     }
 
@@ -62,6 +64,7 @@ like this:
               plays_at: %{arena: %{name: :any_binary,
                                    location: %{"city" => :any_binary,
                                                "state" => :any_binary}}}},
+      formatted_data_fetched_at: :any_naive_datetime,
       data_fetched_at: :any_binary
     }
 

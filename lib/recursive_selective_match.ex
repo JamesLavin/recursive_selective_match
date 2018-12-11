@@ -11,6 +11,7 @@ defmodule RecursiveSelectiveMatch do
       * :anything
       * :any_date
       * :any_time
+      * :any_naive_datetime
       * :any_list
       * :any_map
       * :any_tuple
@@ -41,10 +42,11 @@ defmodule RecursiveSelectiveMatch do
         ],
         team: %{name: "Celtics",
                 nba_id: 13,
-                greatest_player: %Person{id: 4, fname: "Bill", lname: "Russell", position: :center, jersey_num: "6"},
+                greatest_player: %Person{id: 4, fname: "Bill", lname: "Russell", position: :center, jersey_num: "6", born: ~D[1934-02-12]},
                 plays_at: %{arena: %{name: "Boston Garden",
                                      location: %{"city" => "Boston", "state" => "MA"}}}},
-        data_fetched_at: "2018-04-17 11:14:53"
+        data_fetched_at: "2018-04-17 11:14:53",
+        formatted_data_fetched_at: ~N[2018-04-17 11:14:53]
       }
 
   Imagine further that each time you call this function, some details vary. Maybe each time you
@@ -64,6 +66,7 @@ defmodule RecursiveSelectiveMatch do
                 plays_at: %{arena: %{name: :any_binary,
                                      location: %{"city" => :any_binary,
                                                  "state" => :any_binary}}}},
+        formatted_data_fetched_at: :any_naive_datetime,
         data_fetched_at: :any_binary
       }
 
@@ -111,7 +114,8 @@ defmodule RecursiveSelectiveMatch do
                                          fname: &(Regex.match?(~r/[A-Z][a-z]{2,}/,&1)),
                                          lname: &(Regex.match?(~r/[A-Z][a-z]{2,}/,&1)),
                                          position: &(&1 in [:center, :guard, :forward]),
-                                         jersey_num: &(Regex.match?(~r/\d{1,2}/,&1))},
+                                         jersey_num: &(Regex.match?(~r/\d{1,2}/,&1)),
+                                         born: :any_date},
                 plays_at: %{arena: %{name: &(String.length(&1) > 3),
                                      location: %{"city" => &is_binary/1,
                                                  "state" => &(Regex.match?(~r/[A-Z]{2}/, &1))}}}},
@@ -203,11 +207,12 @@ defmodule RecursiveSelectiveMatch do
       end
 
   `RecursiveSelectiveMatch` is a clean reimplementation and extension of `SelectiveRecursiveMatch`, a
-  library I wrote at Teladoc to solve the same problem. I have reimplemented it to
+  library I wrote at Teladoc to solve the same problem. I reimplemented it to
   write cleaner code on my second attempt. (As Fred Brooks wrote, "plan to throw
-  one away; you will, anyhow.") While I wrote this library on my own time and have added
+  one away; you will, anyhow.") While I created this library on my own time and have added
   features not present in the original, my inspiration to create this and the time spent
-  building my initial implementation both came from Teladoc, so thank you, Teladoc!
+  building my initial implementation both came from Teladoc, so thank you, Teladoc! Thanks also
+  to CareDox where I work now and have begun extending this library.
   """
 
   @doc """
@@ -372,6 +377,10 @@ defmodule RecursiveSelectiveMatch do
 
   def matches?(:any_time, actual, _opts) do
     is_time(actual) 
+  end
+
+  def matches?(:any_naive_datetime, actual, _opts) do
+    is_naive_datetime(actual) 
   end
 
   def matches?(expected, actual, opts) when is_function(expected) do
@@ -563,6 +572,15 @@ defmodule RecursiveSelectiveMatch do
 
   defp is_time(val) do
     with %Time{calendar: _c, hour: _h, minute: _m, second: _s, microsecond: _ms} <- val do
+      true
+    else
+      _ ->
+        false
+    end
+  end
+
+  defp is_naive_datetime(val) do
+    with %NaiveDateTime{calendar: _c, year: _yy, month: _mm, day: _dd, hour: _h, minute: _m, second: _s, microsecond: _ms} <- val do
       true
     else
       _ ->
