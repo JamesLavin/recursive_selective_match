@@ -9,9 +9,12 @@ defmodule RecursiveSelectiveMatch do
   3) By default, it requires that keys be of the same type, but you can ignore differences between string and atom keys by enabling :standardize_keys
   4) Rather than testing only values, you can also test values' datatypes using any of the following:
       * :anything
-      * :any_date
-      * :any_time
-      * :any_naive_datetime
+      * :any_iso8601_date (a string, like "2018-07-04"; rejects most invalid dates)
+      * :any_iso8601_time (a string, like "12:56:11"; rejects invalid times)
+      * :any_iso8601_datetime (a string, like "2018-07-04 12:56:11" or "2018-07-04T12:56:11"; rejects most invalid dates/times)
+      * :any_date (the Elixir Date representation)
+      * :any_time (the Elixir Time representation)
+      * :any_naive_datetime (the Elixir NaiveDateTime representation)
       * :any_list
       * :any_map
       * :any_tuple
@@ -223,10 +226,12 @@ defmodule RecursiveSelectiveMatch do
   def includes?(expected, actual_list, _opts \\ %{})
 
   def includes?(expected, actual_list, _opts) when is_list(actual_list) do
-    Enum.any?(actual_list,
-              fn(actual_val) ->
-                matches?(expected, actual_val, %{suppress_warnings: true})
-              end)
+    Enum.any?(
+      actual_list,
+      fn actual_val ->
+        matches?(expected, actual_val, %{suppress_warnings: true})
+      end
+    )
   end
 
   def includes?(_expected, _actual, _opts), do: false
@@ -246,7 +251,7 @@ defmodule RecursiveSelectiveMatch do
   def matches?(expected, actual, opts \\ %{})
 
   def matches?({:multi, list}, actual, opts) when is_list(list) do
-    Enum.all?(list, fn(expectation) -> matches?(expectation, actual, opts) end)
+    Enum.all?(list, fn expectation -> matches?(expectation, actual, opts) end)
   end
 
   def matches?(%{__struct__: exp_struct} = expected, %{__struct__: act_struct} = actual, opts) do
@@ -260,8 +265,10 @@ defmodule RecursiveSelectiveMatch do
     case opts[:strict_struct_matching] do
       true ->
         false
+
       false ->
         matches?(expected, actual |> convert_struct_to_map(), opts)
+
       nil ->
         matches?(expected, actual |> convert_struct_to_map(), opts)
     end
@@ -272,40 +279,70 @@ defmodule RecursiveSelectiveMatch do
       cond do
         opts[:standardize_keys] ->
           standardize_keys(expected, actual)
+
         true ->
           {expected, actual}
       end
-    success = Enum.reduce(Map.keys(expected), true, fn key, acc ->
-      has_key = Map.has_key?(actual, key)
-      has_correct_value = matches?(Map.get(expected, key), Map.get(actual, key), Map.merge(opts, %{suppress_warnings: true}))
-      if !has_key do
-        log_missing_map_key_warning(key, expected, actual, opts)
-      end
-      if has_key && !has_correct_value do
-        log_incorrect_map_value_warning(key, expected, actual, opts)
-      end
-      acc && has_key && has_correct_value
-    end)
+
+    success =
+      Enum.reduce(Map.keys(expected), true, fn key, acc ->
+        has_key = Map.has_key?(actual, key)
+
+        has_correct_value =
+          matches?(
+            Map.get(expected, key),
+            Map.get(actual, key),
+            Map.merge(opts, %{suppress_warnings: true})
+          )
+
+        if !has_key do
+          log_missing_map_key_warning(key, expected, actual, opts)
+        end
+
+        if has_key && !has_correct_value do
+          log_incorrect_map_value_warning(key, expected, actual, opts)
+        end
+
+        acc && has_key && has_correct_value
+      end)
+
     log_unequal_warning(expected, actual, success, opts)
   end
 
   def matches?(expected, actual, opts) when is_tuple(expected) and is_tuple(actual) do
     cond do
       tuple_size(expected) > tuple_size(actual) ->
-        log_unequal_warning(expected, actual, false, Map.put(opts, :warning_message, "Expected tuple is larger than actual tuple"))
+        log_unequal_warning(
+          expected,
+          actual,
+          false,
+          Map.put(opts, :warning_message, "Expected tuple is larger than actual tuple")
+        )
+
       tuple_size(expected) < tuple_size(actual) ->
-        log_unequal_warning(expected, actual, false, Map.put(opts, :warning_message, "Actual tuple is larger than expected tuple"))
+        log_unequal_warning(
+          expected,
+          actual,
+          false,
+          Map.put(opts, :warning_message, "Actual tuple is larger than expected tuple")
+        )
+
       tuple_size(expected) >= 1 ->
-        is_equal = Enum.zip(expected |> Tuple.to_list(),
-                            actual |> Tuple.to_list())
-                   |> Enum.map(fn {exp, act} -> matches?(exp, act, opts) end)
-                   |> Enum.all?(fn(x) -> x == true end)
+        is_equal =
+          Enum.zip(
+            expected |> Tuple.to_list(),
+            actual |> Tuple.to_list()
+          )
+          |> Enum.map(fn {exp, act} -> matches?(exp, act, opts) end)
+          |> Enum.all?(fn x -> x == true end)
+
         if is_equal do
           true
         else
           log_unequal_warning(expected, actual, false, opts)
           false
         end
+
       true ->
         true
     end
@@ -317,16 +354,22 @@ defmodule RecursiveSelectiveMatch do
   # If %{exact_lists: true}, match only if the actual list exactly equals the expected list
   # If %{full_lists: true}, match only if the actual list contains only elements in the expected list
   # If %{ordered_lists: true}, match only if elements are in order
-  def matches?(expected, actual, %{exact_lists: true} = opts) when is_list(expected) and is_list(actual) do
-    success = length(expected) == length(actual) &&
-              Enum.zip(expected, actual)
-              |> Enum.all?(fn {exp, act} -> matches?(exp, act) end)
+  def matches?(expected, actual, %{exact_lists: true} = opts)
+      when is_list(expected) and is_list(actual) do
+    success =
+      length(expected) == length(actual) &&
+        Enum.zip(expected, actual)
+        |> Enum.all?(fn {exp, act} -> matches?(exp, act) end)
+
     log_unequal_warning(expected, actual, success, opts)
   end
 
-  def matches?(expected, actual, %{full_lists: true} = opts) when is_list(expected) and is_list(actual) do
-    success = length(expected) == length(actual) &&
-              all_expected_list_elements_in_actual(expected, actual, opts)
+  def matches?(expected, actual, %{full_lists: true} = opts)
+      when is_list(expected) and is_list(actual) do
+    success =
+      length(expected) == length(actual) &&
+        all_expected_list_elements_in_actual(expected, actual, opts)
+
     log_unequal_warning(expected, actual, success, opts)
   end
 
@@ -372,15 +415,30 @@ defmodule RecursiveSelectiveMatch do
   end
 
   def matches?(:any_date, actual, _opts) do
-    is_date(actual) 
+    is_date(actual)
+  end
+
+  def matches?(:any_iso8601_date, actual, _opts) do
+    Regex.match?(~r/\d{4}-(0[1-9]|1[0-2])-([0-2]\d|3[01])/, actual)
+  end
+
+  def matches?(:any_iso8601_time, actual, _opts) do
+    Regex.match?(~r/([01]\d|2[0-3]):[0-5]\d:[0-5]\d/, actual)
+  end
+
+  def matches?(:any_iso8601_datetime, actual, _opts) do
+    Regex.match?(
+      ~r/\d{4}-(0[1-9]|1[0-2])-([0-2]\d|3[01])[ T]([01]\d|2[0-3]):[0-5]\d:[0-5]\d/,
+      actual
+    )
   end
 
   def matches?(:any_time, actual, _opts) do
-    is_time(actual) 
+    is_time(actual)
   end
 
   def matches?(:any_naive_datetime, actual, _opts) do
-    is_naive_datetime(actual) 
+    is_naive_datetime(actual)
   end
 
   def matches?(expected, actual, opts) when is_function(expected) do
@@ -399,12 +457,16 @@ defmodule RecursiveSelectiveMatch do
 
   defp all_expected_list_elements_in_actual(expected, actual, opts) do
     Enum.all?(expected, fn expected_element ->
-      Enum.any?(actual,
-                fn(actual_element) ->
-                  matches?(expected_element,
-                           actual_element,
-                           Map.merge(opts, %{suppress_warnings: true}))
-                end)
+      Enum.any?(
+        actual,
+        fn actual_element ->
+          matches?(
+            expected_element,
+            actual_element,
+            Map.merge(opts, %{suppress_warnings: true})
+          )
+        end
+      )
     end)
   end
 
@@ -415,35 +477,52 @@ defmodule RecursiveSelectiveMatch do
     key = stringify(key)
     expected = stringify(expected)
     actual = stringify(actual)
-    error_string = "Key #{key} not present in #{inspect actual} but present in #{inspect expected}"
+
+    error_string =
+      "Key #{key} not present in #{inspect(actual)} but present in #{inspect(expected)}"
+
     log_error_string(error_string, false, opts)
     false
   end
 
   defp log_incorrect_map_value_warning(key, expected_map, actual_map, opts) do
-    printable_key = key
-                    |> print_or_inspect()
-    expected_val = expected_map
-                   |> Map.get(key)
-                   |> print_or_inspect()
-    actual_val = actual_map
-                 |> Map.get(key)
-                 |> print_or_inspect()
-    string_exp_map = expected_map
-                     |> print_or_inspect()
-    string_actual_map = actual_map
-                        |> print_or_inspect()
-    error_string = "Key #{printable_key} is expected to have a value of #{expected_val} (according to #{string_exp_map}) but has a value of #{actual_val} (in #{string_actual_map})"
+    printable_key =
+      key
+      |> print_or_inspect()
+
+    expected_val =
+      expected_map
+      |> Map.get(key)
+      |> print_or_inspect()
+
+    actual_val =
+      actual_map
+      |> Map.get(key)
+      |> print_or_inspect()
+
+    string_exp_map =
+      expected_map
+      |> print_or_inspect()
+
+    string_actual_map =
+      actual_map
+      |> print_or_inspect()
+
+    error_string =
+      "Key #{printable_key} is expected to have a value of #{expected_val} (according to #{
+        string_exp_map
+      }) but has a value of #{actual_val} (in #{string_actual_map})"
+
     log_error_string(error_string, false, opts)
     false
   end
 
   def print_or_inspect(%{__struct__: _} = val) do
-    inspect val
+    inspect(val)
   end
 
   def print_or_inspect(%{} = val) do
-    inspect val
+    inspect(val)
   end
 
   def print_or_inspect(val) when is_integer(val) do
@@ -451,26 +530,26 @@ defmodule RecursiveSelectiveMatch do
   end
 
   def print_or_inspect(val) when is_function(val) do
-    inspect val
+    inspect(val)
   end
 
   def print_or_inspect(val) when is_list(val) do
     val
     |> Enum.map(&print_or_inspect/1)
     |> Enum.join(~s(, ))
-    |> (fn(val) -> ~s([#{val}]) end).()
+    |> (fn val -> ~s([#{val}]) end).()
   end
 
   def print_or_inspect(val) when is_tuple(val) do
-    inspect val
+    inspect(val)
   end
 
   def print_or_inspect(val) when is_atom(val) do
-    inspect val
+    inspect(val)
   end
 
   def print_or_inspect(val) when is_binary(val) do
-    inspect val
+    inspect(val)
   end
 
   def print_or_inspect(val) do
@@ -481,12 +560,17 @@ defmodule RecursiveSelectiveMatch do
 
   # TODO: treat maps and non-maps differently???
   defp log_unequal_warning(expected, actual, success, opts) do
-    #expected = stringify(expected)
-    #actual = stringify(actual)
-    error_string = [Map.get(opts, :warning_message, nil), "#{print_or_inspect actual} does not match #{print_or_inspect expected}"]
-                   |> List.foldl([], fn(val, acc) -> add_non_nil(acc, val) end)
-                   |> Enum.reverse()
-                   |> Enum.join(":\n")
+    # expected = stringify(expected)
+    # actual = stringify(actual)
+    error_string =
+      [
+        Map.get(opts, :warning_message, nil),
+        "#{print_or_inspect(actual)} does not match #{print_or_inspect(expected)}"
+      ]
+      |> List.foldl([], fn val, acc -> add_non_nil(acc, val) end)
+      |> Enum.reverse()
+      |> Enum.join(":\n")
+
     log_error_string(error_string, success, opts)
     success
   end
@@ -506,60 +590,66 @@ defmodule RecursiveSelectiveMatch do
   end
 
   def stringify(value) when is_integer(value) do
-    inspect value
+    inspect(value)
   end
 
   def stringify(value) when is_function(value) do
-    inspect value
+    inspect(value)
   end
 
   def stringify(value) when is_tuple(value) do
-    inspect value
+    inspect(value)
   end
 
   def stringify(value) when is_atom(value) do
-    inspect value
+    inspect(value)
   end
 
   def stringify(value) when is_list(value) do
     value
     |> Enum.map(&stringify/1)
     |> Enum.join(~s(, ))
-    |> (fn(val) -> ~s([#{val}]) end).()
+    |> (fn val -> ~s([#{val}]) end).()
   end
 
   def stringify(%_struct{} = value) do
-    inspect value
+    inspect(value)
   end
 
   def stringify(value) when is_map(value) do
     value
     |> Map.keys()
-    |> Enum.reduce(%{},
-                   fn(key, acc) ->
-                     Map.put(acc, key, Map.get(value, key) |> stringify())
-                   end)
+    |> Enum.reduce(
+      %{},
+      fn key, acc ->
+        Map.put(acc, key, Map.get(value, key) |> stringify())
+      end
+    )
+
     # m |> Map.keys() |> Enum.reduce(%{}, fn(key, acc) -> Map.put(acc, key, Map.get(m, key) |> RSM.stringify()) end)
   end
 
   def stringify(value) do
-    inspect value
+    inspect(value)
   end
 
   defp standardize_keys(expected, actual) do
-    {expected |> AtomicMap.convert(%{safe: false}),
-     actual |> AtomicMap.convert(%{safe: false})}
+    {expected |> AtomicMap.convert(%{safe: false}), actual |> AtomicMap.convert(%{safe: false})}
   end
 
   def convert_struct_to_map(%_{} = struct) do
     keys_to_strip = [:__meta__, :__field__, :__queryable__, :__owner__, :__cardinality__]
-    map = struct
-          |> Map.from_struct()
-    Enum.reduce(keys_to_strip,
-                map,
-                fn(key_to_strip, acc) -> Map.delete(acc, key_to_strip) end)
-  end
 
+    map =
+      struct
+      |> Map.from_struct()
+
+    Enum.reduce(
+      keys_to_strip,
+      map,
+      fn key_to_strip, acc -> Map.delete(acc, key_to_strip) end
+    )
+  end
 
   defp is_date(val) do
     with %Date{calendar: _c, day: _d, month: _m, year: _y} <- val do
@@ -580,12 +670,20 @@ defmodule RecursiveSelectiveMatch do
   end
 
   defp is_naive_datetime(val) do
-    with %NaiveDateTime{calendar: _c, year: _yy, month: _mm, day: _dd, hour: _h, minute: _m, second: _s, microsecond: _ms} <- val do
+    with %NaiveDateTime{
+           calendar: _c,
+           year: _yy,
+           month: _mm,
+           day: _dd,
+           hour: _h,
+           minute: _m,
+           second: _s,
+           microsecond: _ms
+         } <- val do
       true
     else
       _ ->
         false
     end
   end
-
 end

@@ -299,6 +299,58 @@ defmodule RecursiveSelectiveMatchTest do
     assert RSM.matches?(expected, actual)
   end
 
+  test ":any_iso8601_datetime with :data_fetched_at" do
+    assert RSM.matches?(:any_iso8601_datetime, celtics_actual()[:data_fetched_at])
+  end
+
+  test ":any_iso8601_date" do
+    assert RSM.matches?(:any_iso8601_date, "2018-12-25")
+  end
+
+  test ":any_iso8601_date when invalid month" do
+    refute RSM.matches?(:any_iso8601_date, "2018-13-25")
+  end
+
+  test ":any_iso8601_date when invalid day" do
+    refute RSM.matches?(:any_iso8601_date, "2018-09-33")
+  end
+
+  test ":any_iso8601_time" do
+    assert RSM.matches?(:any_iso8601_time, "11:54:09")
+  end
+
+  test ":any_iso8601_time when invalid second" do
+    refute RSM.matches?(:any_iso8601_time, "11:54:69")
+  end
+
+  test ":any_iso8601_datetime with 'T' between date and time" do
+    assert RSM.matches?(:any_iso8601_datetime, "2018-12-25T13:51:11")
+  end
+
+  test ":any_iso8601_datetime with valid date/time in distant past" do
+    assert RSM.matches?(:any_iso8601_datetime, "1009-02-13 13:51:11")
+  end
+
+  test ":any_iso8601_datetime with valid date/time in far future" do
+    assert RSM.matches?(:any_iso8601_datetime, "9999-02-13 13:51:11")
+  end
+
+  test ":any_iso8601_datetime with invalid minute 61" do
+    refute RSM.matches?(:any_iso8601_datetime, "2017-02-13 13:61:11")
+  end
+
+  test ":any_iso8601_datetime with invalid second 60" do
+    refute RSM.matches?(:any_iso8601_datetime, "2017-02-13 13:11:60")
+  end
+
+  test ":any_iso8601_datetime with invalid hour 24" do
+    refute RSM.matches?(:any_iso8601_datetime, "2017-02-13T24:11:11")
+  end
+
+  test ":any_iso8601_datetime with invalid hour 35" do
+    refute RSM.matches?(:any_iso8601_datetime, "2017-02-13 35:11:11")
+  end
+
   test "map with an expected value of :any_integer and an actual value of an integer" do
     expected = %{team: "Red Sox", current_standing: :any_integer}
     actual = %{team: "Red Sox", current_standing: 1}

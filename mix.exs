@@ -11,11 +11,10 @@ defmodule RecursiveSelectiveMatch.MixProject do
       package: package(),
       source_url: "https://github.com/JamesLavin/recursive_selective_match",
       app: :recursive_selective_match,
-      docs: [main: "RecursiveSelectiveMatch",
-             extras: ["README.md"]],
-      version: "0.2.3",
+      docs: [main: "RecursiveSelectiveMatch", extras: ["README.md"]],
+      version: "0.2.4",
       elixir: "~> 1.6",
-      elixirc_paths: elixirc_paths(Mix.env),
+      elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
@@ -30,7 +29,7 @@ defmodule RecursiveSelectiveMatch.MixProject do
   defp deps do
     [
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
-      {:atomic_map, "~> 0.8"},
+      {:atomic_map, "~> 0.8"}
     ]
   end
 
