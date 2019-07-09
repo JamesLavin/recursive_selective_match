@@ -26,3 +26,9 @@ defimpl String.Chars, for: List do
     "[#{interior}]"
   end
 end
+
+defimpl String.Chars, for: Function do
+  def to_string(fun) do
+    inspect(fun)
+  end
+end

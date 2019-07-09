@@ -483,25 +483,25 @@ defmodule RecursiveSelectiveMatch do
   defp log_incorrect_map_value_warning(key, expected_map, actual_map, opts) do
     printable_key =
       key
-      |> print_or_inspect()
+      |> inspect()
 
     expected_val =
       expected_map
       |> Map.get(key)
-      |> print_or_inspect()
+      |> inspect()
 
     actual_val =
       actual_map
       |> Map.get(key)
-      |> print_or_inspect()
+      |> inspect()
 
     string_exp_map =
       expected_map
-      |> print_or_inspect()
+      |> inspect()
 
     string_actual_map =
       actual_map
-      |> print_or_inspect()
+      |> inspect()
 
     error_string =
       "Key #{printable_key} is expected to have a value of #{expected_val} (according to #{
@@ -521,7 +521,7 @@ defmodule RecursiveSelectiveMatch do
   end
 
   def print_or_inspect(val) when is_integer(val) do
-    val
+    inspect(val)
   end
 
   def print_or_inspect(val) when is_function(val) do
@@ -529,10 +529,13 @@ defmodule RecursiveSelectiveMatch do
   end
 
   def print_or_inspect(val) when is_list(val) do
-    val
-    |> Enum.map(&print_or_inspect/1)
-    |> Enum.join(~s(, ))
-    |> (fn val -> ~s([#{val}]) end).()
+    (inspect(val) == val |> to_string) |> IO.inspect(label: "equivalent?")
+
+    # val
+    # |> Enum.map(&print_or_inspect/1)
+    # |> Enum.join(~s(, ))
+    # |> (fn val -> ~s([#{val}]) end).()
+    inspect(val)
   end
 
   def print_or_inspect(val) when is_tuple(val) do
@@ -548,7 +551,7 @@ defmodule RecursiveSelectiveMatch do
   end
 
   def print_or_inspect(val) do
-    val
+    inspect(val)
   end
 
   defp log_unequal_warning(_expected, _actual, true, _opts), do: true
@@ -558,7 +561,7 @@ defmodule RecursiveSelectiveMatch do
     error_string =
       [
         Map.get(opts, :warning_message, nil),
-        "#{print_or_inspect(actual)} does not match #{print_or_inspect(expected)}"
+        "#{inspect(actual)} does not match #{inspect(expected)}"
       ]
       |> List.foldl([], fn val, acc -> add_non_nil(acc, val) end)
       |> Enum.reverse()
