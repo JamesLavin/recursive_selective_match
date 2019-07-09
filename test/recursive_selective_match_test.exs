@@ -564,4 +564,99 @@ defmodule RecursiveSelectiveMatchTest do
     refute RSM.matches?(expected, actual)
   end
 
+  test "String.Chars works on tuples" do
+    expected = {3, :whatevs, "hi"}
+    actual = {3, :whatevs, "hi"} |> IO.inspect()
+    assert expected == actual
+  end
+
+  test "String.Chars works on a map with string keys" do
+    map = %{
+          "message" => "wrong error message"
+    }
+    actual = map |> IO.inspect()
+    assert %{"message" => "wrong error message"} == actual
+  end
+
+  test "String.Chars works with a map with only atom keys" do
+    map = %{
+          :message => "wrong error message"
+    } |> IO.inspect()
+    assert %{message: "wrong error message"} == map
+  end
+
+#  test "stringify a map with only atom keys and atom values" do
+#    map = %{
+#          :message => :invalid_address
+#    }
+#    assert "%{message: :invalid_address}" == RSM.stringify(map)
+#  end
+#
+#  test "stringify string-keyed maps inside lists inside maps" do
+#    actual = %{
+#      "data" => %{"thing" => %{"thing2" => nil}},
+#      "errors" => [%{
+#          "message" => "wrong error message"
+#      }]
+#    }
+#    assert "" == RSM.stringify(actual)
+#  end
+
+  test "possible bug" do
+    expected = %{
+      "data" => %{"thing" => %{"thing2" => nil}},
+      "errors" => [%{
+          "message" => "error message"
+      }]
+    }
+    actual = expected
+    assert RSM.matches?(expected, actual)
+  end
+
+#  test "stringify a string" do
+#    string = "my message"
+#    assert "my message" == RSM.stringify(string)
+#  end
+#
+#  test "stringify a string with quotation marks" do
+#    string = "my message is \"never surrender\""
+#    assert "my message is \"never surrender\"" == RSM.stringify(string)
+#  end
+#
+#  test "stringify an integer" do
+#    val = 12
+#    assert "12" == RSM.stringify(val)
+#  end
+#
+#  test "stringify a map with string keys" do
+#    map = %{
+#          "message" => "wrong error message"
+#    }
+#    assert "%{\"message\" => \"wrong error message\"}" == RSM.stringify(map)
+#  end
+#
+#  test "stringify a map with only atom keys" do
+#    map = %{
+#          :message => "wrong error message"
+#    }
+#    assert "%{message: \"wrong error message\"}" == RSM.stringify(map)
+#  end
+#
+#  test "stringify a map with only atom keys and atom values" do
+#    map = %{
+#          :message => :invalid_address
+#    }
+#    assert "%{message: :invalid_address}" == RSM.stringify(map)
+#  end
+#
+#  test "stringify string-keyed maps inside lists inside maps" do
+#    actual = %{
+#      "data" => %{"thing" => %{"thing2" => nil}},
+#      "errors" => [%{
+#          "message" => "wrong error message"
+#      }]
+#    }
+#    assert "" == RSM.stringify(actual)
+#  end
+
 end
