@@ -512,48 +512,6 @@ defmodule RecursiveSelectiveMatch do
     false
   end
 
-  def print_or_inspect(%{__struct__: _} = val) do
-    inspect(val)
-  end
-
-  def print_or_inspect(%{} = val) do
-    inspect(val)
-  end
-
-  def print_or_inspect(val) when is_integer(val) do
-    inspect(val)
-  end
-
-  def print_or_inspect(val) when is_function(val) do
-    inspect(val)
-  end
-
-  def print_or_inspect(val) when is_list(val) do
-    (inspect(val) == val |> to_string) |> IO.inspect(label: "equivalent?")
-
-    # val
-    # |> Enum.map(&print_or_inspect/1)
-    # |> Enum.join(~s(, ))
-    # |> (fn val -> ~s([#{val}]) end).()
-    inspect(val)
-  end
-
-  def print_or_inspect(val) when is_tuple(val) do
-    inspect(val)
-  end
-
-  def print_or_inspect(val) when is_atom(val) do
-    inspect(val)
-  end
-
-  def print_or_inspect(val) when is_binary(val) do
-    inspect(val)
-  end
-
-  def print_or_inspect(val) do
-    inspect(val)
-  end
-
   defp log_unequal_warning(_expected, _actual, true, _opts), do: true
 
   # TODO: treat maps and non-maps differently???
