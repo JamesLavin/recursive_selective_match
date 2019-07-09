@@ -474,10 +474,6 @@ defmodule RecursiveSelectiveMatch do
   defp add_non_nil(list, val) when is_list(list), do: [val | list]
 
   defp log_missing_map_key_warning(key, expected, actual, opts) do
-    # key = stringify(key)
-    # expected = stringify(expected)
-    # actual = stringify(actual)
-
     error_string = "Key #{inspect(key)} not present in #{actual} but present in #{expected}"
 
     log_error_string(error_string, false, opts)
@@ -559,8 +555,6 @@ defmodule RecursiveSelectiveMatch do
 
   # TODO: treat maps and non-maps differently???
   defp log_unequal_warning(expected, actual, success, opts) do
-    # expected = stringify(expected)
-    # actual = stringify(actual)
     error_string =
       [
         Map.get(opts, :warning_message, nil),
@@ -583,63 +577,6 @@ defmodule RecursiveSelectiveMatch do
       end
     end
   end
-
-  #  @spec stringify(any) :: String.t()
-  #  def stringify(value) when is_binary(value) do
-  #    IO.inspect("stringifying #{value}")
-  #    value
-  #  end
-  #
-  #  def stringify(value) when is_integer(value) do
-  #    inspect(value)
-  #  end
-  #
-  #  def stringify(value) when is_function(value) do
-  #    inspect(value)
-  #  end
-  #
-  #  def stringify(value) when is_tuple(value) do
-  #    inspect(value)
-  #  end
-  #
-  #  def stringify(value) when is_atom(value) do
-  #    value
-  #  end
-  #
-  #  def stringify(value) when is_list(value) do
-  #    value
-  #    |> Enum.map(&stringify/1)
-  #    |> Enum.join(~s(, ))
-  #    |> (fn val -> ~s([#{val}]) end).()
-  #  end
-  #
-  #  def stringify(%_struct{} = value) do
-  #    inspect(value)
-  #  end
-  #
-  #  def stringify(value) when is_map(value) do
-  #    # IO.inspect("*** attempting to stringify a map ***")
-  #
-  #    value
-  #    # |> IO.inspect(label: "value")
-  #    |> Map.keys()
-  #    # |> IO.inspect(label: "keys")
-  #    |> Enum.reduce(
-  #      %{},
-  #      fn key, acc ->
-  #        Map.put(acc, key, Map.get(value, key) |> stringify())
-  #      end
-  #    )
-  #    |> inspect()
-  #
-  #    # |> IO.inspect(label: "reduced")
-  #
-  #    # m |> Map.keys() |> Enum.reduce(%{}, fn(key, acc) -> Map.put(acc, key, Map.get(m, key) |> RSM.stringify()) end)
-  #  end
-  #
-  #  def stringify(value) do
-  #    inspect(value)
-  #  end
 
   defp standardize_keys(expected, actual) do
     {expected |> AtomicMap.convert(%{safe: false}), actual |> AtomicMap.convert(%{safe: false})}

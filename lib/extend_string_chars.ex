@@ -9,9 +9,20 @@ defimpl String.Chars, for: Tuple do
     interior =
       tuple
       |> Tuple.to_list()
-      |> Enum.map(&String.Chars.to_string/1)
+      |> Enum.map(&inspect/1)
       |> Enum.join(", ")
 
     "{#{interior}}"
+  end
+end
+
+defimpl String.Chars, for: List do
+  def to_string(list) do
+    interior =
+      list
+      |> Enum.map(&inspect/1)
+      |> Enum.join(", ")
+
+    "[#{interior}]"
   end
 end
