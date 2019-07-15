@@ -16,16 +16,16 @@ defimpl String.Chars, for: Tuple do
   end
 end
 
-defimpl String.Chars, for: List do
-  def to_string(list) do
-    interior =
-      list
-      |> Enum.map(&inspect/1)
-      |> Enum.join(", ")
-
-    "[#{interior}]"
-  end
-end
+# defimpl String.Chars, for: List do
+#   def to_string(list) do
+#     interior =
+#       list
+#       |> Enum.map(&inspect/1)
+#       |> Enum.join(", ")
+#
+#     "[#{interior}]"
+#   end
+# end
 
 defimpl String.Chars, for: Function do
   def to_string(fun) do
