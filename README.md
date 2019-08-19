@@ -233,7 +233,7 @@ by adding `recursive_selective_match` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:recursive_selective_match, "~> 0.2.4"}
+    {:recursive_selective_match, "~> 0.2.5"}
   ]
 end
 ```
