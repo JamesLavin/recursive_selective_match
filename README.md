@@ -24,9 +24,13 @@
    - :any_float (also: :any_pos_float & :any_non_neg_float)
    - :any_number (also: :any_pos_number & :any_non_neg_number)
    - :any_binary
+   - :any_bitstring
    - :any_atom
    - :any_boolean
    - :any_struct
+   - :any_pid
+   - :any_port
+   - :any_reference
 
 5. Rather than test only values, you can test against arbitrary anonymous functions, for example: `fname: &(Regex.match?(~r/[A-Z][a-z]{2,}/,&1))`
 
@@ -233,7 +237,7 @@ by adding `recursive_selective_match` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:recursive_selective_match, "~> 0.2.5"}
+    {:recursive_selective_match, "~> 0.2.6"}
   ]
 end
 ```
