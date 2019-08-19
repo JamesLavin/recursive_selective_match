@@ -18,7 +18,8 @@ defmodule RecursiveSelectiveMatch do
       * :any_list
       * :any_map
       * :any_tuple
-      * :any_integer
+      * :any_integer (also: :any_pos_integer & :any_non_neg_integer)
+      * :any_float (also: :any_pos_float & :any_non_neg_float)
       * :any_binary
       * :any_atom
       * :any_boolean
@@ -396,6 +397,26 @@ defmodule RecursiveSelectiveMatch do
 
   def matches?(:any_integer, actual, _opts) when is_integer(actual) do
     true
+  end
+
+  def matches?(:any_non_neg_integer, actual, _opts) when is_integer(actual) do
+    actual >= 0
+  end
+
+  def matches?(:any_pos_integer, actual, _opts) when is_integer(actual) do
+    actual > 0
+  end
+
+  def matches?(:any_float, actual, _opts) when is_float(actual) do
+    true
+  end
+
+  def matches?(:any_non_neg_float, actual, _opts) when is_float(actual) do
+    actual >= 0
+  end
+
+  def matches?(:any_pos_float, actual, _opts) when is_float(actual) do
+    actual > 0
   end
 
   def matches?(:any_tuple, actual, _opts) when is_tuple(actual) do

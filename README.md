@@ -10,21 +10,22 @@
 
 4. Rather than testing only values, you can also test values' datatypes using any of the following:
 
-    * :anything
-    * :any_iso8601_date (a string, like "2018-07-04"; rejects most invalid dates)
-    * :any_iso8601_time (a string, like "12:56:11"; rejects invalid times)
-    * :any_iso8601_datetime (a string, like "2018-07-04 12:56:11" or "2018-07-04T12:56:11"; rejects most invalid dates/times)
-    * :any_date (the Elixir Date representation)
-    * :any_time (the Elixir Time representation)
-    * :any_naive_datetime (the Elixir NaiveDateTime representation)
-    * :any_list
-    * :any_map
-    * :any_tuple
-    * :any_integer
-    * :any_binary
-    * :any_atom
-    * :any_boolean
-    * :any_struct
+   - :anything
+   - :any_iso8601_date (a string, like "2018-07-04"; rejects most invalid dates)
+   - :any_iso8601_time (a string, like "12:56:11"; rejects invalid times)
+   - :any_iso8601_datetime (a string, like "2018-07-04 12:56:11" or "2018-07-04T12:56:11"; rejects most invalid dates/times)
+   - :any_date (the Elixir Date representation)
+   - :any_time (the Elixir Time representation)
+   - :any_naive_datetime (the Elixir NaiveDateTime representation)
+   - :any_list
+   - :any_map
+   - :any_tuple
+   - :any_integer (also: :any_pos_integer & :any_non_neg_integer)
+   - :any_float (also: :any_pos_float & :any_non_neg_float)
+   - :any_binary
+   - :any_atom
+   - :any_boolean
+   - :any_struct
 
 5. Rather than test only values, you can test against arbitrary anonymous functions, for example: `fname: &(Regex.match?(~r/[A-Z][a-z]{2,}/,&1))`
 
@@ -153,15 +154,15 @@ structures or elements but only the first it finds.
 `RecursiveSelectiveMatch.matches?()` take an optional third argument, which is a map of
 options:
 
-* _To disable warnings_: You can disable the default behavior of displaying the reason for any match failure by passing an options map (as a third argument) containing `%{suppress_warnings: true}`.
+- _To disable warnings_: You can disable the default behavior of displaying the reason for any match failure by passing an options map (as a third argument) containing `%{suppress_warnings: true}`.
 
-* _To treat string & atom keys as equivalent when evaluating maps_: You can override the default behavior of requiring that maps' expected and actual keys be of the same type and instead ignore differences between string and atom keys in maps by passing an options map (as a third argument) containing `%{standardize_keys: true}`.
+- _To treat string & atom keys as equivalent when evaluating maps_: You can override the default behavior of requiring that maps' expected and actual keys be of the same type and instead ignore differences between string and atom keys in maps by passing an options map (as a third argument) containing `%{standardize_keys: true}`.
 
-* _To prevent expected maps from matching actual structs_: If you expect a map and attempt to match it against an actual struct, by default `RecursiveSelectiveMatch` treats the struct as a map for matching purposes. You can override this default behavior and prevent expected maps from matching actual structs by passing an options map (as a third argument) containing `%{strict_struct_matching: true}`, which will prevent ordinary maps from matching structs.
+- _To prevent expected maps from matching actual structs_: If you expect a map and attempt to match it against an actual struct, by default `RecursiveSelectiveMatch` treats the struct as a map for matching purposes. You can override this default behavior and prevent expected maps from matching actual structs by passing an options map (as a third argument) containing `%{strict_struct_matching: true}`, which will prevent ordinary maps from matching structs.
 
-* _To require that lists match exactly (i.e., all expected list elements are present & in the expected order)_: The default behavior is to consider lists to match if all expected list elements are found in the actual list. If you want to consider lists to match only if the lists are identical, you can pass an options map (as a third argument) containing `%{exact_lists: true}`. This will cause lists to match only if they match exactly.
+- _To require that lists match exactly (i.e., all expected list elements are present & in the expected order)_: The default behavior is to consider lists to match if all expected list elements are found in the actual list. If you want to consider lists to match only if the lists are identical, you can pass an options map (as a third argument) containing `%{exact_lists: true}`. This will cause lists to match only if they match exactly.
 
-* _To require that actual lists contain all expected list elements but ignore order_: The default behavior is to consider lists to match if all expected list elements are found in the actual list. If you want to consider lists to match only if all expected list items are present and no additional list items are present in the actual list (and you don't care about the ordering of these elements), you can pass an options map (as a third argument) containing `%{full_lists: true}`. This will cause lists to match only if all expected list elements are present and no unexpected list elements are present.
+- _To require that actual lists contain all expected list elements but ignore order_: The default behavior is to consider lists to match if all expected list elements are found in the actual list. If you want to consider lists to match only if all expected list items are present and no additional list items are present in the actual list (and you don't care about the ordering of these elements), you can pass an options map (as a third argument) containing `%{full_lists: true}`. This will cause lists to match only if all expected list elements are present and no unexpected list elements are present.
 
 If you wanted to change the earlier example by overriding all three default options, just add
 a third argument, like this:
@@ -244,7 +245,7 @@ be found at [https://hexdocs.pm/recursive_selective_match](https://hexdocs.pm/re
 
 I have not yet reimplemented several features of my original `SelectiveRecursiveMatch` but plan to do so:
 
-* `:debug_mode`: Option to display every step in the `RecursiveSelectiveMatch` process
+- `:debug_mode`: Option to display every step in the `RecursiveSelectiveMatch` process
 
 I want :debug_mode to intelligently display all levels of information for the first failing path it encounters but not display any information for dead-ends it encounters that are not actually failing paths. These can be different if, for example, we're searching through a list of items for one that matches, in which case we would want to ignore items that don't match until we fail to match the expected item against the very last item in the corresponding actual list.
 
