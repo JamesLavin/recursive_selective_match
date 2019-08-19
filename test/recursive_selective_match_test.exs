@@ -914,4 +914,112 @@ defmodule RecursiveSelectiveMatchTest do
     actual = -4
     refute RSM.matches?(expected, actual, %{suppress_warnings: true})
   end
+
+  test ":any_number matches 3" do
+    expected = :any_number
+    actual = 3
+    assert RSM.matches?(expected, actual)
+  end
+
+  test ":any_number matches 3.5" do
+    expected = :any_number
+    actual = 3.5
+    assert RSM.matches?(expected, actual)
+  end
+
+  test ":any_number matches 0" do
+    expected = :any_number
+    actual = 0
+    assert RSM.matches?(expected, actual)
+  end
+
+  test ":any_number matches 0.0" do
+    expected = :any_number
+    actual = 0.0
+    assert RSM.matches?(expected, actual)
+  end
+
+  test ":any_number matches -3.5" do
+    expected = :any_number
+    actual = -3.5
+    assert RSM.matches?(expected, actual)
+  end
+
+  test ":any_number matches -4" do
+    expected = :any_number
+    actual = -4
+    assert RSM.matches?(expected, actual)
+  end
+
+  test ":any_pos_number matches 3" do
+    expected = :any_pos_number
+    actual = 3
+    assert RSM.matches?(expected, actual)
+  end
+
+  test ":any_pos_number matches 3.5" do
+    expected = :any_pos_number
+    actual = 3.5
+    assert RSM.matches?(expected, actual)
+  end
+
+  test ":any_pos_number doesn't match 0" do
+    expected = :any_pos_number
+    actual = 0
+    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
+  end
+
+  test ":any_pos_number doesn't match 0.0" do
+    expected = :any_pos_number
+    actual = 0.0
+    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
+  end
+
+  test ":any_pos_number doesn't match -3.5" do
+    expected = :any_pos_number
+    actual = -3.5
+    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
+  end
+
+  test ":any_pos_number doesn't match -4" do
+    expected = :any_pos_number
+    actual = -4
+    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
+  end
+
+  test ":any_non_neg_number matches 3" do
+    expected = :any_non_neg_number
+    actual = 3
+    assert RSM.matches?(expected, actual)
+  end
+
+  test ":any_non_neg_number matches 3.5" do
+    expected = :any_non_neg_number
+    actual = 3.5
+    assert RSM.matches?(expected, actual)
+  end
+
+  test ":any_non_neg_number matches 0" do
+    expected = :any_non_neg_number
+    actual = 0
+    assert RSM.matches?(expected, actual)
+  end
+
+  test ":any_non_neg_number matches 0.0" do
+    expected = :any_non_neg_number
+    actual = 0.0
+    assert RSM.matches?(expected, actual)
+  end
+
+  test ":any_non_neg_number doesn't match -3.5" do
+    expected = :any_non_neg_number
+    actual = -3.5
+    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
+  end
+
+  test ":any_non_neg_number doesn't match -4" do
+    expected = :any_non_neg_number
+    actual = -4
+    refute RSM.matches?(expected, actual, %{suppress_warnings: true})
+  end
 end

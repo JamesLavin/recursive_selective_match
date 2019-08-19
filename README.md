@@ -22,6 +22,7 @@
    - :any_tuple
    - :any_integer (also: :any_pos_integer & :any_non_neg_integer)
    - :any_float (also: :any_pos_float & :any_non_neg_float)
+   - :any_number (also: :any_pos_number & :any_non_neg_number)
    - :any_binary
    - :any_atom
    - :any_boolean
