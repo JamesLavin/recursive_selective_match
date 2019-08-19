@@ -1022,4 +1022,52 @@ defmodule RecursiveSelectiveMatchTest do
     actual = -4
     refute RSM.matches?(expected, actual, %{suppress_warnings: true})
   end
+
+  test ":any_reference matches a reference" do
+    expected = :any_reference
+    actual = make_ref()
+    assert RSM.matches?(expected, actual)
+  end
+
+  test ":any_port matches a port" do
+    expected = :any_port
+    {:ok, port} = :gen_udp.open(0)
+    assert RSM.matches?(expected, port)
+  end
+
+  test ":any_pid matches a pid" do
+    expected = :any_pid
+    {:ok, pid} = StringIO.open("")
+    assert RSM.matches?(expected, pid)
+  end
+
+  test ":any_bitstring matches a bitstring" do
+    expected = :any_bitstring
+    bitstring = <<"josé"::bitstring>>
+    assert RSM.matches?(expected, bitstring)
+  end
+
+  test ":any_reference doesn't match a port" do
+    expected = :any_reference
+    {:ok, port} = :gen_udp.open(0)
+    refute RSM.matches?(expected, port, %{suppress_warnings: true})
+  end
+
+  test ":any_port doesn't match a reference" do
+    expected = :any_port
+    ref = make_ref()
+    refute RSM.matches?(expected, ref, %{suppress_warnings: true})
+  end
+
+  test ":any_pid doesn't match a bitstring" do
+    expected = :any_pid
+    bitstring = <<"josé"::bitstring>>
+    refute RSM.matches?(expected, bitstring, %{suppress_warnings: true})
+  end
+
+  test ":any_bitstring doesn't match a pid" do
+    expected = :any_bitstring
+    {:ok, pid} = StringIO.open("")
+    refute RSM.matches?(expected, pid, %{suppress_warnings: true})
+  end
 end

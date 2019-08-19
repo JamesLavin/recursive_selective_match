@@ -22,9 +22,13 @@ defmodule RecursiveSelectiveMatch do
       * :any_float (also: :any_pos_float & :any_non_neg_float)
       * :any_number (also: :any_pos_number & :any_non_neg_number)
       * :any_binary
+      * :any_bitstring
       * :any_atom
       * :any_boolean
       * :any_struct
+      * :any_pid
+      * :any_port
+      * :any_reference
   5) Rather than test only values, you can test against arbitrary anonymous functions, for example: `fname: &(Regex.match?(~r/[A-Z][a-z]{2,}/,&1))`
   6) You can test multiple criteria for a single value using a `{:multi, [...]}` tuple
 
@@ -432,11 +436,27 @@ defmodule RecursiveSelectiveMatch do
     actual > 0
   end
 
+  def matches?(:any_pid, actual, _opts) when is_pid(actual) do
+    true
+  end
+
+  def matches?(:any_port, actual, _opts) when is_port(actual) do
+    true
+  end
+
+  def matches?(:any_reference, actual, _opts) when is_reference(actual) do
+    true
+  end
+
   def matches?(:any_tuple, actual, _opts) when is_tuple(actual) do
     true
   end
 
   def matches?(:any_binary, actual, _opts) when is_binary(actual) do
+    true
+  end
+
+  def matches?(:any_bitstring, actual, _opts) when is_bitstring(actual) do
     true
   end
 
@@ -583,6 +603,18 @@ defmodule RecursiveSelectiveMatch do
   end
 
   def print_or_inspect(val) when is_binary(val) do
+    inspect(val)
+  end
+
+  def print_or_inspect(val) when is_port(val) do
+    inspect(val)
+  end
+
+  def print_or_inspect(val) when is_reference(val) do
+    inspect(val)
+  end
+
+  def print_or_inspect(val) when is_pid(val) do
     inspect(val)
   end
 

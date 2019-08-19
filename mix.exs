@@ -12,7 +12,7 @@ defmodule RecursiveSelectiveMatch.MixProject do
       source_url: "https://github.com/JamesLavin/recursive_selective_match",
       app: :recursive_selective_match,
       docs: [main: "RecursiveSelectiveMatch", extras: ["README.md"]],
-      version: "0.2.5",
+      version: "0.2.6",
       elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
