@@ -1,5 +1,15 @@
 # Changelog for RecursiveSelectiveMatch
 
+## 0.2.5
+
+### 1. Enhancements
+
+- Add :any_float
+- Add :any_pos_float
+- Add :any_non_neg_float
+- Add :any_pos_int
+- Add :any_non_neg_int
+
 ## 0.2.4
 
 ### 1. Enhancements
