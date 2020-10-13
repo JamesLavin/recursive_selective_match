@@ -4,40 +4,49 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="ExDoc v0.19.1">
-    <title>RecursiveSelectiveMatch – RecursiveSelectiveMatch v0.2.6</title>
-    <link rel="stylesheet" href="dist/app-240d7fc7e5.css" />
-    <script src="dist/sidebar_items-fe3456bd80.js"></script>
+    <meta name="generator" content="ExDoc v0.20.2">
+    <meta name="project" content="RecursiveSelectiveMatch v0.2.7">
+    <title>RecursiveSelectiveMatch — RecursiveSelectiveMatch v0.2.7</title>
+    <link rel="stylesheet" href="dist/html-d9f58a6320b5bfa6dd77.css" />
+    <script src="dist/sidebar_items-08a7aa26de.js"></script>
+      <script src="docs_config.js"></script>
+    <script async src="dist/html-d9f58a6320b5bfa6dd77.js"></script>
   </head>
   <body data-type="modules">
     <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
 <div class="main">
+
 <button class="sidebar-button sidebar-toggle">
-  <span class="icon-menu" aria-hidden="true"></span>
-  <span class="sr-only">Toggle Sidebar</span>
+  <span class="icon-menu" title="Collapse/expand sidebar"></span>
 </button>
-<button class="sidebar-button night-mode-toggle">
-  <span class="icon-theme" aria-hidden="true"></span>
-  <span class="sr-only">Toggle Theme</span>
-</button>
+
 <section class="sidebar">
-
-  <a href="RecursiveSelectiveMatch.html" class="sidebar-projectLink">
-    <div class="sidebar-projectDetails">
-      <h1 class="sidebar-projectName">
-RecursiveSelectiveMatch      </h1>
-      <h2 class="sidebar-projectVersion">
-        v0.2.6
-      </h2>
-    </div>
-  </a>
-
   <form class="sidebar-search" action="search.html">
     <button type="submit" class="search-button">
       <span class="icon-search" aria-hidden="true"></span>
     </button>
-    <input name="q" type="text" id="search-list" class="search-input" placeholder="Search" aria-label="Search" autocomplete="off" />
+    <button type="button" tabindex="-1" class="search-close-button">
+      <span class="icon-cross" title="Cancel search"></span>
+    </button>
+    <label class="search-label">
+      <input name="q" type="text" id="search-list" class="search-input" placeholder="Search..." aria-label="Search" autocomplete="off" />
+    </label>
   </form>
+
+  <div class="autocomplete">
+    <div class="autocomplete-results">
+    </div>
+  </div>
+
+  <div class="sidebar-header">
+    <div class="sidebar-projectDetails">
+      <a href="RecursiveSelectiveMatch.html" class="sidebar-projectName">
+RecursiveSelectiveMatch      </a>
+      <h2 class="sidebar-projectVersion">
+        v0.2.7
+      </h2>
+    </div>
+  </div>
 
   <ul class="sidebar-listNav">
     <li><a id="extras-list" href="#full-list">Pages</a></li>
@@ -55,7 +64,7 @@ RecursiveSelectiveMatch      </h1>
     <div id="content" class="content-inner">
 
       <h1>
-        <small class="visible-xs">RecursiveSelectiveMatch v0.2.6</small>
+        <small class="app-vsn">RecursiveSelectiveMatch v0.2.7</small>
 RecursiveSelectiveMatch          <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L1" title="View Source" class="view-source" rel="help">
             <span class="icon-code" aria-hidden="true"></span>
             <span class="sr-only">View Source</span>
@@ -64,24 +73,26 @@ RecursiveSelectiveMatch          <a href="https://github.com/JamesLavin/recursiv
 
 
         <section id="moduledoc">
-<p><a href="RecursiveSelectiveMatch.html#content"><code class="inline">RecursiveSelectiveMatch</code></a> is an Elixir library application enabling testing of deeply nested Elixir data structures. It includes several powerful features:</p>
+<p><a href="#content"><code class="inline">RecursiveSelectiveMatch</code></a> is an Elixir library application enabling testing of deeply nested Elixir data structures. It includes several powerful features:</p>
 <p>1) It selectively ignores irrelevant data elements and data structure subtrees you wish to exclude from your matching (like primary &amp; foreign key IDs, timestamps, and 3rd-party IDs), so you can specify what must match and ignore everything else
 2) By default, it allows testing actual structs with expected maps, but you can enable :strict_struct_matching
 3) By default, it requires that keys be of the same type, but you can ignore differences between string and atom keys by enabling :standardize_keys
-4) Rather than testing only values, you can also test values’ datatypes using any of the following:</p>
+4) Rather than testing only values, you can also test values&#39; datatypes using any of the following:</p>
 <pre><code class="nohighlight makeup elixir"><span class="o">*</span><span class="w"> </span><span class="ss">:anything</span><span class="w">
-</span><span class="o">*</span><span class="w"> </span><span class="ss">:any_iso8601_date</span><span class="w"> </span><span class="p" data-group-id="2513774153-1">(</span><span class="n">a</span><span class="w"> </span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">like</span><span class="w"> </span><span class="s">&quot;2018-07-04&quot;</span><span class="p">;</span><span class="w"> </span><span class="n">rejects</span><span class="w"> </span><span class="n">most</span><span class="w"> </span><span class="n">invalid</span><span class="w"> </span><span class="n">dates</span><span class="p" data-group-id="2513774153-1">)</span><span class="w">
-</span><span class="o">*</span><span class="w"> </span><span class="ss">:any_iso8601_time</span><span class="w"> </span><span class="p" data-group-id="2513774153-2">(</span><span class="n">a</span><span class="w"> </span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">like</span><span class="w"> </span><span class="s">&quot;12:56:11&quot;</span><span class="p">;</span><span class="w"> </span><span class="n">rejects</span><span class="w"> </span><span class="n">invalid</span><span class="w"> </span><span class="n">times</span><span class="p" data-group-id="2513774153-2">)</span><span class="w">
-</span><span class="o">*</span><span class="w"> </span><span class="ss">:any_iso8601_datetime</span><span class="w"> </span><span class="p" data-group-id="2513774153-3">(</span><span class="n">a</span><span class="w"> </span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">like</span><span class="w"> </span><span class="s">&quot;2018-07-04 12:56:11&quot;</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s">&quot;2018-07-04T12:56:11&quot;</span><span class="p">;</span><span class="w"> </span><span class="n">rejects</span><span class="w"> </span><span class="n">most</span><span class="w"> </span><span class="n">invalid</span><span class="w"> </span><span class="n">dates</span><span class="o">/</span><span class="n">times</span><span class="p" data-group-id="2513774153-3">)</span><span class="w">
-</span><span class="o">*</span><span class="w"> </span><span class="ss">:any_date</span><span class="w"> </span><span class="p" data-group-id="2513774153-4">(</span><span class="n">the</span><span class="w"> </span><span class="nc">Elixir</span><span class="w"> </span><span class="nc">Date</span><span class="w"> </span><span class="n">representation</span><span class="p" data-group-id="2513774153-4">)</span><span class="w">
-</span><span class="o">*</span><span class="w"> </span><span class="ss">:any_time</span><span class="w"> </span><span class="p" data-group-id="2513774153-5">(</span><span class="n">the</span><span class="w"> </span><span class="nc">Elixir</span><span class="w"> </span><span class="nc">Time</span><span class="w"> </span><span class="n">representation</span><span class="p" data-group-id="2513774153-5">)</span><span class="w">
-</span><span class="o">*</span><span class="w"> </span><span class="ss">:any_naive_datetime</span><span class="w"> </span><span class="p" data-group-id="2513774153-6">(</span><span class="n">the</span><span class="w"> </span><span class="nc">Elixir</span><span class="w"> </span><span class="nc">NaiveDateTime</span><span class="w"> </span><span class="n">representation</span><span class="p" data-group-id="2513774153-6">)</span><span class="w">
+</span><span class="o">*</span><span class="w"> </span><span class="ss">:any_iso8601_date</span><span class="w"> </span><span class="p" data-group-id="2599301084-1">(</span><span class="n">a</span><span class="w"> </span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">like</span><span class="w"> </span><span class="s">&quot;2018-07-04&quot;</span><span class="p">;</span><span class="w"> </span><span class="n">rejects</span><span class="w"> </span><span class="n">most</span><span class="w"> </span><span class="n">invalid</span><span class="w"> </span><span class="n">dates</span><span class="p" data-group-id="2599301084-1">)</span><span class="w">
+</span><span class="o">*</span><span class="w"> </span><span class="ss">:any_iso8601_time</span><span class="w"> </span><span class="p" data-group-id="2599301084-2">(</span><span class="n">a</span><span class="w"> </span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">like</span><span class="w"> </span><span class="s">&quot;12:56:11&quot;</span><span class="p">;</span><span class="w"> </span><span class="n">rejects</span><span class="w"> </span><span class="n">invalid</span><span class="w"> </span><span class="n">times</span><span class="p" data-group-id="2599301084-2">)</span><span class="w">
+</span><span class="o">*</span><span class="w"> </span><span class="ss">:any_iso8601_datetime</span><span class="w"> </span><span class="p" data-group-id="2599301084-3">(</span><span class="n">a</span><span class="w"> </span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">like</span><span class="w"> </span><span class="s">&quot;2018-07-04 12:56:11&quot;</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s">&quot;2018-07-04T12:56:11&quot;</span><span class="p">;</span><span class="w"> </span><span class="n">rejects</span><span class="w"> </span><span class="n">most</span><span class="w"> </span><span class="n">invalid</span><span class="w"> </span><span class="n">dates</span><span class="o">/</span><span class="n">times</span><span class="p" data-group-id="2599301084-3">)</span><span class="w">
+</span><span class="o">*</span><span class="w"> </span><span class="ss">:any_date</span><span class="w"> </span><span class="p" data-group-id="2599301084-4">(</span><span class="n">the</span><span class="w"> </span><span class="nc">Elixir</span><span class="w"> </span><span class="nc">Date</span><span class="w"> </span><span class="n">representation</span><span class="p" data-group-id="2599301084-4">)</span><span class="w">
+</span><span class="o">*</span><span class="w"> </span><span class="ss">:any_time</span><span class="w"> </span><span class="p" data-group-id="2599301084-5">(</span><span class="n">the</span><span class="w"> </span><span class="nc">Elixir</span><span class="w"> </span><span class="nc">Time</span><span class="w"> </span><span class="n">representation</span><span class="p" data-group-id="2599301084-5">)</span><span class="w">
+</span><span class="o">*</span><span class="w"> </span><span class="ss">:any_datetime</span><span class="w"> </span><span class="p" data-group-id="2599301084-6">(</span><span class="n">the</span><span class="w"> </span><span class="nc">Elixir</span><span class="w"> </span><span class="nc">DateTime</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">timezone</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">representation</span><span class="p" data-group-id="2599301084-6">)</span><span class="w">
+</span><span class="o">*</span><span class="w"> </span><span class="ss">:any_naive_datetime</span><span class="w"> </span><span class="p" data-group-id="2599301084-7">(</span><span class="n">the</span><span class="w"> </span><span class="nc">Elixir</span><span class="w"> </span><span class="nc">NaiveDateTime</span><span class="w"> </span><span class="n">representation</span><span class="p" data-group-id="2599301084-7">)</span><span class="w">
+</span><span class="o">*</span><span class="w"> </span><span class="ss">:any_utc_datetime</span><span class="w"> </span><span class="p" data-group-id="2599301084-8">(</span><span class="n">the</span><span class="w"> </span><span class="nc">Elixir</span><span class="w"> </span><span class="nc">UTCDateTime</span><span class="w"> </span><span class="n">representation</span><span class="p" data-group-id="2599301084-8">)</span><span class="w">
 </span><span class="o">*</span><span class="w"> </span><span class="ss">:any_list</span><span class="w">
 </span><span class="o">*</span><span class="w"> </span><span class="ss">:any_map</span><span class="w">
 </span><span class="o">*</span><span class="w"> </span><span class="ss">:any_tuple</span><span class="w">
-</span><span class="o">*</span><span class="w"> </span><span class="ss">:any_integer</span><span class="w"> </span><span class="p" data-group-id="2513774153-7">(</span><span class="ss">also</span><span class="p">:</span><span class="w"> </span><span class="ss">:any_pos_integer</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="ss">:any_non_neg_integer</span><span class="p" data-group-id="2513774153-7">)</span><span class="w">
-</span><span class="o">*</span><span class="w"> </span><span class="ss">:any_float</span><span class="w"> </span><span class="p" data-group-id="2513774153-8">(</span><span class="ss">also</span><span class="p">:</span><span class="w"> </span><span class="ss">:any_pos_float</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="ss">:any_non_neg_float</span><span class="p" data-group-id="2513774153-8">)</span><span class="w">
-</span><span class="o">*</span><span class="w"> </span><span class="ss">:any_number</span><span class="w"> </span><span class="p" data-group-id="2513774153-9">(</span><span class="ss">also</span><span class="p">:</span><span class="w"> </span><span class="ss">:any_pos_number</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="ss">:any_non_neg_number</span><span class="p" data-group-id="2513774153-9">)</span><span class="w">
+</span><span class="o">*</span><span class="w"> </span><span class="ss">:any_integer</span><span class="w"> </span><span class="p" data-group-id="2599301084-9">(</span><span class="ss">also</span><span class="p">:</span><span class="w"> </span><span class="ss">:any_pos_integer</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="ss">:any_non_neg_integer</span><span class="p" data-group-id="2599301084-9">)</span><span class="w">
+</span><span class="o">*</span><span class="w"> </span><span class="ss">:any_float</span><span class="w"> </span><span class="p" data-group-id="2599301084-10">(</span><span class="ss">also</span><span class="p">:</span><span class="w"> </span><span class="ss">:any_pos_float</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="ss">:any_non_neg_float</span><span class="p" data-group-id="2599301084-10">)</span><span class="w">
+</span><span class="o">*</span><span class="w"> </span><span class="ss">:any_number</span><span class="w"> </span><span class="p" data-group-id="2599301084-11">(</span><span class="ss">also</span><span class="p">:</span><span class="w"> </span><span class="ss">:any_pos_number</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="ss">:any_non_neg_number</span><span class="p" data-group-id="2599301084-11">)</span><span class="w">
 </span><span class="o">*</span><span class="w"> </span><span class="ss">:any_binary</span><span class="w">
 </span><span class="o">*</span><span class="w"> </span><span class="ss">:any_bitstring</span><span class="w">
 </span><span class="o">*</span><span class="w"> </span><span class="ss">:any_atom</span><span class="w">
@@ -92,101 +103,101 @@ RecursiveSelectiveMatch          <a href="https://github.com/JamesLavin/recursiv
 </span><span class="o">*</span><span class="w"> </span><span class="ss">:any_reference</span></code></pre>
 <p>5) Rather than test only values, you can test against arbitrary anonymous functions, for example: <code class="inline">fname: &amp;(Regex.match?(~r/[A-Z][a-z]{2,}/,&amp;1))</code>
 6) You can test multiple criteria for a single value using a <code class="inline">{:multi, [...]}</code> tuple</p>
-<p><a href="RecursiveSelectiveMatch.html#content"><code class="inline">RecursiveSelectiveMatch</code></a> currently provides two functions:</p>
+<p><a href="#content"><code class="inline">RecursiveSelectiveMatch</code></a> currently provides two functions:</p>
 <p>1) <code class="inline">matches?(expected, actual, opts \ %{})</code>
 2) <code class="inline">includes?(expected, actual_list, opts \ %{})</code>.</p>
 <p>Most of this documentation covers <code class="inline">matches?(expected, actual, opts \ %{})</code>, which is for matching entire data structures.</p>
 <p><code class="inline">includes?(expected, actual_list, opts \ %{})</code> is similar but used to test whether <code class="inline">expected</code> matches <em>any list item</em> inside the list <code class="inline">actual_list</code>.</p>
 <p>For example, imagine you want to test a function that returns a nested data structure like this:</p>
-<pre><code class="nohighlight makeup elixir"><span class="p" data-group-id="9842639739-1">%{</span><span class="w">
-  </span><span class="ss">players</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="9842639739-2">[</span><span class="w">
-    </span><span class="p" data-group-id="9842639739-3">%</span><span class="nc" data-group-id="9842639739-3">Person</span><span class="p" data-group-id="9842639739-3">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">1187</span><span class="p">,</span><span class="w"> </span><span class="ss">fname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Robert&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">lname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Parrish&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">position</span><span class="p">:</span><span class="w"> </span><span class="ss">:center</span><span class="p">,</span><span class="w"> </span><span class="ss">jersey_num</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;00&quot;</span><span class="p" data-group-id="9842639739-3">}</span><span class="p">,</span><span class="w">
-    </span><span class="p" data-group-id="9842639739-4">%</span><span class="nc" data-group-id="9842639739-4">Person</span><span class="p" data-group-id="9842639739-4">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">979</span><span class="p">,</span><span class="w"> </span><span class="ss">fname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Kevin&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">lname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;McHale&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">position</span><span class="p">:</span><span class="w"> </span><span class="ss">:forward</span><span class="p">,</span><span class="w"> </span><span class="ss">jersey_num</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;32&quot;</span><span class="p" data-group-id="9842639739-4">}</span><span class="p">,</span><span class="w">
-    </span><span class="p" data-group-id="9842639739-5">%</span><span class="nc" data-group-id="9842639739-5">Person</span><span class="p" data-group-id="9842639739-5">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">1033</span><span class="p">,</span><span class="w"> </span><span class="ss">fname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Larry&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">lname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Bird&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">position</span><span class="p">:</span><span class="w"> </span><span class="ss">:forward</span><span class="p">,</span><span class="w"> </span><span class="ss">jersey_num</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;33&quot;</span><span class="p" data-group-id="9842639739-5">}</span><span class="p">,</span><span class="w">
-  </span><span class="p" data-group-id="9842639739-2">]</span><span class="p">,</span><span class="w">
-  </span><span class="ss">team</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="9842639739-6">%{</span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Celtics&quot;</span><span class="p">,</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="p" data-group-id="4234868991-1">%{</span><span class="w">
+  </span><span class="ss">players</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="4234868991-2">[</span><span class="w">
+    </span><span class="p" data-group-id="4234868991-3">%</span><span class="nc" data-group-id="4234868991-3">Person</span><span class="p" data-group-id="4234868991-3">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">1187</span><span class="p">,</span><span class="w"> </span><span class="ss">fname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Robert&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">lname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Parrish&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">position</span><span class="p">:</span><span class="w"> </span><span class="ss">:center</span><span class="p">,</span><span class="w"> </span><span class="ss">jersey_num</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;00&quot;</span><span class="p" data-group-id="4234868991-3">}</span><span class="p">,</span><span class="w">
+    </span><span class="p" data-group-id="4234868991-4">%</span><span class="nc" data-group-id="4234868991-4">Person</span><span class="p" data-group-id="4234868991-4">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">979</span><span class="p">,</span><span class="w"> </span><span class="ss">fname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Kevin&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">lname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;McHale&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">position</span><span class="p">:</span><span class="w"> </span><span class="ss">:forward</span><span class="p">,</span><span class="w"> </span><span class="ss">jersey_num</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;32&quot;</span><span class="p" data-group-id="4234868991-4">}</span><span class="p">,</span><span class="w">
+    </span><span class="p" data-group-id="4234868991-5">%</span><span class="nc" data-group-id="4234868991-5">Person</span><span class="p" data-group-id="4234868991-5">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">1033</span><span class="p">,</span><span class="w"> </span><span class="ss">fname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Larry&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">lname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Bird&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">position</span><span class="p">:</span><span class="w"> </span><span class="ss">:forward</span><span class="p">,</span><span class="w"> </span><span class="ss">jersey_num</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;33&quot;</span><span class="p" data-group-id="4234868991-5">}</span><span class="p">,</span><span class="w">
+  </span><span class="p" data-group-id="4234868991-2">]</span><span class="p">,</span><span class="w">
+  </span><span class="ss">team</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="4234868991-6">%{</span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Celtics&quot;</span><span class="p">,</span><span class="w">
           </span><span class="ss">nba_id</span><span class="p">:</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span><span class="w">
-          </span><span class="ss">greatest_player</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="9842639739-7">%</span><span class="nc" data-group-id="9842639739-7">Person</span><span class="p" data-group-id="9842639739-7">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="ss">fname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Bill&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">lname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Russell&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">position</span><span class="p">:</span><span class="w"> </span><span class="ss">:center</span><span class="p">,</span><span class="w"> </span><span class="ss">jersey_num</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;6&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">born</span><span class="p">:</span><span class="w"> </span><span class="ld">~D[1934-02-12]</span><span class="p" data-group-id="9842639739-7">}</span><span class="p">,</span><span class="w">
-          </span><span class="ss">plays_at</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="9842639739-8">%{</span><span class="ss">arena</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="9842639739-9">%{</span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Boston Garden&quot;</span><span class="p">,</span><span class="w">
-                               </span><span class="ss">location</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="9842639739-10">%{</span><span class="s">&quot;city&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;Boston&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;state&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;MA&quot;</span><span class="p" data-group-id="9842639739-10">}</span><span class="p" data-group-id="9842639739-9">}</span><span class="p" data-group-id="9842639739-8">}</span><span class="p" data-group-id="9842639739-6">}</span><span class="p">,</span><span class="w">
+          </span><span class="ss">greatest_player</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="4234868991-7">%</span><span class="nc" data-group-id="4234868991-7">Person</span><span class="p" data-group-id="4234868991-7">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="ss">fname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Bill&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">lname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Russell&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">position</span><span class="p">:</span><span class="w"> </span><span class="ss">:center</span><span class="p">,</span><span class="w"> </span><span class="ss">jersey_num</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;6&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">born</span><span class="p">:</span><span class="w"> </span><span class="ld">~D[1934-02-12]</span><span class="p" data-group-id="4234868991-7">}</span><span class="p">,</span><span class="w">
+          </span><span class="ss">plays_at</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="4234868991-8">%{</span><span class="ss">arena</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="4234868991-9">%{</span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Boston Garden&quot;</span><span class="p">,</span><span class="w">
+                               </span><span class="ss">location</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="4234868991-10">%{</span><span class="s">&quot;city&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;Boston&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;state&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;MA&quot;</span><span class="p" data-group-id="4234868991-10">}</span><span class="p" data-group-id="4234868991-9">}</span><span class="p" data-group-id="4234868991-8">}</span><span class="p" data-group-id="4234868991-6">}</span><span class="p">,</span><span class="w">
   </span><span class="ss">data_fetched_at</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;2018-04-17 11:14:53&quot;</span><span class="p">,</span><span class="w">
   </span><span class="ss">formatted_data_fetched_at</span><span class="p">:</span><span class="w"> </span><span class="ld">~N[2018-04-17 11:14:53]</span><span class="w">
-</span><span class="p" data-group-id="9842639739-1">}</span></code></pre>
+</span><span class="p" data-group-id="4234868991-1">}</span></code></pre>
 <p>Imagine further that each time you call this function, some details vary. Maybe each time you
-call the function, you get a random team, not always the NBA’s greatest team of all time (only
-team with 17 championships… #boston_strong!) and you don’t care about specific ids or the
+call the function, you get a random team, not always the NBA&#39;s greatest team of all time (only
+team with 17 championships... #boston_strong!) and you don&#39;t care about specific ids or the
 data_fetched_at time stamp or maybe even details about the players or team. But you want to
 test that the structure of the data is correct and possibly confirm some of the values.</p>
-<p>With <a href="RecursiveSelectiveMatch.html#content"><code class="inline">RecursiveSelectiveMatch</code></a>, you can create a generic test by specifying an <em>expected</em> data structure,
+<p>With <a href="#content"><code class="inline">RecursiveSelectiveMatch</code></a>, you can create a generic test by specifying an <em>expected</em> data structure,
 like this:</p>
-<pre><code class="nohighlight makeup elixir"><span class="p" data-group-id="2479217633-1">%{</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="p" data-group-id="3598597076-1">%{</span><span class="w">
   </span><span class="ss">players</span><span class="p">:</span><span class="w"> </span><span class="ss">:any_list</span><span class="p">,</span><span class="w">
-  </span><span class="ss">team</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="2479217633-2">%{</span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="ss">:any_binary</span><span class="p">,</span><span class="w">
+  </span><span class="ss">team</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="3598597076-2">%{</span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="ss">:any_binary</span><span class="p">,</span><span class="w">
           </span><span class="ss">nba_id</span><span class="p">:</span><span class="w"> </span><span class="ss">:any_integer</span><span class="p">,</span><span class="w">
           </span><span class="ss">greatest_player</span><span class="p">:</span><span class="w"> </span><span class="ss">:any_struct</span><span class="p">,</span><span class="w">
-          </span><span class="ss">plays_at</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="2479217633-3">%{</span><span class="ss">arena</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="2479217633-4">%{</span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="ss">:any_binary</span><span class="p">,</span><span class="w">
-                               </span><span class="ss">location</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="2479217633-5">%{</span><span class="s">&quot;city&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="ss">:any_binary</span><span class="p">,</span><span class="w">
-                                           </span><span class="s">&quot;state&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="ss">:any_binary</span><span class="p" data-group-id="2479217633-5">}</span><span class="p" data-group-id="2479217633-4">}</span><span class="p" data-group-id="2479217633-3">}</span><span class="p" data-group-id="2479217633-2">}</span><span class="p">,</span><span class="w">
+          </span><span class="ss">plays_at</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="3598597076-3">%{</span><span class="ss">arena</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="3598597076-4">%{</span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="ss">:any_binary</span><span class="p">,</span><span class="w">
+                               </span><span class="ss">location</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="3598597076-5">%{</span><span class="s">&quot;city&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="ss">:any_binary</span><span class="p">,</span><span class="w">
+                                           </span><span class="s">&quot;state&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="ss">:any_binary</span><span class="p" data-group-id="3598597076-5">}</span><span class="p" data-group-id="3598597076-4">}</span><span class="p" data-group-id="3598597076-3">}</span><span class="p" data-group-id="3598597076-2">}</span><span class="p">,</span><span class="w">
   </span><span class="ss">formatted_data_fetched_at</span><span class="p">:</span><span class="w"> </span><span class="ss">:any_naive_datetime</span><span class="p">,</span><span class="w">
   </span><span class="ss">data_fetched_at</span><span class="p">:</span><span class="w"> </span><span class="ss">:any_binary</span><span class="w">
-</span><span class="p" data-group-id="2479217633-1">}</span></code></pre>
+</span><span class="p" data-group-id="3598597076-1">}</span></code></pre>
 <p>If you assign the actual data structure (in this case a map) to the variable <code class="inline">actual</code> and the
 expected data structure to the variable <code class="inline">expected</code>, you can test whether they match using:</p>
-<pre><code class="nohighlight makeup elixir"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyTest</span><span class="w"> </span><span class="k" data-group-id="8644024286-1">do</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyTest</span><span class="w"> </span><span class="k" data-group-id="0877082033-1">do</span><span class="w">
   </span><span class="kn">use</span><span class="w"> </span><span class="nc">ExUnit.Case</span><span class="w">
 
   </span><span class="kn">alias</span><span class="w"> </span><span class="nc">RecursiveSelectiveMatch</span><span class="p">,</span><span class="w"> </span><span class="ss">as</span><span class="p">:</span><span class="w"> </span><span class="nc">RSM</span><span class="w">
 
-  </span><span class="n">test</span><span class="w"> </span><span class="s">&quot;actual matches expected&quot;</span><span class="w"> </span><span class="k" data-group-id="8644024286-2">do</span><span class="w">
-    </span><span class="n">expected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p" data-group-id="8644024286-3">%{</span><span class="w"> </span><span class="ss">players</span><span class="p">:</span><span class="w"> </span><span class="ss">:any_list</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="w"> </span><span class="p" data-group-id="8644024286-3">}</span><span class="w">
+  </span><span class="n">test</span><span class="w"> </span><span class="s">&quot;actual matches expected&quot;</span><span class="w"> </span><span class="k" data-group-id="0877082033-2">do</span><span class="w">
+    </span><span class="n">expected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p" data-group-id="0877082033-3">%{</span><span class="w"> </span><span class="ss">players</span><span class="p">:</span><span class="w"> </span><span class="ss">:any_list</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="w"> </span><span class="p" data-group-id="0877082033-3">}</span><span class="w">
 
-    </span><span class="n">actual</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p" data-group-id="8644024286-4">%{</span><span class="w"> </span><span class="n">...</span><span class="w"> </span><span class="p" data-group-id="8644024286-4">}</span><span class="w">
+    </span><span class="n">actual</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p" data-group-id="0877082033-4">%{</span><span class="w"> </span><span class="n">...</span><span class="w"> </span><span class="p" data-group-id="0877082033-4">}</span><span class="w">
 
-    </span><span class="n">assert</span><span class="w"> </span><span class="nc">RSM</span><span class="o">.</span><span class="n">matches?</span><span class="p" data-group-id="8644024286-5">(</span><span class="n">expected</span><span class="p">,</span><span class="w"> </span><span class="n">actual</span><span class="p" data-group-id="8644024286-5">)</span><span class="w">
-  </span><span class="k" data-group-id="8644024286-2">end</span><span class="w">
-</span><span class="k" data-group-id="8644024286-1">end</span></code></pre>
+    </span><span class="n">assert</span><span class="w"> </span><span class="nc">RSM</span><span class="o">.</span><span class="n">matches?</span><span class="p" data-group-id="0877082033-5">(</span><span class="n">expected</span><span class="p">,</span><span class="w"> </span><span class="n">actual</span><span class="p" data-group-id="0877082033-5">)</span><span class="w">
+  </span><span class="k" data-group-id="0877082033-2">end</span><span class="w">
+</span><span class="k" data-group-id="0877082033-1">end</span></code></pre>
 <p>Please note that the order matters. The first parameter is for <em>expected</em> and the second is for <em>actual</em>. This successfully matches (you can see the test in <a href="test/recursive_selective_match_test.exs">test/recursive_selective_match_test.exs</a>).</p>
 <p>Alternatively, you can pass in any function as a matcher. The above can be rewritten as the
 following (notice that both approaches can be used interchangeably):</p>
-<pre><code class="nohighlight makeup elixir"><span class="p" data-group-id="7427277209-1">%{</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="p" data-group-id="7143514377-1">%{</span><span class="w">
   </span><span class="ss">players</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="n">is_list</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span><span class="w">
-  </span><span class="ss">team</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="7427277209-2">%{</span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="n">is_binary</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span><span class="w">
+  </span><span class="ss">team</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="7143514377-2">%{</span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="n">is_binary</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span><span class="w">
           </span><span class="ss">nba_id</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="n">is_integer</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span><span class="w">
           </span><span class="ss">greatest_player</span><span class="p">:</span><span class="w"> </span><span class="ss">:any_struct</span><span class="p">,</span><span class="w">
-          </span><span class="ss">plays_at</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="7427277209-3">%{</span><span class="ss">arena</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="7427277209-4">%{</span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="n">is_binary</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span><span class="w">
-                               </span><span class="ss">location</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="7427277209-5">%{</span><span class="s">&quot;city&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">is_binary</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span><span class="w">
-                                           </span><span class="s">&quot;state&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">is_binary</span><span class="o">/</span><span class="mi">1</span><span class="p" data-group-id="7427277209-5">}</span><span class="p" data-group-id="7427277209-4">}</span><span class="p" data-group-id="7427277209-3">}</span><span class="p" data-group-id="7427277209-2">}</span><span class="p">,</span><span class="w">
+          </span><span class="ss">plays_at</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="7143514377-3">%{</span><span class="ss">arena</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="7143514377-4">%{</span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="n">is_binary</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span><span class="w">
+                               </span><span class="ss">location</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="7143514377-5">%{</span><span class="s">&quot;city&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">is_binary</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span><span class="w">
+                                           </span><span class="s">&quot;state&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">is_binary</span><span class="o">/</span><span class="mi">1</span><span class="p" data-group-id="7143514377-5">}</span><span class="p" data-group-id="7143514377-4">}</span><span class="p" data-group-id="7143514377-3">}</span><span class="p" data-group-id="7143514377-2">}</span><span class="p">,</span><span class="w">
   </span><span class="ss">data_fetched_at</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="n">is_binary</span><span class="o">/</span><span class="mi">1</span><span class="w">
-</span><span class="p" data-group-id="7427277209-1">}</span></code></pre>
+</span><span class="p" data-group-id="7143514377-1">}</span></code></pre>
 <p>Even better, you can pass in a one-argument anonymous function and it will pass the actual
 value in for testing. The following expectation will also pass with the example above:</p>
-<pre><code class="nohighlight makeup elixir"><span class="p" data-group-id="8307747368-1">%{</span><span class="w">
-  </span><span class="ss">players</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="8307747368-2">(</span><span class="n">length</span><span class="p" data-group-id="8307747368-3">(</span><span class="ni">&amp;1</span><span class="p" data-group-id="8307747368-3">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">3</span><span class="p" data-group-id="8307747368-2">)</span><span class="p">,</span><span class="w">
-  </span><span class="ss">team</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="8307747368-4">%{</span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="8307747368-5">(</span><span class="ni">&amp;1</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="p" data-group-id="8307747368-6">[</span><span class="s">&quot;Bucks&quot;</span><span class="p">,</span><span class="s">&quot;Celtics&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;76ers&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Lakers&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Rockets&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Warriors&quot;</span><span class="p" data-group-id="8307747368-6">]</span><span class="p" data-group-id="8307747368-5">)</span><span class="p">,</span><span class="w">
-          </span><span class="ss">nba_id</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="8307747368-7">(</span><span class="ni">&amp;1</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="ni">&amp;1</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">30</span><span class="p" data-group-id="8307747368-7">)</span><span class="p">,</span><span class="w">
-          </span><span class="ss">greatest_player</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="8307747368-8">%</span><span class="nc" data-group-id="8307747368-8">Person</span><span class="p" data-group-id="8307747368-8">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="8307747368-9">(</span><span class="ni">&amp;1</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="ni">&amp;1</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">99</span><span class="p" data-group-id="8307747368-9">)</span><span class="p">,</span><span class="w">
-                                   </span><span class="ss">fname</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="8307747368-10">(</span><span class="nc">Regex</span><span class="o">.</span><span class="n">match?</span><span class="p" data-group-id="8307747368-11">(</span><span class="sr">~r/[A-Z][a-z]{2,}/</span><span class="p">,</span><span class="ni">&amp;1</span><span class="p" data-group-id="8307747368-11">)</span><span class="p" data-group-id="8307747368-10">)</span><span class="p">,</span><span class="w">
-                                   </span><span class="ss">lname</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="8307747368-12">(</span><span class="nc">Regex</span><span class="o">.</span><span class="n">match?</span><span class="p" data-group-id="8307747368-13">(</span><span class="sr">~r/[A-Z][a-z]{2,}/</span><span class="p">,</span><span class="ni">&amp;1</span><span class="p" data-group-id="8307747368-13">)</span><span class="p" data-group-id="8307747368-12">)</span><span class="p">,</span><span class="w">
-                                   </span><span class="ss">position</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="8307747368-14">(</span><span class="ni">&amp;1</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="p" data-group-id="8307747368-15">[</span><span class="ss">:center</span><span class="p">,</span><span class="w"> </span><span class="ss">:guard</span><span class="p">,</span><span class="w"> </span><span class="ss">:forward</span><span class="p" data-group-id="8307747368-15">]</span><span class="p" data-group-id="8307747368-14">)</span><span class="p">,</span><span class="w">
-                                   </span><span class="ss">jersey_num</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="8307747368-16">(</span><span class="nc">Regex</span><span class="o">.</span><span class="n">match?</span><span class="p" data-group-id="8307747368-17">(</span><span class="sr">~r/{1,2}/</span><span class="p">,</span><span class="ni">&amp;1</span><span class="p" data-group-id="8307747368-17">)</span><span class="p" data-group-id="8307747368-16">)</span><span class="p">,</span><span class="w">
-                                   </span><span class="ss">born</span><span class="p">:</span><span class="w"> </span><span class="ss">:any_date</span><span class="p" data-group-id="8307747368-8">}</span><span class="p">,</span><span class="w">
-          </span><span class="ss">plays_at</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="8307747368-18">%{</span><span class="ss">arena</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="8307747368-19">%{</span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="8307747368-20">(</span><span class="nc">String</span><span class="o">.</span><span class="n">length</span><span class="p" data-group-id="8307747368-21">(</span><span class="ni">&amp;1</span><span class="p" data-group-id="8307747368-21">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">3</span><span class="p" data-group-id="8307747368-20">)</span><span class="p">,</span><span class="w">
-                               </span><span class="ss">location</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="8307747368-22">%{</span><span class="s">&quot;city&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">is_binary</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span><span class="w">
-                                           </span><span class="s">&quot;state&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="8307747368-23">(</span><span class="nc">Regex</span><span class="o">.</span><span class="n">match?</span><span class="p" data-group-id="8307747368-24">(</span><span class="sr">~r/[A-Z]{2}/</span><span class="p">,</span><span class="w"> </span><span class="ni">&amp;1</span><span class="p" data-group-id="8307747368-24">)</span><span class="p" data-group-id="8307747368-23">)</span><span class="p" data-group-id="8307747368-22">}</span><span class="p" data-group-id="8307747368-19">}</span><span class="p" data-group-id="8307747368-18">}</span><span class="p" data-group-id="8307747368-4">}</span><span class="p">,</span><span class="w">
-  </span><span class="ss">data_fetched_at</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="8307747368-25">(</span><span class="nc">Regex</span><span class="o">.</span><span class="n">match?</span><span class="p" data-group-id="8307747368-26">(</span><span class="sr">~r/2018-{2}-{2} {2}:{2}:{2}/</span><span class="p">,</span><span class="w"> </span><span class="ni">&amp;1</span><span class="p" data-group-id="8307747368-26">)</span><span class="p" data-group-id="8307747368-25">)</span><span class="w">
-</span><span class="p" data-group-id="8307747368-1">}</span></code></pre>
-<p><a href="RecursiveSelectiveMatch.html#content"><code class="inline">RecursiveSelectiveMatch</code></a> currently works (at least sort of) with Elixir maps, lists,
+<pre><code class="nohighlight makeup elixir"><span class="p" data-group-id="2823168639-1">%{</span><span class="w">
+  </span><span class="ss">players</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="2823168639-2">(</span><span class="n">length</span><span class="p" data-group-id="2823168639-3">(</span><span class="ni">&amp;1</span><span class="p" data-group-id="2823168639-3">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">3</span><span class="p" data-group-id="2823168639-2">)</span><span class="p">,</span><span class="w">
+  </span><span class="ss">team</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="2823168639-4">%{</span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="2823168639-5">(</span><span class="ni">&amp;1</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="p" data-group-id="2823168639-6">[</span><span class="s">&quot;Bucks&quot;</span><span class="p">,</span><span class="s">&quot;Celtics&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;76ers&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Lakers&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Rockets&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Warriors&quot;</span><span class="p" data-group-id="2823168639-6">]</span><span class="p" data-group-id="2823168639-5">)</span><span class="p">,</span><span class="w">
+          </span><span class="ss">nba_id</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="2823168639-7">(</span><span class="ni">&amp;1</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="ni">&amp;1</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">30</span><span class="p" data-group-id="2823168639-7">)</span><span class="p">,</span><span class="w">
+          </span><span class="ss">greatest_player</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="2823168639-8">%</span><span class="nc" data-group-id="2823168639-8">Person</span><span class="p" data-group-id="2823168639-8">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="2823168639-9">(</span><span class="ni">&amp;1</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="ni">&amp;1</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">99</span><span class="p" data-group-id="2823168639-9">)</span><span class="p">,</span><span class="w">
+                                   </span><span class="ss">fname</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="2823168639-10">(</span><span class="nc">Regex</span><span class="o">.</span><span class="n">match?</span><span class="p" data-group-id="2823168639-11">(</span><span class="sr">~r/[A-Z][a-z]{2,}/</span><span class="p">,</span><span class="ni">&amp;1</span><span class="p" data-group-id="2823168639-11">)</span><span class="p" data-group-id="2823168639-10">)</span><span class="p">,</span><span class="w">
+                                   </span><span class="ss">lname</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="2823168639-12">(</span><span class="nc">Regex</span><span class="o">.</span><span class="n">match?</span><span class="p" data-group-id="2823168639-13">(</span><span class="sr">~r/[A-Z][a-z]{2,}/</span><span class="p">,</span><span class="ni">&amp;1</span><span class="p" data-group-id="2823168639-13">)</span><span class="p" data-group-id="2823168639-12">)</span><span class="p">,</span><span class="w">
+                                   </span><span class="ss">position</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="2823168639-14">(</span><span class="ni">&amp;1</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="p" data-group-id="2823168639-15">[</span><span class="ss">:center</span><span class="p">,</span><span class="w"> </span><span class="ss">:guard</span><span class="p">,</span><span class="w"> </span><span class="ss">:forward</span><span class="p" data-group-id="2823168639-15">]</span><span class="p" data-group-id="2823168639-14">)</span><span class="p">,</span><span class="w">
+                                   </span><span class="ss">jersey_num</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="2823168639-16">(</span><span class="nc">Regex</span><span class="o">.</span><span class="n">match?</span><span class="p" data-group-id="2823168639-17">(</span><span class="sr">~r/{1,2}/</span><span class="p">,</span><span class="ni">&amp;1</span><span class="p" data-group-id="2823168639-17">)</span><span class="p" data-group-id="2823168639-16">)</span><span class="p">,</span><span class="w">
+                                   </span><span class="ss">born</span><span class="p">:</span><span class="w"> </span><span class="ss">:any_date</span><span class="p" data-group-id="2823168639-8">}</span><span class="p">,</span><span class="w">
+          </span><span class="ss">plays_at</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="2823168639-18">%{</span><span class="ss">arena</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="2823168639-19">%{</span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="2823168639-20">(</span><span class="nc">String</span><span class="o">.</span><span class="n">length</span><span class="p" data-group-id="2823168639-21">(</span><span class="ni">&amp;1</span><span class="p" data-group-id="2823168639-21">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">3</span><span class="p" data-group-id="2823168639-20">)</span><span class="p">,</span><span class="w">
+                               </span><span class="ss">location</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="2823168639-22">%{</span><span class="s">&quot;city&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">is_binary</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span><span class="w">
+                                           </span><span class="s">&quot;state&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="2823168639-23">(</span><span class="nc">Regex</span><span class="o">.</span><span class="n">match?</span><span class="p" data-group-id="2823168639-24">(</span><span class="sr">~r/[A-Z]{2}/</span><span class="p">,</span><span class="w"> </span><span class="ni">&amp;1</span><span class="p" data-group-id="2823168639-24">)</span><span class="p" data-group-id="2823168639-23">)</span><span class="p" data-group-id="2823168639-22">}</span><span class="p" data-group-id="2823168639-19">}</span><span class="p" data-group-id="2823168639-18">}</span><span class="p" data-group-id="2823168639-4">}</span><span class="p">,</span><span class="w">
+  </span><span class="ss">data_fetched_at</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="p" data-group-id="2823168639-25">(</span><span class="nc">Regex</span><span class="o">.</span><span class="n">match?</span><span class="p" data-group-id="2823168639-26">(</span><span class="sr">~r/2018-{2}-{2} {2}:{2}:{2}/</span><span class="p">,</span><span class="w"> </span><span class="ni">&amp;1</span><span class="p" data-group-id="2823168639-26">)</span><span class="p" data-group-id="2823168639-25">)</span><span class="w">
+</span><span class="p" data-group-id="2823168639-1">}</span></code></pre>
+<p><a href="#content"><code class="inline">RecursiveSelectiveMatch</code></a> currently works (at least sort of) with Elixir maps, lists,
 tuples, and structs (which it begins comparing based on struct type and then treats as maps).</p>
 <p>You can also specify multiple expectations for a single value using a <code class="inline">{:multi, ...}</code> tuple.
 The following will check that: 1) there are exactly three items in the <code class="inline">:players</code> list; and,
 2) every player has an <code class="inline">lname</code> field which is a string of at least four bytes:</p>
-<pre><code class="nohighlight makeup elixir"><span class="p" data-group-id="1036990868-1">%{</span><span class="w">
-   </span><span class="ss">players</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="1036990868-2">{</span><span class="ss">:multi</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="1036990868-3">[</span><span class="o">&amp;</span><span class="p" data-group-id="1036990868-4">(</span><span class="n">length</span><span class="p" data-group-id="1036990868-5">(</span><span class="ni">&amp;1</span><span class="p" data-group-id="1036990868-5">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">3</span><span class="p" data-group-id="1036990868-4">)</span><span class="p">,</span><span class="w">
-                      </span><span class="o">&amp;</span><span class="p" data-group-id="1036990868-6">(</span><span class="nc">Enum</span><span class="o">.</span><span class="n">all?</span><span class="p" data-group-id="1036990868-7">(</span><span class="ni">&amp;1</span><span class="p">,</span><span class="w"> </span><span class="k" data-group-id="1036990868-8">fn</span><span class="p" data-group-id="1036990868-9">(</span><span class="n">player</span><span class="p" data-group-id="1036990868-9">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p" data-group-id="1036990868-10">(</span><span class="n">player</span><span class="o">.</span><span class="n">lname</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">byte_size</span><span class="p" data-group-id="1036990868-11">(</span><span class="p" data-group-id="1036990868-11">)</span><span class="p" data-group-id="1036990868-10">)</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="k" data-group-id="1036990868-8">end</span><span class="p" data-group-id="1036990868-7">)</span><span class="p" data-group-id="1036990868-6">)</span><span class="w">
-                     </span><span class="p" data-group-id="1036990868-3">]</span><span class="w">
-            </span><span class="p" data-group-id="1036990868-2">}</span><span class="w">
- </span><span class="p" data-group-id="1036990868-1">}</span></code></pre>
-<p>After adding <a href="RecursiveSelectiveMatch.html#content"><code class="inline">RecursiveSelectiveMatch</code></a> to your project as a dependency, you can pass
+<pre><code class="nohighlight makeup elixir"><span class="p" data-group-id="5743652422-1">%{</span><span class="w">
+   </span><span class="ss">players</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="5743652422-2">{</span><span class="ss">:multi</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="5743652422-3">[</span><span class="o">&amp;</span><span class="p" data-group-id="5743652422-4">(</span><span class="n">length</span><span class="p" data-group-id="5743652422-5">(</span><span class="ni">&amp;1</span><span class="p" data-group-id="5743652422-5">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">3</span><span class="p" data-group-id="5743652422-4">)</span><span class="p">,</span><span class="w">
+                      </span><span class="o">&amp;</span><span class="p" data-group-id="5743652422-6">(</span><span class="nc">Enum</span><span class="o">.</span><span class="n">all?</span><span class="p" data-group-id="5743652422-7">(</span><span class="ni">&amp;1</span><span class="p">,</span><span class="w"> </span><span class="k" data-group-id="5743652422-8">fn</span><span class="p" data-group-id="5743652422-9">(</span><span class="n">player</span><span class="p" data-group-id="5743652422-9">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p" data-group-id="5743652422-10">(</span><span class="n">player</span><span class="o">.</span><span class="n">lname</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">byte_size</span><span class="p" data-group-id="5743652422-11">(</span><span class="p" data-group-id="5743652422-11">)</span><span class="p" data-group-id="5743652422-10">)</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="k" data-group-id="5743652422-8">end</span><span class="p" data-group-id="5743652422-7">)</span><span class="p" data-group-id="5743652422-6">)</span><span class="w">
+                     </span><span class="p" data-group-id="5743652422-3">]</span><span class="w">
+            </span><span class="p" data-group-id="5743652422-2">}</span><span class="w">
+ </span><span class="p" data-group-id="5743652422-1">}</span></code></pre>
+<p>After adding <a href="#content"><code class="inline">RecursiveSelectiveMatch</code></a> to your project as a dependency, you can pass
 an expected and an actual data structure to <code class="inline">RecursiveSelectiveMatch.matches?()</code> as follows.
 If every element in <code class="inline">expected</code> also exists in <code class="inline">actual</code>, <code class="inline">matches?()</code> should return <code class="inline">true</code>.
 If any element of <code class="inline">expected</code> is not in <code class="inline">actual</code>, <code class="inline">matches?()</code> should return <code class="inline">false</code>.</p>
@@ -198,60 +209,60 @@ options:</p>
 <ul>
 <li><p><em>To disable warnings</em>: You can disable the default behavior of displaying the reason for any match failure by passing an options map (as a third argument) containing <code class="inline">%{suppress_warnings: true}</code>.</p>
 </li>
-<li><p><em>To treat string &amp; atom keys as equivalent when evaluating maps</em>: You can override the default behavior of requiring that maps’ expected and actual keys be of the same type and instead ignore differences between string and atom keys in maps by passing an options map (as a third argument) containing <code class="inline">%{standardize_keys: true}</code>.</p>
+<li><p><em>To treat string &amp; atom keys as equivalent when evaluating maps</em>: You can override the default behavior of requiring that maps&#39; expected and actual keys be of the same type and instead ignore differences between string and atom keys in maps by passing an options map (as a third argument) containing <code class="inline">%{standardize_keys: true}</code>.</p>
 </li>
-<li><p><em>To prevent expected maps from matching actual structs</em>: If you expect a map and attempt to match it against an actual struct, by default <a href="RecursiveSelectiveMatch.html#content"><code class="inline">RecursiveSelectiveMatch</code></a> treats the struct as a map for matching purposes. You can override this default behavior and prevent expected maps from matching actual structs by passing an options map (as a third argument) containing <code class="inline">%{strict_struct_matching: true}</code>, which will prevent ordinary maps from matching structs.</p>
+<li><p><em>To prevent expected maps from matching actual structs</em>: If you expect a map and attempt to match it against an actual struct, by default <a href="#content"><code class="inline">RecursiveSelectiveMatch</code></a> treats the struct as a map for matching purposes. You can override this default behavior and prevent expected maps from matching actual structs by passing an options map (as a third argument) containing <code class="inline">%{strict_struct_matching: true}</code>, which will prevent ordinary maps from matching structs.</p>
 </li>
 <li><p><em>To require that lists match exactly (i.e., all expected list elements are present &amp; in the expected order)</em>: The default behavior is to consider lists to match if all expected list elements are found in the actual list. If you want to consider lists to match only if the lists are identical, you can pass an options map (as a third argument) containing <code class="inline">%{exact_lists: true}</code>. This will cause lists to match only if they match exactly.</p>
 </li>
-<li><p><em>To require that actual lists contain all expected list elements but ignore order</em>: The default behavior is to consider lists to match if all expected list elements are found in the actual list. If you want to consider lists to match only if all expected list items are present and no additional list items are present in the actual list (and you don’t care about the ordering of these elements), you can pass an options map (as a third argument) containing <code class="inline">%{full_lists: true}</code>. This will cause lists to match only if all expected list elements are present and no unexpected list elements are present.</p>
+<li><p><em>To require that actual lists contain all expected list elements but ignore order</em>: The default behavior is to consider lists to match if all expected list elements are found in the actual list. If you want to consider lists to match only if all expected list items are present and no additional list items are present in the actual list (and you don&#39;t care about the ordering of these elements), you can pass an options map (as a third argument) containing <code class="inline">%{full_lists: true}</code>. This will cause lists to match only if all expected list elements are present and no unexpected list elements are present.</p>
 </li>
 </ul>
 <p>If you wanted to change the earlier example by overriding all three default options, just add
 a third argument, like this:</p>
-<pre><code class="nohighlight makeup elixir"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyTest</span><span class="w"> </span><span class="k" data-group-id="0940102281-1">do</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyTest</span><span class="w"> </span><span class="k" data-group-id="5790464637-1">do</span><span class="w">
   </span><span class="kn">use</span><span class="w"> </span><span class="nc">ExUnit.Case</span><span class="w">
 
   </span><span class="kn">alias</span><span class="w"> </span><span class="nc">RecursiveSelectiveMatch</span><span class="p">,</span><span class="w"> </span><span class="ss">as</span><span class="p">:</span><span class="w"> </span><span class="nc">RSM</span><span class="w">
 
-  </span><span class="n">assert</span><span class="w"> </span><span class="nc">RSM</span><span class="o">.</span><span class="n">matches?</span><span class="p" data-group-id="0940102281-2">(</span><span class="n">expected</span><span class="p">,</span><span class="w">
+  </span><span class="n">assert</span><span class="w"> </span><span class="nc">RSM</span><span class="o">.</span><span class="n">matches?</span><span class="p" data-group-id="5790464637-2">(</span><span class="n">expected</span><span class="p">,</span><span class="w">
                       </span><span class="n">actual</span><span class="p">,</span><span class="w">
-                      </span><span class="p" data-group-id="0940102281-3">%{</span><span class="ss">suppress_warnings</span><span class="p">:</span><span class="w"> </span><span class="no">true</span><span class="p">,</span><span class="w">
+                      </span><span class="p" data-group-id="5790464637-3">%{</span><span class="ss">suppress_warnings</span><span class="p">:</span><span class="w"> </span><span class="no">true</span><span class="p">,</span><span class="w">
                         </span><span class="ss">standardize_keys</span><span class="p">:</span><span class="w"> </span><span class="no">true</span><span class="p">,</span><span class="w">
-                        </span><span class="ss">strict_struct_matching</span><span class="p">:</span><span class="w"> </span><span class="no">true</span><span class="p" data-group-id="0940102281-3">}</span><span class="p" data-group-id="0940102281-2">)</span><span class="w">
-</span><span class="k" data-group-id="0940102281-1">end</span></code></pre>
-<p><a href="RecursiveSelectiveMatch.html#content"><code class="inline">RecursiveSelectiveMatch</code></a> module originally printed failure messages. I’ve rewritten it to log error messages,
+                        </span><span class="ss">strict_struct_matching</span><span class="p">:</span><span class="w"> </span><span class="no">true</span><span class="p" data-group-id="5790464637-3">}</span><span class="p" data-group-id="5790464637-2">)</span><span class="w">
+</span><span class="k" data-group-id="5790464637-1">end</span></code></pre>
+<p><a href="#content"><code class="inline">RecursiveSelectiveMatch</code></a> module originally printed failure messages. I&#39;ve rewritten it to log error messages,
 but you can override this to keep the original behavior by passing <code class="inline">io_errors: true</code> inside
 the opts map.</p>
 <p>You can test that the correct error messages are generated (and prevent those error messages from
-leaking through) by using ExUnit’s <code class="inline">capture_log()</code>:</p>
-<pre><code class="nohighlight makeup elixir"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyTest</span><span class="w"> </span><span class="k" data-group-id="4080094487-1">do</span><span class="w">
+leaking through) by using ExUnit&#39;s <code class="inline">capture_log()</code>:</p>
+<pre><code class="nohighlight makeup elixir"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyTest</span><span class="w"> </span><span class="k" data-group-id="4949166126-1">do</span><span class="w">
   </span><span class="kn">use</span><span class="w"> </span><span class="nc">ExUnit.Case</span><span class="w">
   </span><span class="kn">import</span><span class="w"> </span><span class="nc">ExUnit.CaptureLog</span><span class="w">
 
   </span><span class="kn">alias</span><span class="w"> </span><span class="nc">RecursiveSelectiveMatch</span><span class="p">,</span><span class="w"> </span><span class="ss">as</span><span class="p">:</span><span class="w"> </span><span class="nc">RSM</span><span class="w">
 
-  </span><span class="n">expected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p" data-group-id="4080094487-2">{</span><span class="ss">:a</span><span class="p">,</span><span class="w"> </span><span class="ss">:b</span><span class="p">,</span><span class="w"> </span><span class="ss">:c</span><span class="p" data-group-id="4080094487-2">}</span><span class="w">
-  </span><span class="n">actual</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p" data-group-id="4080094487-3">{</span><span class="ss">:a</span><span class="p">,</span><span class="w"> </span><span class="ss">:b</span><span class="p">,</span><span class="w"> </span><span class="ss">:d</span><span class="p" data-group-id="4080094487-3">}</span><span class="w">
-  </span><span class="n">assert</span><span class="w"> </span><span class="n">capture_log</span><span class="p" data-group-id="4080094487-4">(</span><span class="k" data-group-id="4080094487-5">fn</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nc">RSM</span><span class="o">.</span><span class="n">matches?</span><span class="p" data-group-id="4080094487-6">(</span><span class="n">expected</span><span class="p">,</span><span class="w"> </span><span class="n">actual</span><span class="p" data-group-id="4080094487-6">)</span><span class="w"> </span><span class="k" data-group-id="4080094487-5">end</span><span class="p" data-group-id="4080094487-4">)</span><span class="w"> </span><span class="o">=~</span><span class="w">
+  </span><span class="n">expected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p" data-group-id="4949166126-2">{</span><span class="ss">:a</span><span class="p">,</span><span class="w"> </span><span class="ss">:b</span><span class="p">,</span><span class="w"> </span><span class="ss">:c</span><span class="p" data-group-id="4949166126-2">}</span><span class="w">
+  </span><span class="n">actual</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p" data-group-id="4949166126-3">{</span><span class="ss">:a</span><span class="p">,</span><span class="w"> </span><span class="ss">:b</span><span class="p">,</span><span class="w"> </span><span class="ss">:d</span><span class="p" data-group-id="4949166126-3">}</span><span class="w">
+  </span><span class="n">assert</span><span class="w"> </span><span class="n">capture_log</span><span class="p" data-group-id="4949166126-4">(</span><span class="k" data-group-id="4949166126-5">fn</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nc">RSM</span><span class="o">.</span><span class="n">matches?</span><span class="p" data-group-id="4949166126-6">(</span><span class="n">expected</span><span class="p">,</span><span class="w"> </span><span class="n">actual</span><span class="p" data-group-id="4949166126-6">)</span><span class="w"> </span><span class="k" data-group-id="4949166126-5">end</span><span class="p" data-group-id="4949166126-4">)</span><span class="w"> </span><span class="o">=~</span><span class="w">
     </span><span class="s">&quot;[error] :d does not match :c&quot;</span><span class="w">
-  </span><span class="n">assert</span><span class="w"> </span><span class="n">capture_log</span><span class="p" data-group-id="4080094487-7">(</span><span class="k" data-group-id="4080094487-8">fn</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nc">RSM</span><span class="o">.</span><span class="n">matches?</span><span class="p" data-group-id="4080094487-9">(</span><span class="n">expected</span><span class="p">,</span><span class="w"> </span><span class="n">actual</span><span class="p" data-group-id="4080094487-9">)</span><span class="w"> </span><span class="k" data-group-id="4080094487-8">end</span><span class="p" data-group-id="4080094487-7">)</span><span class="w"> </span><span class="o">=~</span><span class="w">
+  </span><span class="n">assert</span><span class="w"> </span><span class="n">capture_log</span><span class="p" data-group-id="4949166126-7">(</span><span class="k" data-group-id="4949166126-8">fn</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nc">RSM</span><span class="o">.</span><span class="n">matches?</span><span class="p" data-group-id="4949166126-9">(</span><span class="n">expected</span><span class="p">,</span><span class="w"> </span><span class="n">actual</span><span class="p" data-group-id="4949166126-9">)</span><span class="w"> </span><span class="k" data-group-id="4949166126-8">end</span><span class="p" data-group-id="4949166126-7">)</span><span class="w"> </span><span class="o">=~</span><span class="w">
     </span><span class="s">&quot;[error] {:a, :b, :d} does not match {:a, :b, :c}&quot;</span><span class="w">
-</span><span class="k" data-group-id="4080094487-1">end</span></code></pre>
-<p>If you don’t care about the error messages and just want to ensure that the test fails when the actual data structure doesn’t match the expected data structure, you can instead use ExUnit’s <code class="inline">refute</code> and pass <code class="inline">%{suppress_warnings: true}</code> in the opts hash:</p>
-<pre><code class="nohighlight makeup elixir"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyTest</span><span class="w"> </span><span class="k" data-group-id="4548754071-1">do</span><span class="w">
+</span><span class="k" data-group-id="4949166126-1">end</span></code></pre>
+<p>If you don&#39;t care about the error messages and just want to ensure that the test fails when the actual data structure doesn&#39;t match the expected data structure, you can instead use ExUnit&#39;s <code class="inline">refute</code> and pass <code class="inline">%{suppress_warnings: true}</code> in the opts hash:</p>
+<pre><code class="nohighlight makeup elixir"><span class="kd">defmodule</span><span class="w"> </span><span class="nc">MyTest</span><span class="w"> </span><span class="k" data-group-id="5227224797-1">do</span><span class="w">
   </span><span class="kn">use</span><span class="w"> </span><span class="nc">ExUnit.Case</span><span class="w">
 
   </span><span class="kn">alias</span><span class="w"> </span><span class="nc">RecursiveSelectiveMatch</span><span class="p">,</span><span class="w"> </span><span class="ss">as</span><span class="p">:</span><span class="w"> </span><span class="nc">RSM</span><span class="w">
 
-  </span><span class="n">expected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p" data-group-id="4548754071-2">{</span><span class="ss">:a</span><span class="p">,</span><span class="w"> </span><span class="ss">:b</span><span class="p">,</span><span class="w"> </span><span class="ss">:c</span><span class="p" data-group-id="4548754071-2">}</span><span class="w">
-  </span><span class="n">actual</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p" data-group-id="4548754071-3">{</span><span class="ss">:a</span><span class="p">,</span><span class="w"> </span><span class="ss">:b</span><span class="p">,</span><span class="w"> </span><span class="ss">:d</span><span class="p" data-group-id="4548754071-3">}</span><span class="w">
-  </span><span class="n">refute</span><span class="w"> </span><span class="nc">RSM</span><span class="o">.</span><span class="n">matches?</span><span class="p" data-group-id="4548754071-4">(</span><span class="n">expected</span><span class="p">,</span><span class="w"> </span><span class="n">actual</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="4548754071-5">%{</span><span class="ss">suppress_warnings</span><span class="p">:</span><span class="w"> </span><span class="no">true</span><span class="p" data-group-id="4548754071-5">}</span><span class="p" data-group-id="4548754071-4">)</span><span class="w">
-</span><span class="k" data-group-id="4548754071-1">end</span></code></pre>
-<p><a href="RecursiveSelectiveMatch.html#content"><code class="inline">RecursiveSelectiveMatch</code></a> is a clean reimplementation and extension of <code class="inline">SelectiveRecursiveMatch</code>, a
+  </span><span class="n">expected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p" data-group-id="5227224797-2">{</span><span class="ss">:a</span><span class="p">,</span><span class="w"> </span><span class="ss">:b</span><span class="p">,</span><span class="w"> </span><span class="ss">:c</span><span class="p" data-group-id="5227224797-2">}</span><span class="w">
+  </span><span class="n">actual</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p" data-group-id="5227224797-3">{</span><span class="ss">:a</span><span class="p">,</span><span class="w"> </span><span class="ss">:b</span><span class="p">,</span><span class="w"> </span><span class="ss">:d</span><span class="p" data-group-id="5227224797-3">}</span><span class="w">
+  </span><span class="n">refute</span><span class="w"> </span><span class="nc">RSM</span><span class="o">.</span><span class="n">matches?</span><span class="p" data-group-id="5227224797-4">(</span><span class="n">expected</span><span class="p">,</span><span class="w"> </span><span class="n">actual</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="5227224797-5">%{</span><span class="ss">suppress_warnings</span><span class="p">:</span><span class="w"> </span><span class="no">true</span><span class="p" data-group-id="5227224797-5">}</span><span class="p" data-group-id="5227224797-4">)</span><span class="w">
+</span><span class="k" data-group-id="5227224797-1">end</span></code></pre>
+<p><a href="#content"><code class="inline">RecursiveSelectiveMatch</code></a> is a clean reimplementation and extension of <code class="inline">SelectiveRecursiveMatch</code>, a
 library I wrote at <a href="https://www.teladoc.com/">Teladoc</a> to solve the same problem. I reimplemented it to
-write cleaner code on my second attempt. (As Fred Brooks wrote, “plan to throw
-one away; you will, anyhow.”) While I created this library on my own time and have added
+write cleaner code on my second attempt. (As Fred Brooks wrote, &quot;plan to throw
+one away; you will, anyhow.&quot;) While I created this library on my own time and have added
 features not present in the original, my inspiration to create this and the time spent
 building my initial implementation both came from Teladoc, so thank you, Teladoc! Thanks also
 to <a href="https://caredox.com/">CareDox</a> where I work now and have begun extending this library.</p>
@@ -279,15 +290,13 @@ to <a href="https://caredox.com/">CareDox</a> where I work now and have begun ex
     <a href="#includes?/3">includes?(expected, actual_list, opts \\ %{})</a>
   </div>
     <div class="summary-synopsis"><p><code class="inline">RecursiveSelectiveMatch.includes?(expected, actual, opts // %{})</code> tests whether <code class="inline">expected</code> exists as a member of <code class="inline">actual</code>,
-where inclusion is tested using RecursiveSelectiveMatch.matches?()</p>
-</div>
+where inclusion is tested using RecursiveSelectiveMatch.matches?()</p></div>
 </div>
 <div class="summary-row">
   <div class="summary-signature">
     <a href="#matches?/3">matches?(expected, actual, opts \\ %{})</a>
   </div>
-    <div class="summary-synopsis"><p>matches?()</p>
-</div>
+    <div class="summary-synopsis"><p>matches?()</p></div>
 </div>
 <div class="summary-row">
   <div class="summary-signature">
@@ -302,40 +311,38 @@ where inclusion is tested using RecursiveSelectiveMatch.matches?()</p>
   </div>
         </section>
 
-
-
         <section id="functions" class="details-list">
           <h1 class="section-heading">
             <a class="hover-link" href="#functions">
               <span class="icon-link" aria-hidden="true"></span>
               <span class="sr-only">Link to this section</span>
             </a>
-            Functions
-          </h1>
-<div class="detail" id="convert_struct_to_map/1">
+Functions          </h1>
+          <div class="functions-list">
+<section class="detail" id="convert_struct_to_map/1">
   <div class="detail-header">
     <a href="#convert_struct_to_map/1" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">convert_struct_to_map(struct)</span>
-      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L706" class="view-source" rel="help" title="View Source">
+    <h1 class="signature">convert_struct_to_map(struct)</span>
+      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L714" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
   </div>
   <section class="docstring">
   </section>
-</div>
-<div class="detail" id="includes?/3">
+</section>
+<section class="detail" id="includes?/3">
     <span id="includes?/2"></span>
   <div class="detail-header">
     <a href="#includes?/3" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">includes?(expected, actual_list, opts \\ %{})</span>
-      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L232" class="view-source" rel="help" title="View Source">
+    <h1 class="signature">includes?(expected, actual_list, opts \\ %{})</span>
+      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L234" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -344,16 +351,16 @@ where inclusion is tested using RecursiveSelectiveMatch.matches?()</p>
 <p><code class="inline">RecursiveSelectiveMatch.includes?(expected, actual, opts // %{})</code> tests whether <code class="inline">expected</code> exists as a member of <code class="inline">actual</code>,
 where inclusion is tested using RecursiveSelectiveMatch.matches?()</p>
   </section>
-</div>
-<div class="detail" id="matches?/3">
+</section>
+<section class="detail" id="matches?/3">
     <span id="matches?/2"></span>
   <div class="detail-header">
     <a href="#matches?/3" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">matches?(expected, actual, opts \\ %{})</span>
-      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L257" class="view-source" rel="help" title="View Source">
+    <h1 class="signature">matches?(expected, actual, opts \\ %{})</span>
+      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L259" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
@@ -365,61 +372,68 @@ where inclusion is tested using RecursiveSelectiveMatch.matches?()</p>
   Examples
 </h2>
 
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">RecursiveSelectiveMatch</span><span class="o">.</span><span class="n">matches?</span><span class="p" data-group-id="2972719117-1">(</span><span class="p" data-group-id="2972719117-2">%{</span><span class="ss">what</span><span class="p">:</span><span class="w"> </span><span class="ss">:ever</span><span class="p" data-group-id="2972719117-2">}</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="2972719117-3">%{</span><span class="ss">what</span><span class="p">:</span><span class="w"> </span><span class="ss">:ever</span><span class="p">,</span><span class="w"> </span><span class="ss">not</span><span class="p">:</span><span class="w"> </span><span class="ss">:checked</span><span class="p" data-group-id="2972719117-3">}</span><span class="p" data-group-id="2972719117-1">)</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">RecursiveSelectiveMatch</span><span class="o">.</span><span class="n">matches?</span><span class="p" data-group-id="7644108887-1">(</span><span class="p" data-group-id="7644108887-2">%{</span><span class="ss">what</span><span class="p">:</span><span class="w"> </span><span class="ss">:ever</span><span class="p" data-group-id="7644108887-2">}</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7644108887-3">%{</span><span class="ss">what</span><span class="p">:</span><span class="w"> </span><span class="ss">:ever</span><span class="p">,</span><span class="w"> </span><span class="ss">not</span><span class="p">:</span><span class="w"> </span><span class="ss">:checked</span><span class="p" data-group-id="7644108887-3">}</span><span class="p" data-group-id="7644108887-1">)</span><span class="w">
 </span><span class="no">true</span><span class="w">
 
-</span><span class="gp unselectable">iex&gt; </span><span class="nc">RecursiveSelectiveMatch</span><span class="o">.</span><span class="n">matches?</span><span class="p" data-group-id="2972719117-4">(</span><span class="p" data-group-id="2972719117-5">%{</span><span class="ss">what</span><span class="p">:</span><span class="w"> </span><span class="ss">:ever</span><span class="p">,</span><span class="w"> </span><span class="ss">is</span><span class="p">:</span><span class="w"> </span><span class="ss">:checked</span><span class="p" data-group-id="2972719117-5">}</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="2972719117-6">%{</span><span class="ss">what</span><span class="p">:</span><span class="w"> </span><span class="ss">:ever</span><span class="p" data-group-id="2972719117-6">}</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="2972719117-7">%{</span><span class="ss">suppress_warnings</span><span class="p">:</span><span class="w"> </span><span class="no">true</span><span class="p" data-group-id="2972719117-7">}</span><span class="p" data-group-id="2972719117-4">)</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="nc">RecursiveSelectiveMatch</span><span class="o">.</span><span class="n">matches?</span><span class="p" data-group-id="7644108887-4">(</span><span class="p" data-group-id="7644108887-5">%{</span><span class="ss">what</span><span class="p">:</span><span class="w"> </span><span class="ss">:ever</span><span class="p">,</span><span class="w"> </span><span class="ss">is</span><span class="p">:</span><span class="w"> </span><span class="ss">:checked</span><span class="p" data-group-id="7644108887-5">}</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7644108887-6">%{</span><span class="ss">what</span><span class="p">:</span><span class="w"> </span><span class="ss">:ever</span><span class="p" data-group-id="7644108887-6">}</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7644108887-7">%{</span><span class="ss">suppress_warnings</span><span class="p">:</span><span class="w"> </span><span class="no">true</span><span class="p" data-group-id="7644108887-7">}</span><span class="p" data-group-id="7644108887-4">)</span><span class="w">
 </span><span class="no">false</span></code></pre>
   </section>
-</div>
-<div class="detail" id="print_or_inspect/1">
+</section>
+<section class="detail" id="print_or_inspect/1">
   <div class="detail-header">
     <a href="#print_or_inspect/1" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">print_or_inspect(val)</span>
-      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L574" class="view-source" rel="help" title="View Source">
+    <h1 class="signature">print_or_inspect(val)</span>
+      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L582" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
   </div>
   <section class="docstring">
   </section>
-</div>
-<div class="detail" id="stringify/1">
+</section>
+<section class="detail" id="stringify/1">
   <div class="detail-header">
     <a href="#stringify/1" class="detail-link" title="Link to this function">
       <span class="icon-link" aria-hidden="true"></span>
       <span class="sr-only">Link to this function</span>
     </a>
-    <span class="signature">stringify(value)</span>
-      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L654" class="view-source" rel="help" title="View Source">
+    <h1 class="signature">stringify(value)</span>
+      <a href="https://github.com/JamesLavin/recursive_selective_match/blob/master/lib/recursive_selective_match.ex#L662" class="view-source" rel="help" title="View Source">
        <span class="icon-code" aria-hidden="true"></span>
        <span class="sr-only">View Source</span>
      </a>
   </div>
   <section class="docstring">
   </section>
-</div>
+</section>
+          </div>
         </section>
-
       <footer class="footer">
         <p>
           <span class="line">
             Built using
-            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener">ExDoc</a> (v0.19.1),
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener">ExDoc</a> (v0.20.2),
           </span>
           <span class="line">
             designed by
             <a href="https://twitter.com/dignifiedquire" target="_blank" rel="noopener" title="@dignifiedquire">Friedel Ziegelmayer</a>.
-            </span>
+          </span>
+        </p>
+        <p>
+          <button class="line footer-button night-mode-toggle">
+            Toggle night mode
+          </button>
+          <button class="line footer-button display-shortcuts-help">
+            Display keyboard shortcuts
+          </button>
         </p>
       </footer>
     </div>
   </div>
 </section>
 </div>
-  <script src="dist/app-a0c90688fa.js"></script>
   </body>
 </html>

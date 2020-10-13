@@ -16,7 +16,9 @@
    - :any_iso8601_datetime (a string, like "2018-07-04 12:56:11" or "2018-07-04T12:56:11"; rejects most invalid dates/times)
    - :any_date (the Elixir Date representation)
    - :any_time (the Elixir Time representation)
+   - :any_datetime (the Elixir DateTime -- with timezone -- representation)
    - :any_naive_datetime (the Elixir NaiveDateTime representation)
+   - :any_utc_datetime (the Elixir UTCDateTime representation)
    - :any_list
    - :any_map
    - :any_tuple

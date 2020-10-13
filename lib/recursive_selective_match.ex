@@ -14,7 +14,9 @@ defmodule RecursiveSelectiveMatch do
       * :any_iso8601_datetime (a string, like "2018-07-04 12:56:11" or "2018-07-04T12:56:11"; rejects most invalid dates/times)
       * :any_date (the Elixir Date representation)
       * :any_time (the Elixir Time representation)
+      * :any_datetime (the Elixir DateTime -- with timezone -- representation)
       * :any_naive_datetime (the Elixir NaiveDateTime representation)
+      * :any_utc_datetime (the Elixir UTCDateTime representation)
       * :any_list
       * :any_map
       * :any_tuple
@@ -494,6 +496,12 @@ defmodule RecursiveSelectiveMatch do
   def matches?(:any_naive_datetime, actual, _opts) do
     is_naive_datetime(actual)
   end
+
+  def matches?(:any_utc_datetime, %UTCDateTime{}, _opts), do: true
+  def matches?(:any_utc_datetime, _any, _opts), do: false
+
+  def matches?(:any_datetime, %DateTime{}, _opts), do: true
+  def matches?(:any_datetime, _any, _opts), do: false
 
   def matches?(expected, actual, opts) when is_function(expected) do
     success = expected.(actual)
