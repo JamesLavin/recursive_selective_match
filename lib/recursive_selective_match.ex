@@ -751,7 +751,8 @@ defmodule RecursiveSelectiveMatch do
            day: _dd,
            hour: _h,
            minute: _m,
-           second: _s
+           second: _s,
+           microsecond: _ms
          } <- val do
       true
     else
