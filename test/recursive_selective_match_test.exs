@@ -446,6 +446,42 @@ defmodule RecursiveSelectiveMatchTest do
     assert RSM.matches?(expected, actual)
   end
 
+  test ":any_datetime matches a DateTime{}" do
+    assert RSM.matches?(:any_datetime, DateTime.utc_now())
+  end
+
+  test ":any_datetime doesn't match a UTCDateTime{}" do
+    refute RSM.matches?(:any_datetime, UTCDateTime.utc_now())
+  end
+
+  test ":any_datetime doesn't match a NaiveDateTime{}" do
+    refute RSM.matches?(:any_datetime, NaiveDateTime.utc_now())
+  end
+
+  test ":any_utc_datetime doesn't match a DateTime{}" do
+    refute RSM.matches?(:any_utc_datetime, DateTime.utc_now())
+  end
+
+  test ":any_utc_datetime matches a UTCDateTime{}" do
+    assert RSM.matches?(:any_utc_datetime, UTCDateTime.utc_now())
+  end
+
+  test ":any_utc_datetime doesn't match a NaiveDateTime{}" do
+    refute RSM.matches?(:any_utc_datetime, NaiveDateTime.utc_now())
+  end
+
+  test ":any_naive_datetime doesn't match a DateTime{}" do
+    refute RSM.matches?(:any_naive_datetime, DateTime.utc_now())
+  end
+
+  test ":any_naive_datetime matches a NaiveDateTime{}" do
+    assert RSM.matches?(:any_naive_datetime, NaiveDateTime.utc_now())
+  end
+
+  test ":any_naive_datetime doesn't match a UTCDateTime{}" do
+    refute RSM.matches?(:any_naive_datetime, UTCDateTime.utc_now())
+  end
+
   test ":any_iso8601_datetime with :data_fetched_at" do
     assert RSM.matches?(:any_iso8601_datetime, celtics_actual()[:data_fetched_at])
   end
@@ -756,6 +792,18 @@ defmodule RecursiveSelectiveMatchTest do
   test ":any_time doesn't match Date values" do
     expected = :any_time
     actual = ~D[2018-11-09]
+    refute RSM.matches?(expected, actual)
+  end
+
+  test ":any_date matches Date values" do
+    expected = :any_date
+    actual = ~D[2018-11-09]
+    assert RSM.matches?(expected, actual)
+  end
+
+  test ":any_date doesn't match Time values" do
+    expected = :any_date
+    actual = ~T[11:13:12.032]
     refute RSM.matches?(expected, actual)
   end
 

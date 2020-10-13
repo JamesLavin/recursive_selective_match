@@ -4,6 +4,13 @@
 
 ### 1. Enhancements
 
+- Add :any_utc_datetime
+- Add :any_datetime
+
+## 0.2.6
+
+### 1. Enhancements
+
 - Add :any_bitstring
 - Add :any_pid
 - Add :any_port
